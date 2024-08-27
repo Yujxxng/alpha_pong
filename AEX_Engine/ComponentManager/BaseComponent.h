@@ -1,11 +1,12 @@
 #pragma once
 #include <string>
+#include "..\Serializer\ComponentSerializer.h"
 
 using namespace std;
 
 class GameObject;
 
-class BaseComponent
+class BaseComponent : public ComponentSerializer
 {
 	BaseComponent() = delete;
 

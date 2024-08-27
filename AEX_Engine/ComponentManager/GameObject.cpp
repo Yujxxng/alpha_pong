@@ -45,3 +45,8 @@ void GameObject::DeleteComponent(string cmpID)
 	if(tmp)
 		delete tmp;
 }
+
+void GameObject::OnEvent(Event* e)
+{
+	printf("event\n");
+}

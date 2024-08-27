@@ -14,6 +14,7 @@ class TransformComponent : public EngineComponent
 	float rot;
 
 	AEMtx33 transformMatrix;
+	AEVec2 limit = { 1600, 900 }; //window size
 
 	void CalculateMatrix();
 public:
@@ -35,4 +36,9 @@ public:
 	void SetRot(const float& otherRot);
 
 	void PrintMatrix();
+
+	void LoadFromJson(const json&) override;
+	json SaveToJson() override;
+
+	static ComponentSerializer* CreateComponent(GameObject* owner);
 };

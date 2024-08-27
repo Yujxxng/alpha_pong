@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "../ComponentManager/GameObject.h"
+#include "../ComponentManager/EventManager.h"
 #include "../Components/TransformComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../Components/PlayerComponent.h"
@@ -12,6 +13,7 @@
 #include "../Components/AudioComponent.h"
 
 GameObject* Planet;
+
 void Levels::MainLevel::Init()
 {
 	counter = 0;
@@ -48,6 +50,8 @@ void Levels::MainLevel::Init()
 	Planet->AddComponent(new AudioComponent(Planet));
 	AudioComponent* a = (AudioComponent*)Planet->FindComponent("Audio");
 	a->SetAudio("Assets/bouken.mp3");
+
+
 }
 
 void Levels::MainLevel::Update()
@@ -64,7 +68,7 @@ void Levels::MainLevel::Update()
 		if (counter % 10 == 0)
 			trs->SetRot( trs->GetRot() + 0.5f );
 		//trs->SetScale({ trs->GetScale().x * 1.01f, trs->GetScale().y * 1.01f });
-		trs->PrintMatrix();
+		//trs->PrintMatrix();
 	}
 
 	SpriteComponent* spr = (SpriteComponent*)Planet->FindComponent("Sprite");

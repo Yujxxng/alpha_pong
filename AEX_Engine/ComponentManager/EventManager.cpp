@@ -43,10 +43,21 @@ void EventManager::RegisterEnt(std::string event, Entity* ent)
 
 void EventManager::UnregisterEnt(std::string event, Entity* ent)
 {
+	auto& tmp = map_Entites[event];
+	for (auto it = tmp.begin(); it != tmp.end(); ++it)
+	{
+		if (*it == ent)
+		{
+			tmp.erase(it);
+			return;
+		}
+	}
+	/*
 	if (map_Entites.find(event) != map_Entites.end())
 	{
 		map_Entites[event].remove(ent);
 	}
+	*/
 }
 
 void EventManager::DispatchAll()

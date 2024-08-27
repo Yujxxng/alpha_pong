@@ -37,7 +37,13 @@ TransformComponent::TransformComponent(GameObject* go) : EngineComponent(go), po
 
 void TransformComponent::Update()
 {
-	PrintMatrix();
+	//PrintMatrix();
+	CalculateMatrix();
+
+	float x = AEClamp(pos.x, -limit.x, limit.y);
+	float y = AEClamp(pos.y, -limit.y, limit.y);
+
+	SetPos({ x, y });
 }
 
 void TransformComponent::SetPos(const AEVec2& otherPos)
@@ -73,4 +79,45 @@ void TransformComponent::PrintMatrix()
 		std::cout << "|\n";
 	}
 	std::cout << "-----------------------------------\n";
+}
+
+void TransformComponent::LoadFromJson(const json& data)
+{
+	auto componentData = data.find("componentData");
+	if (componentData != data.end())
+	{
+		auto p = componentData->find("position");
+		pos.x = p->begin().value();
+		pos.y = (p->begin() + 1).value();
+
+		auto s = componentData->find("scale");
+		scale.x = s->begin().value();
+		scale.y = (s->begin() + 1).value();
+
+		auto r = componentData->find("rotation");
+		rot = r.value();
+	}
+
+	CalculateMatrix();
+}
+
+json TransformComponent::SaveToJson()
+{
+	json data, componentData;
+
+	data["type"] = "Transform";
+
+	componentData["position"] = { pos.x, pos.y };
+	componentData["scale"] = { scale.x, scale.y };
+	componentData["rotation"] = rot;
+
+	data["componentData"] = componentData;
+
+	return data;
+}
+
+ComponentSerializer* TransformComponent::CreateComponent(GameObject* owner)
+{
+	
+	return owner->FindComponent("Transform");
 }
