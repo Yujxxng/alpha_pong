@@ -6,23 +6,14 @@
 #include "AEEngine.h"
 #include "AEGraphics.h"
 
-#include <string>
-#include <iostream>
+#include "../Utils/myUtils.h"
 
 using namespace std;
 
 class SpriteComponent : public GraphicComponent
 {
-public:
-	struct Color
-	{
-		unsigned char r = 255;
-		unsigned char g = 0;
-		unsigned char b = 0;
-	};
-
 private:
-	Color mColor;
+	Color mColor = { 255, 0, 0 };
 
 	AEGfxTexture* mTex = nullptr;
 	std::string texName;

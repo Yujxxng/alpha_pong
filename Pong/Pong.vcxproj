@@ -13,8 +13,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{b460a451-6d8e-42c3-afdd-3860f1711565}</ProjectGuid>
-    <RootNamespace>AEXEngine</RootNamespace>
+    <ProjectGuid>{a5b8fb5f-0786-4d2e-a2fe-752d6689e740}</ProjectGuid>
+    <RootNamespace>Pong</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -116,6 +116,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="GSM\GoalLevel.cpp" />
     <ClCompile Include="GSM\MainMenu.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Object\Racket.cpp" />
     <ClCompile Include="Resource\AudioResource.cpp" />
     <ClCompile Include="Resource\FontResource.cpp" />
     <ClCompile Include="Resource\TextureResource.cpp" />
@@ -141,12 +142,14 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="GSM\GameStateManager.h" />
     <ClInclude Include="GSM\GoalLevel.h" />
     <ClInclude Include="GSM\MainMenu.h" />
+    <ClInclude Include="Object\Racket.h" />
     <ClInclude Include="Resource\AudioResource.h" />
     <ClInclude Include="Resource\FontResource.h" />
     <ClInclude Include="Resource\Resource.h" />
     <ClInclude Include="Resource\TextureResource.h" />
     <ClInclude Include="Serializer\ComponentSerializer.h" />
     <ClInclude Include="Serializer\Registry.h" />
+    <ClInclude Include="Utils\myUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ComponentManager\ResourceManager.inl" />
