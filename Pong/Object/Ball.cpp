@@ -1,26 +1,28 @@
-#include "Racket.h"
+#include "Ball.h"
 
-Racket::~Racket()
+Ball::~Ball()
 {
 	DeleteComponent("Transform");
-	DeleteComponent("Player");
+	//DeleteComponent("Player");
 	DeleteComponent("Rigidbody");
 	DeleteComponent("Sprite");
 	DeleteComponent("Collider");
 }
 
-void Racket::InitRacket()
+void Ball::InitBall()
 {
 	AddComponent(new TransformComponent(this));
-	AddComponent(new PlayerComponent(this));
+	//AddComponent(new PlayerComponent(this));
 	AddComponent(new RigidbodyComponent(this));
 	AddComponent(new SpriteComponent(this));
 
 	//add more...
 	AddComponent(new ColliderComponent(this));
+	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
+	c->SetCollision(pos.x, pos.y, size.x, size.y);
 }
 
-void Racket::SetRacket(std::string id, float sizeX, float sizeY, float posX, float posY, float r, float g, float b)
+void Ball::SetBall(std::string id, float sizeX, float sizeY, float posX, float posY, float r, float g, float b)
 {
 	this->SetID(id);
 	SetSize(sizeX, sizeY);
@@ -28,7 +30,7 @@ void Racket::SetRacket(std::string id, float sizeX, float sizeY, float posX, flo
 	SetColor(r, g, b);
 }
 
-void Racket::SetSize(float x, float y)
+void Ball::SetSize(float x, float y)
 {
 	size.x = x;
 	size.y = y;
@@ -38,7 +40,7 @@ void Racket::SetSize(float x, float y)
 		t->SetScale({ x, y });
 }
 
-void Racket::SetPos(float x, float y)
+void Ball::SetPos(float x, float y)
 {
 	pos.x = x;
 	pos.y = y;
@@ -48,7 +50,7 @@ void Racket::SetPos(float x, float y)
 		t->SetPos({ x, y });
 }
 
-void Racket::SetColor(float r, float g, float b)
+void Ball::SetColor(float r, float g, float b)
 {
 	color.r = r;
 	color.g = g;
@@ -59,7 +61,25 @@ void Racket::SetColor(float r, float g, float b)
 		s->SetColor(color);
 }
 
-void Racket::printInfo()
+void Ball::SetSpeed(float v)
+{
+	speed = v;
+
+	RigidbodyComponent* r = (RigidbodyComponent*)FindComponent("Rigidbody");
+	if (r != nullptr)
+		r->SetVelocity(v, v);
+}
+
+void Ball::SetAccel(float v)
+{
+	acceleration = v;
+
+	RigidbodyComponent* r = (RigidbodyComponent*)FindComponent("Rigidbody");
+	if (r != nullptr)
+		r->SetAccel(v);
+}
+
+void Ball::printInfo()
 {
 	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
 	if (!c)

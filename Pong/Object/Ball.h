@@ -13,20 +13,28 @@
 
 #include "../ComponentManager/EventManager.h"
 
-class Racket : public GameObject
+class Ball : public GameObject
 {
 	AEVec2 size;
 	AEVec2 pos;
 	Color color;
 
-public:
-	~Racket();
+	float speed;
+	float acceleration;
 
-	void InitRacket();
-	void SetRacket(std::string id, float sizeX, float sizeY, float posX, float posY, float r, float g, float b);
+	float direction; //change type
+
+public:
+	~Ball();
+
+	void InitBall();
+	void SetBall(std::string id, float sizeX, float sizeY, float posX, float posY, float r, float g, float b);
 	void SetSize(float x, float y);
 	void SetPos(float x, float y);
 	void SetColor(float r, float g, float b);
+	void SetSpeed(float v);
+	void SetAccel(float v);
+	void SetDirection(float d);
 
 	AEVec2 GetSize() const { return size; }
 	AEVec2 GetPos() const { return pos; }

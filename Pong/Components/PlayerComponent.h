@@ -1,16 +1,22 @@
 #pragma once
 #include "../ComponentManager/LogicComponentManager.h"
+#include "../Utils/myUtils.h"
 
 class PlayerComponent : public LogicComponent
 {
-	float speed = 10;
+	std::unordered_set<std::string> keySet;
+
+	float speed = 350.f;
 public:
 	PlayerComponent(GameObject* owner);
 
 	void Update() override;
 
+	void AddKey(std::string key);
+	bool FindKey(std::string key);
 	void SetSpeed(float speed);
 
+	void printKey();
 	void LoadFromJson(const json&) override;
 	json SaveToJson() override;
 

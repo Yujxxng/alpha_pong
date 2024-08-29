@@ -1,9 +1,8 @@
 #pragma once
 #include "..\ComponentManager\/EngineComponentManager.h"
 #include "..\ComponentManager\/EngineComponent.h"
-#include <string>
 
-#include "AEMath.h"
+#include "../Utils/myUtils.h"
 
 using namespace std;
 
@@ -14,7 +13,7 @@ class TransformComponent : public EngineComponent
 	float rot;
 
 	AEMtx33 transformMatrix;
-	AEVec2 limit = { 1600, 900 }; //window size
+	AEVec2 limit = { W_WIDTH, W_HEIGHT }; //window size
 
 	void CalculateMatrix();
 public:

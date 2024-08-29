@@ -84,6 +84,12 @@
     <ClCompile Include="Object\Racket.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Object\Ball.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\ColliderComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GSM\BaseLevel.h">
@@ -165,6 +171,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Utils\myUtils.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Ball.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\ColliderComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

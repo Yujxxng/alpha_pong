@@ -33,13 +33,12 @@ void SpriteComponent::Update()
 
 	AEGfxVertexList* mesh = AEGfxMeshEnd();
 
-	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+	//AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 
 	//AEGfxSetColorToMultiply(mColor.r / 255.f, mColor.g / 255.f, mColor.b / 255.f, 255.f);
 
 	AEGfxSetColorToMultiply(1, 1, 1, 1);
-	//AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 	AEGfxSetColorToAdd(mColor.r / 255.f, mColor.g / 255.f, mColor.b / 255.f, 0);
 	
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);

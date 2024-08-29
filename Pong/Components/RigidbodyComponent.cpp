@@ -33,6 +33,12 @@ void RigidbodyComponent::AddVelocity(const AEVec2& otherVec)
 	Velocity.y = AEClamp(Velocity.y, -MAXVelocity.y, MAXVelocity.y);
 }
 
+void RigidbodyComponent::SetVelocity(float x, float y)
+{
+	Velocity.x = x;
+	Velocity.y = y;
+}
+
 void RigidbodyComponent::AddVelocity(float x, float y)
 {
 	Velocity.x += x;
@@ -48,19 +54,24 @@ void RigidbodyComponent::ClearVelocity()
 	Velocity.y = 0;
 }
 
+void RigidbodyComponent::SetAccel(float a)
+{
+	acceleration = a;
+}
+
 void RigidbodyComponent::Update()
 {
 	TransformComponent* t = (TransformComponent*)owner->FindComponent("Transform");
 	if (!t)
 		return;
 
-	float x = t->GetPos().x + Velocity.x * AEFrameRateControllerGetFrameTime(); // + 1.0f + 2 * acc * time * time
-	float y = t->GetPos().y + Velocity.y * AEFrameRateControllerGetFrameTime(); // + 1.0f + 2 * acc * time * time
+	float x = t->GetPos().x + Velocity.x * acceleration * AEFrameRateControllerGetFrameTime(); // + 1.0f + 2 * acc * time * time
+	float y = t->GetPos().y + Velocity.y * acceleration * AEFrameRateControllerGetFrameTime(); // + 1.0f + 2 * acc * time * time
 
 	t->SetPos({ x,y });
 
-	//Velocity.x /= drag;
-	//Velocity.y /= drag;
+	ClearVelocity();
+	SetAccel(1.f);
 
 	//If is too low, just set to 0
 	if (!CheckEpsilon(Velocity.x))
