@@ -1,5 +1,6 @@
 #include "EventManager.h"
 #include <list>
+#include <queue>
 
 EventManager* EventManager::event_ptr = nullptr;
 
@@ -11,7 +12,7 @@ EventManager* EventManager::GetPtr()
 		return event_ptr;
 	}
 	else
-		return nullptr;
+		return event_ptr;
 }
 
 void EventManager::DeletePtr()
@@ -25,6 +26,7 @@ void EventManager::DeletePtr()
 
 void EventManager::AddEvent(Event* e)
 {
+	//allEvents.push_back(e);
 	allEvents.push(e);
 }
 
@@ -62,8 +64,7 @@ void EventManager::UnregisterEnt(std::string event, Entity* ent)
 
 void EventManager::DispatchAll()
 {
-	if (allEvents.empty())
-		return;
+	if (allEvents.size() == 0) return;
 
 	while (!allEvents.empty())
 	{
@@ -78,6 +79,7 @@ void EventManager::DispatchAll()
 			}
 		}
 
+		//allEvents.pop_front();
 		allEvents.pop();
 	}
 }

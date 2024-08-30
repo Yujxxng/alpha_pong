@@ -1,6 +1,7 @@
 #include "PlayerComponent.h"
 #include "TransformComponent.h"
 #include "RigidbodyComponent.h"
+#include <iostream>
 
 PlayerComponent::PlayerComponent(GameObject* owner) : LogicComponent(owner)
 {

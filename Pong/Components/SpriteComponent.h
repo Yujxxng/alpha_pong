@@ -1,14 +1,13 @@
 #pragma once
 
-#include "..\ComponentManager\/GraphicComponent.h"
-#include "..\ComponentManager\/GraphicComponentManager.h"
+#include "../ComponentManager/GraphicComponent.h"
+
+#include "../Utils/myUtils.h"
 
 #include "AEEngine.h"
 #include "AEGraphics.h"
 
-#include "../Utils/myUtils.h"
-
-using namespace std;
+#include <string>
 
 class SpriteComponent : public GraphicComponent
 {

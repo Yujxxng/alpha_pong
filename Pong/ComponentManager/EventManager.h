@@ -1,30 +1,11 @@
 #pragma once
-#include <string>
 
-struct Event
-{
-	Event();
-	virtual ~Event();
-public:
-	std::string name;
-
-	const std::string getID() const { return name; }
-};
-
-class Entity
-{
-public:
-	virtual void OnEvent(Event* ev) = 0;
-};
-
-class LocalEvent : public Event //custom event
-{
-	Entity* Owner;
-};
-
+#include "../Event/Event.h"
 #include <queue>
-#include <list>
 #include <map>
+#include <list>
+#include <queue>
+#include <string>
 
 class EventManager
 {
@@ -35,8 +16,8 @@ class EventManager
 
 	//A container to have which entities are registered to which events
 	//map of (events, container of entities)
-	std::queue<Event*> allEvents;
-	std::map<std::string, std::list<Entity*>> map_Entites;
+	std::queue<Event*> allEvents{};
+	std::map<std::string, std::list<Entity*>> map_Entites{};
 
 protected:
 	EventManager() = default;

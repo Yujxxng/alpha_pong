@@ -12,12 +12,12 @@ GameObject::~GameObject()
 	//delete this;
 }
 
-const string GameObject::GetID() const
+const std::string GameObject::GetID() const
 {
 	return this->ID;
 }
 
-void GameObject::SetID(string id)
+void GameObject::SetID(std::string id)
 {
 	this->ID = id;
 }
@@ -27,7 +27,7 @@ void GameObject::AddComponent(BaseComponent* component)
 	this->components.push_back(component);
 }
 
-BaseComponent* GameObject::FindComponent(string cmpID)
+BaseComponent* GameObject::FindComponent(std::string cmpID)
 {	
 	for (auto it = components.begin(); it != components.end(); it++)
 	{
@@ -37,7 +37,7 @@ BaseComponent* GameObject::FindComponent(string cmpID)
 	return nullptr;
 }
 
-void GameObject::DeleteComponent(string cmpID)
+void GameObject::DeleteComponent(std::string cmpID)
 {
 	BaseComponent* tmp = FindComponent(cmpID);
 	components.remove(tmp);

@@ -1,25 +1,23 @@
 #pragma once
-#include <map>
 #include <list>
 #include <string>
-#include "BaseComponent.h"
-#include "LogicComponentManager.h"
+#include "../ComponentManager/BaseComponent.h"
 
-using namespace std;
+//class BaseComponent;
 
 class GameObject
 {
-	string ID;
-	list<BaseComponent*> components;
+	std::string ID;
+	std::list<BaseComponent*> components;
 
 public:
 	//GameObject();
 	~GameObject();
 
-	const string GetID() const;
-	void SetID(string id);
+	const std::string GetID() const;
+	void SetID(std::string id);
 
 	void AddComponent(BaseComponent* component);
-	BaseComponent* FindComponent(string cmpID);
-	void DeleteComponent(string cmpID);
+	BaseComponent* FindComponent(std::string cmpID);
+	void DeleteComponent(std::string cmpID);
 };

@@ -90,6 +90,15 @@
     <ClCompile Include="Components\ColliderComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Object\Wall.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Score.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Event\BallWallCollisionEvent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GSM\BaseLevel.h">
@@ -177,6 +186,18 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Components\ColliderComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Wall.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Score.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Event\BallWallCollisionEvent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Event\Event.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
