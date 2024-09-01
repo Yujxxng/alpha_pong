@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../Utils/myUtils.h"
-
 #include "../ComponentManager/GameObject.h"
 
 #include "../Components/TransformComponent.h"
@@ -10,7 +8,7 @@
 #include "../Components/RigidbodyComponent.h"
 #include "../Components/AudioComponent.h"
 #include "../Components/ColliderComponent.h"
-
+#include "../Components/Font.h"
 #include "../ComponentManager/EventManager.h"
 
 class Score : public GameObject
@@ -18,6 +16,8 @@ class Score : public GameObject
 	float size;
 	AEVec2 pos;
 	Color color;
+
+	int point = 0;
 
 public:
 	~Score();
@@ -27,9 +27,12 @@ public:
 	void SetSize(float s);
 	void SetPos(float x, float y);
 	void SetColor(float r, float g, float b);
+	void SetStr();
 
 	float GetSize() const { return size; }
 	AEVec2 GetPos() const { return pos; }
+	int getPoint() const { return point; }
 
-	void Display();
+	void AddPoint() { point = point + 1; }
+	void Reset() { point = 0;}
 };

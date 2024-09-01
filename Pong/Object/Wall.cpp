@@ -14,6 +14,7 @@ void Wall::InitWall()
 	AddComponent(new RigidbodyComponent(this));
 	AddComponent(new SpriteComponent(this));
 	AddComponent(new ColliderComponent(this));
+	AddComponent(new AudioComponent(this));
 }
 
 void Wall::SetWall(std::string id, float sizeX, float sizeY, float posX, float posY, float r, float g, float b)
@@ -25,6 +26,10 @@ void Wall::SetWall(std::string id, float sizeX, float sizeY, float posX, float p
 
 	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
 	c->SetCollision(pos.x, pos.y, size.x, size.y);
+
+	AudioComponent* a = (AudioComponent*)FindComponent("Audio");
+	a->SetAudio("../Assets/bouken.mp3");
+	a->SetPlay(false);
 }
 
 void Wall::SetSize(float x, float y)

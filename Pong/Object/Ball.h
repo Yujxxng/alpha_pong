@@ -39,6 +39,7 @@ public:
 	void SetSpeed(float v);
 	void SetAccel(float v);
 	void SetDirection();
+	void SetPosCenter();
 
 	AEVec2 GetSize() const { return size; }
 	AEVec2 GetPos() const { return pos; }

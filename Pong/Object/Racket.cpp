@@ -9,6 +9,7 @@ Racket::~Racket()
 	DeleteComponent("Rigidbody");
 	DeleteComponent("Sprite");
 	DeleteComponent("Collider");
+	DeleteComponent("Audio");
 }
 
 void Racket::InitRacket()
@@ -17,9 +18,9 @@ void Racket::InitRacket()
 	AddComponent(new PlayerComponent(this));
 	AddComponent(new RigidbodyComponent(this));
 	AddComponent(new SpriteComponent(this));
-
 	//add more...
 	AddComponent(new ColliderComponent(this));
+	AddComponent(new AudioComponent(this));
 }
 
 void Racket::SetRacket(std::string id, float sizeX, float sizeY, float posX, float posY, float r, float g, float b)
@@ -31,6 +32,9 @@ void Racket::SetRacket(std::string id, float sizeX, float sizeY, float posX, flo
 
 	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
 	c->SetCollision(pos.x, pos.y, size.x, size.y);
+
+	AudioComponent* a = (AudioComponent*)FindComponent("Audio");
+	a->SetAudio("../Assets/pong.mp3");
 }
 
 void Racket::SetSize(float x, float y)
@@ -62,6 +66,15 @@ void Racket::SetColor(float r, float g, float b)
 	SpriteComponent* s = (SpriteComponent*)FindComponent("Sprite");
 	if (s != nullptr)
 		s->SetColor(color);
+}
+
+void Racket::Sound(bool play)
+{
+	AudioComponent* a = (AudioComponent*)FindComponent("Audio");
+	if (a != nullptr)
+	{
+		a->SetPlay(play);
+	}
 }
 
 void Racket::printInfo()

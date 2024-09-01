@@ -13,7 +13,7 @@ ResourceManager* ResourceManager::GetPtr()
 		return res_ptr;
 	}
 	else
-		return nullptr;
+		return res_ptr;
 }
 
 void ResourceManager::DeletePtr()

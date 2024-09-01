@@ -5,9 +5,9 @@ BallWallCollisionEvent::BallWallCollisionEvent()
 	id = "BallWall";
 }
 
-BallWallCollisionEvent::~BallWallCollisionEvent()
+BallOutEvent::BallOutEvent()
 {
-
+	id = "BallOut";
 }
 
 void SomeEntity::OnEvent(Event* event)
@@ -24,6 +24,16 @@ void SomeEntity::OnEvent(Event* event)
 		e->ball->Stop();
 		e->ball->cp = e->cp;
 		e->ball->SetDirection();
+	}
+
+	else if (event->getID() == "BallOut")
+	{
+		BallOutEvent* e = (BallOutEvent*)event;
+		e->ball->SetPosCenter();
+		e->ball->cp = -1;
+
+		e->score->AddPoint();
+		e->score->SetStr();
 	}
 }
 

@@ -17,17 +17,22 @@
 #include "../Object/Racket.h"
 #include "../Object/Ball.h"
 #include "../Object/Wall.h"
+#include "../Object/Score.h"
 
 #include "../Event/BallWallCollisionEvent.h"
+#include "../Event/ScoreEvent.h"
+
+Score *score_L, *score_R;
 
 Wall *top, *bot;
-Wall* wLeft, * wRight; //only for test
+Wall* wLeft, * wRight;
 
 Racket* racket_L;
 Racket* racket_R;
 Ball* ball;
 
 SomeEntity* entity;
+ScoreEntity* scoreEntity;
 
 float t = 0.0f;
 int pX, pY;
@@ -44,15 +49,13 @@ void Levels::MainLevel::Init()
 	bot->InitWall();
 	bot->SetWall("bot", W_WIDTH, 20.f, 0.f, -(W_HEIGHT / 2) + 10.f, 0.f, 255.f, 255.f);
 
-#if 1
 	wLeft = new Wall;
 	wLeft->InitWall();
-	wLeft->SetWall("left", 20.f, W_HEIGHT, -(W_WIDTH / 2) + 10.f, 0.f, 0.f, 255.f, 255.f);
+	wLeft->SetWall("left", 2.f, W_HEIGHT, -(W_WIDTH / 2) + 1.f, 0.f, 0.f, 0.f, 0.f);
 
 	wRight = new Wall;
 	wRight->InitWall();
-	wRight->SetWall("right", 20.f, W_HEIGHT, (W_WIDTH / 2) - 10.f, 0.f, 0.f, 255.f, 255.f);
-#endif
+	wRight->SetWall("right", 2.f, W_HEIGHT, (W_WIDTH / 2) - 1.f, 0.f, 0.f, 0.f, 0.f);
 
 
 	racket_L = new Racket;
@@ -64,13 +67,12 @@ void Levels::MainLevel::Init()
 	ColliderComponent* c = (ColliderComponent*)racket_L->FindComponent("Collider");
 	c->SetCollision(racket_L->GetPos().x, racket_L->GetPos().y, racket_L->GetSize().x, racket_L->GetSize().y);
 
-
 	racket_R = new Racket;
 	racket_R->InitRacket();
 	racket_R->SetRacket("racketR", 15.f, 60.f, 550.f, 0.f, 255.f, 255.f, 255.f);
-	p = (PlayerComponent*)racket_R->FindComponent("Player");
-	p->AddKey("UP");
-	p->AddKey("DOWN");
+	//p = (PlayerComponent*)racket_R->FindComponent("Player");
+	//p->AddKey("UP");
+	//p->AddKey("DOWN");
 	c = (ColliderComponent*)racket_R->FindComponent("Collider");
 	c->SetCollision(racket_R->GetPos().x, racket_R->GetPos().y, racket_R->GetSize().x, racket_R->GetSize().y);
 	//racket_R->printInfo();
@@ -84,8 +86,23 @@ void Levels::MainLevel::Init()
 	c->SetCollision(ball->GetPos().x, ball->GetPos().y, ball->GetSize().x, ball->GetSize().y);
 	//ball->printInfo();
 
+
+	score_L = new Score;
+	score_L->InitScore();
+	score_L->SetScore("scoreL", 1.f, -0.5f, 0.75f, 255.f, 255.f, 255.f);
+
+	score_R = new Score;
+	score_R->InitScore();
+	score_R->SetScore("scoreR", 1.f, 0.5f, 0.75f, 255.f, 255.f, 255.f);
+
+
 	entity = new SomeEntity;
 	EventManager::GetPtr()->RegisterEnt("BallWall", entity);
+	EventManager::GetPtr()->RegisterEnt("BallOut", entity);
+
+	scoreEntity = new ScoreEntity;
+	EventManager::GetPtr()->RegisterEnt("GameOverEvent", scoreEntity);
+	EventManager::GetPtr()->RegisterEnt("GameResetEvent", scoreEntity);
 }
 
 void Levels::MainLevel::Update()
@@ -94,7 +111,7 @@ void Levels::MainLevel::Update()
 	t = AEFrameRateControllerGetFrameTime();
 
 	AEInputGetCursorPosition(&pX, &pY);
-	//racket_R->SetPos(550.f, W_HEIGHT / 2 - pY);
+	racket_R->SetPos(550.f, W_HEIGHT / 2 - pY);
 	//ball->SetPos(pX - (W_WIDTH / 2), (W_HEIGHT / 2) - pY);
 	//ball->SetDirection();
 	
@@ -104,9 +121,7 @@ void Levels::MainLevel::Update()
 	t = (TransformComponent*)racket_R->FindComponent("Transform");
 	racket_R->SetPos(t->GetPos().x, t->GetPos().y);
 
-
-	//std::cout << ball->GetPos().x << " , " << ball->GetPos().y << std::endl;
-	//std::cout << racket_L->GetPos().x << " , " << racket_L->GetPos().y << std::endl;
+	//collider event
 	ColliderComponent* wtc = (ColliderComponent*)top->FindComponent("Collider");
 	ColliderComponent* wbc = (ColliderComponent*)bot->FindComponent("Collider");
 	ColliderComponent* wlc = (ColliderComponent*)wLeft->FindComponent("Collider");
@@ -116,27 +131,36 @@ void Levels::MainLevel::Update()
 	ColliderComponent* rc = (ColliderComponent*)racket_R->FindComponent("Collider");
 	ColliderComponent* bc = (ColliderComponent*)ball->FindComponent("Collider");
 	
-	//Check Collision
+	//Check Collision with Racket
 	if (bc->IsCollision(lc))
 	{
 		racket_L->SetColor(100.f, 100.f, 100.f);
+		racket_L->Sound(false);
 		ball->Stop();
 		ball->cp = 2;
 		ball->SetDirection();
 	}
 	else
+	{
 		racket_L->SetColor(255.f, 255.f, 255.f);
+		//racket_L->Sound(true);
+	}
 
 	if (bc->IsCollision(rc))
 	{
 		racket_R->SetColor(100.f, 100.f, 100.f);
+		racket_R->Sound(false);
 		ball->Stop();
 		ball->cp = 3;
 		ball->SetDirection();
 	}
 	else
+	{
 		racket_R->SetColor(255.f, 255.f, 255.f);
+		//racket_R->Sound(true);
+	}
 
+	//Check Collision with Top & bottom Wall
 	if (bc->IsCollision(wtc))
 	{
 		BallWallCollisionEvent* bwe = new BallWallCollisionEvent();
@@ -160,34 +184,45 @@ void Levels::MainLevel::Update()
 		bwe->wall = bot;
 		bwe->cp = 1;
 		EventManager::GetPtr()->AddEvent(bwe);
-		//bot->SetColor(255.f, 0.f, 0.f);
-		//ball->Stop();
-		//ball->cp = 1;
-		//ball->SetDirection();
+
 	}
 	else
 		bot->SetColor(0.f, 255.f, 255.f);
 
-#if 0
+	//Check Collision with Left & Right Wall
+#if 1
 	if (bc->IsCollision(wlc))
 	{
-		wLeft->SetColor(255.f, 0.f, 0.f);
 		ball->Stop();
-		ball->cp = 2;
-		ball->SetDirection();
+		ball->SetPos(ball->GetPos().x + 50.f, ball->GetPos().y);
+
+		BallOutEvent* boe = new BallOutEvent();
+		boe->ball = ball;
+		boe->wall = wLeft;
+		boe->score = score_R;
+		EventManager::GetPtr()->AddEvent(boe);
 	}
-	else
-		wLeft->SetColor(0.f, 255.f, 255.f);
 
 	if (bc->IsCollision(wrc))
 	{
-		wRight->SetColor(255.f, 0.f, 0.f);
 		ball->Stop();
-		ball->cp = 3;
-		ball->SetDirection();
+		ball->SetPos(ball->GetPos().x - 50.f, ball->GetPos().y);
+
+		BallOutEvent* boe = new BallOutEvent();
+		boe->ball = ball;
+		boe->wall = wRight;
+		boe->score = score_L;
+		EventManager::GetPtr()->AddEvent(boe);
 	}
-	else
-		wRight->SetColor(0.f, 255.f, 255.f);
+
+	if (score_L->getPoint() == WIN_POINT || score_R->getPoint() == WIN_POINT)
+	{
+		GameResetEvent* gre = new GameResetEvent();
+		gre->L = score_L;
+		gre->R = score_R;
+		gre->ball = ball;
+		EventManager::GetPtr()->AddEvent(gre);
+	}
 #endif
 	ball->Move(::t);
 
@@ -210,4 +245,6 @@ void Levels::MainLevel::Exit()
 	delete ball;
 	delete top;
 	delete bot;
+
+	delete entity;
 }

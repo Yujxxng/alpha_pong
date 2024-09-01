@@ -87,7 +87,7 @@ void Ball::SetDirection()
 	std::random_device rd;
 	std::mt19937 mt(rd());
 	std::uniform_real_distribution<float> dist(-1.f, 1.f);
-	std::uniform_real_distribution<float> s(100.f, 500.f);
+	std::uniform_real_distribution<float> s(200.f, 500.f);
 
 	//AEVec2 preDir = dir;
 
@@ -102,7 +102,18 @@ void Ball::SetDirection()
 
 	speed = s(mt);
 	//speed = 2000.f;
-	std::cout << dir.x << " , " << dir.y << std::endl;
+	//std::cout << dir.x << " , " << dir.y << std::endl;
+}
+
+void Ball::SetPosCenter()
+{
+	pos.x = 0.f;
+	pos.y = 0.f;
+	
+	SetPos(pos.x, pos.y);
+
+	cp = -1;
+	SetDirection();
 }
 
 void Ball::Move(float dt)

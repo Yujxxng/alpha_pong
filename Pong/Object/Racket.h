@@ -27,6 +27,7 @@ public:
 	void SetSize(float x, float y);
 	void SetPos(float x, float y);
 	void SetColor(float r, float g, float b);
+	void Sound(bool);
 
 	AEVec2 GetSize() const { return size; }
 	AEVec2 GetPos() const { return pos; }

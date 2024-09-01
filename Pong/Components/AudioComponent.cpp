@@ -27,7 +27,7 @@ void AudioComponent::Update()
 	if (!playing)
 	{
 		playing = true;
-		AEAudioPlay(mAudio, mGroup, volume, pitch, loops);
+		AEAudioPlay(mAudio, mGroup, volume, pitch, 0);
 	}
 }
 
@@ -35,6 +35,11 @@ void AudioComponent::SetAudio(std::string s)
 {
 	audioName = s;
 	mAudio = *(ResourceManager::GetPtr()->Get<AudioResource>(s)->GetData());
+}
+
+void AudioComponent::SetPlay(bool p)
+{
+	playing = p;
 }
 
 void AudioComponent::LoadFromJson(const json& data)
