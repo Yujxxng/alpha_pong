@@ -240,11 +240,13 @@ void Levels::MainLevel::Update()
 
 void Levels::MainLevel::Exit()
 {
-	delete racket_L;
-	delete racket_R;
+	delete score_L, score_R;
+	delete racket_L, racket_R;
+
 	delete ball;
-	delete top;
-	delete bot;
+	delete top, bot;
+	delete wLeft, wRight;
 
 	delete entity;
+	delete scoreEntity;
 }

@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AEX_Engine", "AEX_Engine\AE
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Pong", "Pong\Pong.vcxproj", "{A5B8FB5F-0786-4D2E-A2FE-752D6689E740}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Space Invaders", "Space Invaders\Space Invaders.vcxproj", "{780772DE-D6DF-4245-869F-C0B0AFCFB107}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,10 @@ Global
 		{A5B8FB5F-0786-4D2E-A2FE-752D6689E740}.Debug|x64.Build.0 = Debug|x64
 		{A5B8FB5F-0786-4D2E-A2FE-752D6689E740}.Release|x64.ActiveCfg = Release|x64
 		{A5B8FB5F-0786-4D2E-A2FE-752D6689E740}.Release|x64.Build.0 = Release|x64
+		{780772DE-D6DF-4245-869F-C0B0AFCFB107}.Debug|x64.ActiveCfg = Debug|x64
+		{780772DE-D6DF-4245-869F-C0B0AFCFB107}.Debug|x64.Build.0 = Debug|x64
+		{780772DE-D6DF-4245-869F-C0B0AFCFB107}.Release|x64.ActiveCfg = Release|x64
+		{780772DE-D6DF-4245-869F-C0B0AFCFB107}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
