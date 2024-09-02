@@ -28,7 +28,7 @@ void Wall::SetWall(std::string id, float sizeX, float sizeY, float posX, float p
 	c->SetCollision(pos.x, pos.y, size.x, size.y);
 
 	AudioComponent* a = (AudioComponent*)FindComponent("Audio");
-	a->SetAudio("../Assets/bouken.mp3");
+	a->SetAudio("Assets/bouken.mp3");
 	a->SetPlay(false);
 }
 

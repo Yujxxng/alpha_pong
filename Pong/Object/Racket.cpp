@@ -34,7 +34,7 @@ void Racket::SetRacket(std::string id, float sizeX, float sizeY, float posX, flo
 	c->SetCollision(pos.x, pos.y, size.x, size.y);
 
 	AudioComponent* a = (AudioComponent*)FindComponent("Audio");
-	a->SetAudio("../Assets/pong.mp3");
+	a->SetAudio("Assets/pong.mp3");
 }
 
 void Racket::SetSize(float x, float y)

@@ -12,7 +12,7 @@ void Score::InitScore()
 	Font* f = (Font*)FindComponent("Font");
 	if (f != nullptr)
 	{
-		f->SetFont("../Assets/liberation-mono.ttf");
+		f->SetFont("Assets/liberation-mono.ttf");
 	}
 }
 
