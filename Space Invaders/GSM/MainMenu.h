@@ -20,10 +20,20 @@ namespace Levels
 		Invader* Squid[11];
 		Invader* UFO;
 
+		Bullet* missile[5];
+
 		Wall* wLeft, * wRight;
+		Wall* wTop;// , * wBot;
 		
 		void Init() override;
 		void Update() override;
 		void Exit() override;
+
+	public:
+		Invader* GetLeft();
+		Invader* GetRight();
+		
+		void SetAttaker();
+		void SetInvaderBullet();
 	};
 }

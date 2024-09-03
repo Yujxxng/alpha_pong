@@ -4,6 +4,7 @@
 #include "AEEngine.h"
 #include "AESystem.h"
 
+
 bool RigidbodyComponent::CheckEpsilon(float v, float EP)
 {
 	if (v < -EP || v > EP)
@@ -67,7 +68,6 @@ void RigidbodyComponent::Update()
 
 	if (!CheckEpsilon(Velocity.y))
 		Velocity.y = 0;
-
 }
 
 void RigidbodyComponent::LoadFromJson(const json& data)

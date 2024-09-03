@@ -11,6 +11,8 @@
 #include "../Components/AudioComponent.h"
 #include "../Components/ColliderComponent.h"
 
+#include "../Object/Bullet.h"
+
 enum InvaderType
 {
 	OCTOPUS,
@@ -22,20 +24,27 @@ enum InvaderType
 class Invader : public GameObject
 {
 	InvaderType type;
-	bool alive = true;
 
 	AEVec2 size;
 	AEVec2 pos;
 	Color color;
 	
 	float speed = 20.f;
+	float spawnTime = 0.0f;
+
+	Bullet* bullet;
 
 	int point;
 	void SetMore(std::string texName, int point);
 
 public:
+	bool alive = true;
+	bool move = true;
+	bool attack = false;
 
+public:
 	~Invader();
+
 
 	void InitInvader();
 
@@ -45,16 +54,22 @@ public:
 	void SetPos(float x, float y);
 	void SetColor(float r, float g, float b);
 	void SetSpeed(float v) { speed = v; }
-
+	void SetBullet(Bullet* b) { bullet = b; }
+	void Visible(bool);
 	void Sound(bool);
-
+	void Dead();
+	void Attack();
 
 	AEVec2 GetSize() const { return size; }
 	AEVec2 GetPos() const { return pos; }
+	Bullet* GetBullet() const { return bullet; }
+	float GetSpawnTime() const { return spawnTime; }
+	int GetPoints() const { return point; }
 
-	void MoveLeft(float dt);
-	void MoveRight(float dt);
-	int GetRandomPoints();
+	void Move(float dt);
+	void SetRandomSpawn();
+	void SetRandomPoints();
+	void SetAttack();
 
 	void printInfo();
 };

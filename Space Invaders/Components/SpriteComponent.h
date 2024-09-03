@@ -16,7 +16,7 @@ class SpriteComponent : public GraphicComponent
 {
 private:
 	Color mColor;
-
+	float alpha{ 255.f };
 	AEGfxTexture* mTex = nullptr;
 	std::string texName;
 
@@ -31,6 +31,7 @@ public:
 	Color& GetColor() { return mColor; }
 
 	void SetColor(const Color&);
+	void SetAlpha(float);
 	void SetTexture(std::string s);
 
 	void LoadFromJson(const json&) override;

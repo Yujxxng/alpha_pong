@@ -10,6 +10,8 @@ Player::~Player()
 	DeleteComponent("Sprite");
 	DeleteComponent("Collider");
 	DeleteComponent("Audio");
+
+	delete bullet;
 }
 
 void Player::InitPlayer()
@@ -18,7 +20,6 @@ void Player::InitPlayer()
 	AddComponent(new PlayerComponent(this));
 	AddComponent(new RigidbodyComponent(this));
 	AddComponent(new SpriteComponent(this));
-	//set texture
 	AddComponent(new ColliderComponent(this));
 	AddComponent(new AudioComponent(this));
 }
@@ -32,6 +33,11 @@ void Player::SetPlayer(std::string id, float sizeX, float sizeY, float posX, flo
 
 	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
 	c->SetCollision(pos.x, pos.y, size.x, size.y);
+
+	bullet = new Bullet;
+	bullet->InitBullet();
+	bullet->SetType(MissileType::PLAYER);
+	bullet->SetSize(1.f, 4.f);
 
 	//AudioComponent* a = (AudioComponent*)FindComponent("Audio");
 	//a->SetAudio("Assets/pong.mp3");
@@ -75,6 +81,14 @@ void Player::Sound(bool play)
 	{
 		a->SetPlay(play);
 	}
+}
+
+void Player::Shoot()
+{
+	bullet->alive = true;
+	bullet->SetPos(this->pos.x, this->pos.y + (size.y / 2.f));
+	bullet->SetColor(255.f, 0.f, 0.f);
+	bullet->Visible(true);
 }
 
 void Player::printInfo()

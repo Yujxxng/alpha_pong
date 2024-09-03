@@ -83,6 +83,9 @@ void Invader::SetSize(float x, float y)
 	TransformComponent* t = (TransformComponent*)FindComponent("Transform");
 	if(t != nullptr)
 		t->SetScale({ x, y });
+
+	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
+	c->SetCollision(pos.x, pos.y, size.x, size.y);
 }
 
 void Invader::SetPos(float x, float y)
@@ -106,6 +109,41 @@ void Invader::SetColor(float r, float g, float b)
 		s->SetColor(color);
 }
 
+void Invader::Visible(bool v)
+{
+	SpriteComponent* s = (SpriteComponent*)FindComponent("Sprite");
+	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
+	if (s != nullptr)
+	{
+		if (v)
+		{
+			s->SetAlpha(255.f);
+			c->SetCollision(pos.x, pos.y, size.x, size.y);
+		}
+		else
+		{
+			s->SetAlpha(0.f);
+			c->SetCollision(0, 0, 0, 0);
+		}
+	}
+}
+
+void Invader::Dead()
+{
+	this->alive = false;
+	Visible(false);
+	SetSize(0.f, 0.f);
+
+	std::cout << "\"" << this->GetID() << "\"" << " is DEAD" << std::endl;
+}
+
+void Invader::Attack()
+{
+	bullet->alive = true;
+	bullet->SetPos(this->pos.x, this->pos.y + (size.y / 2.f));
+	bullet->Visible(true);
+}
+
 void Invader::Sound(bool play)
 {
 	AudioComponent* a = (AudioComponent*)FindComponent("Audio");
@@ -115,30 +153,40 @@ void Invader::Sound(bool play)
 	}
 }
 
-void Invader::MoveLeft(float dt)
+void Invader::Move(float dt)
 {
-	float x = this->pos.x - speed * dt;
+	float x = this->pos.x - speed * dt * move;
 	float y = this->pos.y;
 
 	SetPos(x, y);
 }
 
-void Invader::MoveRight(float dt)
+void Invader::SetRandomSpawn()
 {
-	float x = this->pos.x + speed * dt;
-	float y = this->pos.y;
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	//std::uniform_real_distribution<float> dist(20.f, 180.f);
+	std::uniform_real_distribution<float> dist(1.f, 10.f);
 
-	SetPos(x, y);
+	this->spawnTime = dist(mt);
 }
 
-int Invader::GetRandomPoints()
+void Invader::SetRandomPoints()
 {
 	std::random_device rd;
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> dist(50, 300);
 
-	if (this->point < 0)
-		return dist(mt);
+	this->point = dist(mt);
+}
+
+void Invader::SetAttack()
+{
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_int_distribution<int> dist(0, 1);
+
+	attack = dist(mt);
 }
 
 void Invader::printInfo()

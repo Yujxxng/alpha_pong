@@ -10,13 +10,15 @@
 #include "../Components/RigidbodyComponent.h"
 #include "../Components/AudioComponent.h"
 #include "../Components/ColliderComponent.h"
+#include "../Object/Bullet.h"
 
 class Player : public GameObject
 {
-	AEVec2 size;
+	AEVec2 size{ 5.f, 5.f };
 	AEVec2 pos;
 	Color color;
 
+	Bullet* bullet;
 public:
 	~Player();
 
@@ -29,6 +31,9 @@ public:
 
 	AEVec2 GetSize() const { return size; }
 	AEVec2 GetPos() const { return pos; }
+	Bullet* GetBullet() const { return bullet; }
 
+	void Shoot();
+	
 	void printInfo();
 };

@@ -2,13 +2,18 @@
 #include "TransformComponent.h"
 #include "RigidbodyComponent.h"
 
+#include "../Object/Player.h"
+
 #include "AEEngine.h"
 #include "AEInput.h"
+
+#include <iostream>
 
 PlayerComponent::PlayerComponent(GameObject* owner) : LogicComponent(owner)
 {
 	ID = "Player";
 }
+
 
 void PlayerComponent::Update()
 {
@@ -20,12 +25,23 @@ void PlayerComponent::Update()
 	if (!r)
 		return;
 
+	Player* p = (Player*)this->GetOwner();
+	float dt = AEFrameRateControllerGetFrameTime();
 	//Check for input
 
 	if (AEInputCheckCurr(AEVK_LEFT)) r->AddVelocity(-speed, 0);
 	if (AEInputCheckCurr(AEVK_RIGHT)) r->AddVelocity(speed, 0);
 
-	if (AEInputCheckCurr(AEVK_SPACE)) r->ClearVelocity();
+	if (AEInputCheckCurr(AEVK_SPACE))
+	{
+		//r->ClearVelocity();
+		if (!(p->GetBullet()->alive))
+		{
+			std::cout << "shh" << std::endl;
+			p->Shoot();
+		}
+	}
+	
 }
 
 void PlayerComponent::SetSpeed(float speed)

@@ -37,9 +37,9 @@ void SpriteComponent::Update()
 
 	//AEGfxSetColorToMultiply(mColor.r / 255.f, mColor.g / 255.f, mColor.b / 255.f, 255.f);
 
-	AEGfxSetColorToMultiply(1, 1, 1, 1);
+	AEGfxSetColorToMultiply(1, 1, 1, alpha / 255.f);
 	//AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
-	AEGfxSetColorToAdd(mColor.r / 255.f, mColor.g / 255.f, mColor.b / 255.f, 0);
+	AEGfxSetColorToAdd(mColor.r / 255.f, mColor.g / 255.f, mColor.b / 255.f, alpha / 255.f);
 	
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1);
@@ -58,6 +58,11 @@ void SpriteComponent::Update()
 void SpriteComponent::SetColor(const Color& color)
 {
 	mColor = color;
+}
+
+void SpriteComponent::SetAlpha(float a)
+{
+	alpha = a;
 }
 
 void SpriteComponent::SetTexture(std::string s)
