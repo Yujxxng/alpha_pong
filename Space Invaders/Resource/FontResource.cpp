@@ -5,7 +5,7 @@
 
 void FontResource::Load(const std::string& s)
 {
-	s8* font = new s8(AEGfxCreateFont(s.c_str(), 100));
+	s8* font = new s8(AEGfxCreateFont(s.c_str(), 30));
 	data = static_cast<void*>(font);
 }
 

@@ -22,7 +22,10 @@ void Font::Update()
 	else
 	{
 		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxPrint(fontID, str.c_str(), pos.x, pos.y, size, color.r, color.g, color.b, 1.0f);
+		f32 width, height;
+		AEGfxGetPrintSize(fontID, str.c_str(), 1.f, &width, &height);
+		AEGfxPrint(fontID, str.c_str(), -width / 2 + pos.x, -height / 2 + pos.y, size, 1, 1, 1, 1);
+		//AEGfxPrint(fontID, str.c_str(), pos.x, pos.y, size, color.r, color.g, color.b, 1.0f);
 	}
 }
 

@@ -12,6 +12,8 @@ Player::~Player()
 	DeleteComponent("Audio");
 
 	delete bullet;
+	for (int i = 0; i < life.size(); i++)
+		delete life[i];
 }
 
 void Player::InitPlayer()
@@ -22,6 +24,14 @@ void Player::InitPlayer()
 	AddComponent(new SpriteComponent(this));
 	AddComponent(new ColliderComponent(this));
 	AddComponent(new AudioComponent(this));
+
+	for (int i = 0; i < lifeNum - 1; i++)
+	{
+		life.push_back(new Life);
+		life[i]->InitLife();
+		life[i]->SetColor(0.f, 255.f, 0.f);
+		life[i]->SetPos((W_WIDTH / 2) - 80.f + (30.f * i), (W_HEIGHT / 2) - 20.f);
+	}
 }
 
 void Player::SetPlayer(std::string id, float sizeX, float sizeY, float posX, float posY, float r, float g, float b)
@@ -89,6 +99,15 @@ void Player::Shoot()
 	bullet->SetPos(this->pos.x, this->pos.y + (size.y / 2.f));
 	bullet->SetColor(255.f, 0.f, 0.f);
 	bullet->Visible(true);
+}
+
+void Player::LoseLife()
+{
+	if (lifeNum < 2)
+		return;
+
+	life[lifeNum-2]->Visible(false);
+	lifeNum--;
 }
 
 void Player::printInfo()

@@ -25,12 +25,20 @@ int CurAttackNum = 0;
 float UFO_dt = 0.0f;
 
 int score = 0;
+s8 fontName;
 
 void Levels::MainLevel::Init()
 {
 	counter = 0;
 	std::cout << "Main level Init:" << std::endl;
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+
+	fontName = AEGfxCreateFont("Assets/space_invaders.ttf", 30);
+
+	//Init Score
+	score = new Score;
+	score->InitScore();
+	score->SetScore("score", 1.f, 0.f, 0.80f, 255.f, 255.f, 255.f);
 
 	//Init Player
 	player = new Player;
@@ -271,6 +279,8 @@ void Levels::MainLevel::PrintAttacker()
 
 void Levels::MainLevel::Update()
 {
+	AEGfxPrint(fontName, "<SCORE>", -0.3f, 0.87f, 1.f, 1.f, 1.f, 1.f, 1.f);
+
 	if (GetLiveInvaders() > 0)
 	{
 		dt = AEFrameRateControllerGetFrameTime();
@@ -290,6 +300,7 @@ void Levels::MainLevel::Update()
 		ColliderComponent* tc = (ColliderComponent*)wTop->FindComponent("Collider");
 		ColliderComponent* wbc = (ColliderComponent*)wBot->FindComponent("Collider");
 
+		ColliderComponent* pc = (ColliderComponent*)player->FindComponent("Collider");
 		//Check Wall Invaders Collision
 		if (leftMost->IsCollision(lc))
 		{
@@ -361,7 +372,6 @@ void Levels::MainLevel::Update()
 			UFO->SetRandomPoints();
 			UFO_dt = 0.0f;
 		}
-
 		ColliderComponent* uc = (ColliderComponent*)UFO->FindComponent("Collider");
 		if (uc->IsCollision(lc) || uc->IsCollision(rc))
 		{
@@ -371,15 +381,17 @@ void Levels::MainLevel::Update()
 			UFO->move = false;
 			UFO->alive = false;
 		}
+
+		//std::cout << "Left Invader : " << GetLiveInvaders() << std::endl;
 		for (int i = 0; i < COL; i++)
 		{
 			float v = 1.0f;
 			if (GetLiveInvaders() < 9/*(InvaderNum / 2)*/)
-				v = 50.f;
+				v = 30.f;
 			else if (GetLiveInvaders() < 5)
-				v = 100.f;
+				v = 60.f;
 			else if (GetLiveInvaders() < 3)
-				v = 150.f;
+				v = 100.f;
 
 			Octopus0[i]->SetSpeed(5.f * move_dir * v);
 			Octopus1[i]->SetSpeed(5.f * move_dir * v);
@@ -399,7 +411,7 @@ void Levels::MainLevel::Update()
 		}
 
 
-		//Bullet
+		//Player Bullet
 		ColliderComponent* bc = (ColliderComponent*)player->GetBullet()->FindComponent("Collider");
 		if (player->GetBullet()->alive)
 		{
@@ -419,7 +431,7 @@ void Levels::MainLevel::Update()
 					player->GetBullet()->Dead();
 
 					Octopus0[i]->Dead();
-					score += Octopus0[i]->GetPoints();
+					score->AddPoint(Octopus0[i]->GetPoints());
 					InvaderNum--;
 				}
 				if (bc->IsCollision(oc2))
@@ -428,7 +440,7 @@ void Levels::MainLevel::Update()
 					player->GetBullet()->Dead();
 
 					Octopus1[i]->Dead();
-					score += Octopus1[i]->GetPoints();
+					score->AddPoint(Octopus1[i]->GetPoints());
 					InvaderNum--;
 				}
 				if (bc->IsCollision(cc1))
@@ -437,7 +449,7 @@ void Levels::MainLevel::Update()
 					player->GetBullet()->Dead();
 
 					Crab0[i]->Dead();
-					score += Crab0[i]->GetPoints();
+					score->AddPoint(Crab0[i]->GetPoints());
 					InvaderNum--;
 				}
 				if (bc->IsCollision(cc2))
@@ -446,7 +458,7 @@ void Levels::MainLevel::Update()
 					player->GetBullet()->Dead();
 
 					Crab1[i]->Dead();
-					score += Crab1[i]->GetPoints();
+					score->AddPoint(Crab1[i]->GetPoints());
 					InvaderNum--;
 				}
 				if (bc->IsCollision(sc))
@@ -455,7 +467,7 @@ void Levels::MainLevel::Update()
 					player->GetBullet()->Dead();
 
 					Squid[i]->Dead();
-					score += Squid[i]->GetPoints();
+					score->AddPoint(Squid[i]->GetPoints());
 					InvaderNum--;
 				}
 
@@ -470,10 +482,11 @@ void Levels::MainLevel::Update()
 						UFO->Visible(false);
 						UFO->move = false;
 						UFO->alive = false;
-						score += UFO->GetPoints();
+						score->AddPoint(UFO->GetPoints());
 					}
 				}
 			}
+			score->SetStr();
 
 			//Check Bullet Wall Collision : If Bullet hits the wall, the bullet is destroyed.
 			if (bc->IsCollision(tc))
@@ -483,6 +496,7 @@ void Levels::MainLevel::Update()
 			}
 		}
 
+		//Invaders Attack
 #if 0 //Invader Attack octo1
 		ColliderComponent* obc = (ColliderComponent*)Octopus0[0]->GetBullet()->FindComponent("Collider");
 		Octopus0[0]->attackDt += dt;
@@ -505,9 +519,8 @@ void Levels::MainLevel::Update()
 					Octopus0[0]->GetBullet()->SetMissileRandom();
 				}
 			}
-	}
+		}
 #endif
-
 		for (int i = 0; i < COL; i++)
 		{
 			if (Attacker[i].first && Attacker[i].second)
@@ -531,10 +544,19 @@ void Levels::MainLevel::Update()
 							Attacker[i].first->attack = false;
 							Attacker[i].second = false;
 							CurAttackNum--;
-							//Attacker[i].first->SetAttackTime();
-							//Attacker[i].first->GetBullet()->SetMissileRandom();
 						}
 
+						//Player - Invader Bullet Collision
+						if (obc->IsCollision(pc))
+						{ 
+							//Attacker[i].first->GetBullet()->SetPos(Attacker[i].first->GetPos().x, Attacker[i].first->GetPos().y - Attacker[i].first->GetSize().y / 2.f);
+							//Attacker[i].first->GetBullet()->Dead();
+							//Attacker[i].first->attack = false;
+							//Attacker[i].second = false;
+							//CurAttackNum--;
+
+							player->LoseLife();
+						}
 					}
 				}
 			}
@@ -576,4 +598,5 @@ void Levels::MainLevel::Exit()
 	}
 	delete UFO;
 
+	AEGfxDestroyFont(fontName);
 }

@@ -5,12 +5,15 @@
 #include "../Object/Player.h"
 #include "../Object/Invader.h"
 #include "../Object/Wall.h"
+#include "../Object/Score.h"
+
 
 namespace Levels
 {
 	class MainLevel : public GSM::BaseLevel
 	{
 		int counter = 0;
+		Score* score;
 
 		Player* player;
 

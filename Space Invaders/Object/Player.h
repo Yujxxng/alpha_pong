@@ -11,6 +11,7 @@
 #include "../Components/AudioComponent.h"
 #include "../Components/ColliderComponent.h"
 #include "../Object/Bullet.h"
+#include "../Object/Life.h"
 
 class Player : public GameObject
 {
@@ -18,6 +19,8 @@ class Player : public GameObject
 	AEVec2 pos;
 	Color color;
 
+	int lifeNum = 3;
+	std::vector<Life*> life;
 	Bullet* bullet;
 public:
 	~Player();
@@ -27,6 +30,7 @@ public:
 	void SetSize(float x, float y);
 	void SetPos(float x, float y);
 	void SetColor(float r, float g, float b);
+	
 	void Sound(bool);
 
 	AEVec2 GetSize() const { return size; }
@@ -34,6 +38,8 @@ public:
 	Bullet* GetBullet() const { return bullet; }
 
 	void Shoot();
+	void LoseLife();
+	void GetLife();
 	
 	void printInfo();
 };
