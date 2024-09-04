@@ -9,12 +9,12 @@ AudioComponent::AudioComponent(GameObject* owner) : EngineComponent(owner), mGro
 
 AudioComponent::~AudioComponent()
 {
-	EngineComponentManager::getPtr()->DeleteEngine(this);
+	//EngineComponentManager::getPtr()->DeleteEngine(this);
 
-	ResourceManager::GetPtr()->Unload(audioName);
+	if(!audioName.empty())
+		ResourceManager::GetPtr()->Unload(audioName);
+
 	AEAudioUnloadAudioGroup(mGroup);
-
-	delete this;
 }
 
 void AudioComponent::Update()

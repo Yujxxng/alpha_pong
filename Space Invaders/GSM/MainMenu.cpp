@@ -12,7 +12,6 @@
 #include "../Components/RigidbodyComponent.h"
 #include "../Components/AudioComponent.h"
 
-
 float dt = 0.0f;
 float _dt = 0.02f;
 float t = 0.0f;
@@ -20,7 +19,7 @@ float t = 0.0f;
 //About Invader
 int move_dir = 1;
 int InvaderNum = 66;
-int AttackNum = 5;
+int ALIVE = InvaderNum;
 int CurAttackNum = 0;
 
 float UFO_dt = 0.0f;
@@ -81,17 +80,19 @@ void Levels::MainLevel::Init()
 	UFO->move = false;
 	UFO->Visible(false);
 
-	SetInvaderBullet();
-	SetAttaker();
+	//Octopus0[0]->attack = true;
+	//Octopus0[0]->SetAttackTime();
+	InitAttacker();
+	SetAttacker(2);
 
 	//Init Scene
 	wTop = new Wall;
 	wTop->InitWall();
 	wTop->SetWall("top", W_WIDTH, 100.f, 0.f, (W_HEIGHT / 2) + 48.f, 255.f, 0.f, 0.f);
 
-	//wBot = new Wall;
-	//wBot->InitWall();
-	//wBot->SetWall("bot", W_WIDTH, 1.f, 0.f, -(W_HEIGHT / 2) + 1.f, 255.f, 0.f, 0.f);
+	wBot = new Wall;
+	wBot->InitWall();
+	wBot->SetWall("bot", W_WIDTH, 1.f, 0.f, -(W_HEIGHT / 2) + 1.f, 255.f, 0.f, 0.f);
 
 	wLeft = new Wall;
 	wLeft->InitWall();
@@ -141,10 +142,10 @@ Invader* Levels::MainLevel::GetLeft()
 
 Invader* Levels::MainLevel::GetRight()
 {
-	int idx = 0;
+	int idx = -1;
 	Invader* tmp = nullptr;
 
-	for (int i = 0; i < COL; i++)
+	for (int i = COL - 1; i >= 0; i--)
 	{
 		if (Octopus0[i]->alive && i > idx)
 		{
@@ -176,334 +177,382 @@ Invader* Levels::MainLevel::GetRight()
 	return tmp;
 }
 
-void Levels::MainLevel::SetAttaker()
+void Levels::MainLevel::UpdateBottom()
 {
 	for (int i = 0; i < COL; i++)
 	{
-		if (Octopus0[i]->attack)
-		{
-			Octopus0[i]->attack = false;
-		}
-		if (Octopus1[i]->attack)
-		{
-			Octopus1[i]->attack = false;
-		}
-		if (Crab0[i]->attack)
-		{
-			Crab0[i]->attack = false;
-		}
-		if (Crab1[i]->attack)
-		{
-			Crab1[i]->attack = false;
-		}
-		if (Squid[i]->attack)
-		{
-			Squid[i]->attack = false;
-		}
-	}
-	CurAttackNum = 0;
-
-	for (int i = 0; i < COL; i++)
-	{
-		if (CurAttackNum <= AttackNum)
-		{
-			if (Octopus0[i]->alive)
-			{
-				Octopus0[i]->SetAttack();
-				if (Octopus0[i]->attack)
-				{
-					CurAttackNum++;
-					Octopus0[i]->SetBullet(missile[0]);
-					Octopus0[i]->Attack();
-				}
-			}
-			if (Octopus1[i]->alive)
-			{
-				Octopus1[i]->SetAttack();
-				if (Octopus1[i]->attack)
-				{
-					CurAttackNum++;
-					Octopus1[i]->SetBullet(missile[1]);
-					Octopus1[i]->Attack();
-				}
-			}
-			if (Crab0[i]->alive)
-			{
-				Crab0[i]->SetAttack();
-				if (Crab0[i]->attack)
-				{
-					CurAttackNum++;
-					Crab0[i]->SetBullet(missile[2]);
-					Crab0[i]->Attack();
-				}
-			}
-			if (Crab1[i]->alive)
-			{
-				Crab1[i]->SetAttack();
-				if (Crab1[i]->attack)
-				{
-					CurAttackNum++;
-					Crab1[i]->SetBullet(missile[3]);
-					Crab1[i]->Attack();
-				}
-			}
-			if (Squid[i]->alive)
-			{
-				Squid[i]->SetAttack();
-				if (Squid[i]->attack)
-				{
-					CurAttackNum++;
-					Squid[i]->SetBullet(missile[4]);
-					Squid[i]->Attack();
-				}
-			}
-		}
+		if (Squid[i]->alive)
+			Attacker[i].first = Squid[i];
 		else
-			break;
+			Attacker[i].first = nullptr;
+
+		if (Crab1[i]->alive)
+			Attacker[i].first = Crab1[i];
+
+		if (Crab0[i]->alive)
+			Attacker[i].first = Crab0[i];
+
+		if (Octopus1[i]->alive)
+			Attacker[i].first = Octopus1[i];
+
+		if (Octopus0[i]->alive)
+			Attacker[i].first = Octopus0[i];
 	}
 }
 
-void Levels::MainLevel::SetInvaderBullet()
+void Levels::MainLevel::InitAttacker()
 {
-	for (int i = 0; i < InvaderNum; i++)
+	for (int i = 0; i < COL; i++)
 	{
-		missile[i] = new Bullet;
-		missile[i]->InitBullet();
-		missile[i]->SetSize(2.f, 5.f);
-		missile[i]->SetMissileRandom();
-		missile[i]->Dead();
+		Attacker[i].first = Octopus0[i];
+		Attacker[i].second = false;
 	}
+}
+
+void Levels::MainLevel::SetAttacker(int n)
+{
+	if (n < 1) return;
+
+	for (int i = 0; i < COL; i++)
+	{
+		if (CurAttackNum <= n)
+		{
+			if (Attacker[i].first)
+			{
+				Attacker[i].second = Attacker[i].first->SetAttack();
+				if (Attacker[i].second)
+				{
+					Attacker[i].first->SetAttackTime();
+					Attacker[i].first->GetBullet()->SetMissileRandom();
+					CurAttackNum++;
+				}
+			}
+		}
+		else break;
+	}
+}
+
+int Levels::MainLevel::GetLiveAttacker()
+{
+	int cnt = 0;
+	for (int i = 0; i < COL; i++)
+	{
+		if (Attacker[i].first)
+			cnt++;
+	}
+	return cnt;
+}
+
+int Levels::MainLevel::GetLiveInvaders()
+{
+	int cnt = 0;
+	for (int i = 0; i < COL; i++)
+	{
+		if (Squid[i]->alive)
+			cnt++;
+		if (Crab1[i]->alive)
+			cnt++;
+		if (Crab0[i]->alive)
+			cnt++;
+		if (Octopus1[i]->alive)
+			cnt++;
+		if (Octopus0[i]->alive)
+			cnt++;
+	}
+	return cnt;
+}
+
+void Levels::MainLevel::PrintAttacker()
+{
+	for (int i = 0; i < COL; i++)
+		std::cout << Attacker[i].first->GetID() << " | ";
+	std::cout << "\n";
 }
 
 void Levels::MainLevel::Update()
 {
-	dt = AEFrameRateControllerGetFrameTime();
-	UFO_dt += dt;
-	
-	//Update the player's position
-	TransformComponent* pt = (TransformComponent*)player->FindComponent("Transform");
-	player->SetPos(pt->GetPos().x, pt->GetPos().y);
-
-	//Get left & right Most Invader for Invader's move
-	ColliderComponent* leftMost = (ColliderComponent*)GetLeft()->FindComponent("Collider");
-	ColliderComponent* rightMost = (ColliderComponent*)GetRight()->FindComponent("Collider");
-
-	//Wall collider
-	ColliderComponent* lc = (ColliderComponent*)wLeft->FindComponent("Collider");
-	ColliderComponent* rc = (ColliderComponent*)wRight->FindComponent("Collider");
-	ColliderComponent* tc = (ColliderComponent*)wTop->FindComponent("Collider");
-
-	//Check Wall Invaders Collision
-	if (leftMost->IsCollision(lc))
+	if (GetLiveInvaders() > 0)
 	{
-		for (int i = 0; i < COL; i++)
+		dt = AEFrameRateControllerGetFrameTime();
+		UFO_dt += dt;
+
+		//Update the player's position
+		TransformComponent* pt = (TransformComponent*)player->FindComponent("Transform");
+		player->SetPos(pt->GetPos().x, pt->GetPos().y);
+
+		//Get left & right Most Invader for Invader's move
+		ColliderComponent* leftMost = (ColliderComponent*)GetLeft()->FindComponent("Collider");
+		ColliderComponent* rightMost = (ColliderComponent*)GetRight()->FindComponent("Collider");
+
+		//Wall collider
+		ColliderComponent* lc = (ColliderComponent*)wLeft->FindComponent("Collider");
+		ColliderComponent* rc = (ColliderComponent*)wRight->FindComponent("Collider");
+		ColliderComponent* tc = (ColliderComponent*)wTop->FindComponent("Collider");
+		ColliderComponent* wbc = (ColliderComponent*)wBot->FindComponent("Collider");
+
+		//Check Wall Invaders Collision
+		if (leftMost->IsCollision(lc))
 		{
-			Octopus0[i]->SetSpeed(0.f);
-			Octopus1[i]->SetSpeed(0.f);
-			Crab0[i]->SetSpeed(0.f);
-			Crab1[i]->SetSpeed(0.f);
-			Squid[i]->SetSpeed(0.f);
+			for (int i = 0; i < COL; i++)
+			{
+				Octopus0[i]->SetSpeed(0.f);
+				Octopus1[i]->SetSpeed(0.f);
+				Crab0[i]->SetSpeed(0.f);
+				Crab1[i]->SetSpeed(0.f);
+				Squid[i]->SetSpeed(0.f);
 
-			Octopus0[i]->SetPos(Octopus0[i]->GetPos().x + 1.f, Octopus0[i]->GetPos().y);
-			Octopus1[i]->SetPos(Octopus1[i]->GetPos().x + 1.f, Octopus1[i]->GetPos().y);
-			Crab0[i]->SetPos(Crab0[i]->GetPos().x + 1.f, Crab0[i]->GetPos().y);
-			Crab1[i]->SetPos(Crab1[i]->GetPos().x + 1.f, Crab1[i]->GetPos().y);
-			Squid[i]->SetPos(Squid[i]->GetPos().x + 1.f, Squid[i]->GetPos().y);
+				Octopus0[i]->SetPos(Octopus0[i]->GetPos().x + 2.f, Octopus0[i]->GetPos().y);
+				Octopus1[i]->SetPos(Octopus1[i]->GetPos().x + 2.f, Octopus1[i]->GetPos().y);
+				Crab0[i]->SetPos(Crab0[i]->GetPos().x + 2.f, Crab0[i]->GetPos().y);
+				Crab1[i]->SetPos(Crab1[i]->GetPos().x + 2.f, Crab1[i]->GetPos().y);
+				Squid[i]->SetPos(Squid[i]->GetPos().x + 2.f, Squid[i]->GetPos().y);
 
-			Octopus0[i]->SetPos(Octopus0[i]->GetPos().x, Octopus0[i]->GetPos().y - 20.f);
-			Octopus1[i]->SetPos(Octopus1[i]->GetPos().x, Octopus1[i]->GetPos().y - 20.f);
-			Crab0[i]->SetPos(Crab0[i]->GetPos().x, Crab0[i]->GetPos().y - 20.f);
-			Crab1[i]->SetPos(Crab1[i]->GetPos().x, Crab1[i]->GetPos().y - 20.f);
-			Squid[i]->SetPos(Squid[i]->GetPos().x, Squid[i]->GetPos().y - 20.f);
+				Octopus0[i]->SetPos(Octopus0[i]->GetPos().x, Octopus0[i]->GetPos().y - 20.f);
+				Octopus1[i]->SetPos(Octopus1[i]->GetPos().x, Octopus1[i]->GetPos().y - 20.f);
+				Crab0[i]->SetPos(Crab0[i]->GetPos().x, Crab0[i]->GetPos().y - 20.f);
+				Crab1[i]->SetPos(Crab1[i]->GetPos().x, Crab1[i]->GetPos().y - 20.f);
+				Squid[i]->SetPos(Squid[i]->GetPos().x, Squid[i]->GetPos().y - 20.f);
 
-			move_dir = -1;
+				move_dir = -1;
+			}
 		}
-	}
-	
-	if (rightMost->IsCollision(rc))
-	{
-		for (int i = 0; i < COL; i++)
+
+		if (rightMost->IsCollision(rc))
 		{
-			Octopus0[i]->SetSpeed(0.f);
-			Octopus1[i]->SetSpeed(0.f);
-			Crab0[i]->SetSpeed(0.f);
-			Crab1[i]->SetSpeed(0.f);
-			Squid[i]->SetSpeed(0.f);
+			for (int i = 0; i < COL; i++)
+			{
+				Octopus0[i]->SetSpeed(0.f);
+				Octopus1[i]->SetSpeed(0.f);
+				Crab0[i]->SetSpeed(0.f);
+				Crab1[i]->SetSpeed(0.f);
+				Squid[i]->SetSpeed(0.f);
 
-			Octopus0[i]->SetPos(Octopus0[i]->GetPos().x - 1.f, Octopus0[i]->GetPos().y);
-			Octopus1[i]->SetPos(Octopus1[i]->GetPos().x - 1.f, Octopus1[i]->GetPos().y);
-			Crab0[i]->SetPos(Crab0[i]->GetPos().x - 1.f, Crab0[i]->GetPos().y);
-			Crab1[i]->SetPos(Crab1[i]->GetPos().x - 1.f, Crab1[i]->GetPos().y);
-			Squid[i]->SetPos(Squid[i]->GetPos().x - 1.f, Squid[i]->GetPos().y);
+				Octopus0[i]->SetPos(Octopus0[i]->GetPos().x - 1.f, Octopus0[i]->GetPos().y);
+				Octopus1[i]->SetPos(Octopus1[i]->GetPos().x - 1.f, Octopus1[i]->GetPos().y);
+				Crab0[i]->SetPos(Crab0[i]->GetPos().x - 1.f, Crab0[i]->GetPos().y);
+				Crab1[i]->SetPos(Crab1[i]->GetPos().x - 1.f, Crab1[i]->GetPos().y);
+				Squid[i]->SetPos(Squid[i]->GetPos().x - 1.f, Squid[i]->GetPos().y);
 
-			Octopus0[i]->SetPos(Octopus0[i]->GetPos().x, Octopus0[i]->GetPos().y - 20.f);
-			Octopus1[i]->SetPos(Octopus1[i]->GetPos().x, Octopus1[i]->GetPos().y - 20.f);
-			Crab0[i]->SetPos(Crab0[i]->GetPos().x, Crab0[i]->GetPos().y - 20.f);
-			Crab1[i]->SetPos(Crab1[i]->GetPos().x, Crab1[i]->GetPos().y - 20.f);
-			Squid[i]->SetPos(Squid[i]->GetPos().x, Squid[i]->GetPos().y - 20.f);
+				Octopus0[i]->SetPos(Octopus0[i]->GetPos().x, Octopus0[i]->GetPos().y - 20.f);
+				Octopus1[i]->SetPos(Octopus1[i]->GetPos().x, Octopus1[i]->GetPos().y - 20.f);
+				Crab0[i]->SetPos(Crab0[i]->GetPos().x, Crab0[i]->GetPos().y - 20.f);
+				Crab1[i]->SetPos(Crab1[i]->GetPos().x, Crab1[i]->GetPos().y - 20.f);
+				Squid[i]->SetPos(Squid[i]->GetPos().x, Squid[i]->GetPos().y - 20.f);
 
-			move_dir = 1;
+				move_dir = 1;
+			}
 		}
-	}
 
-	//Move invaders
-	if (UFO_dt > UFO->GetSpawnTime())
-	{
-		//std::cout << "!! UFO has spawned !! Spawn Time : " << UFO->GetSpawnTime() << ", POINTS : " << UFO->GetPoints() << std::endl;
-		if (move_dir > 0)
-			UFO->SetPos(W_WIDTH / 2 - 21.f, (W_HEIGHT / 2) - 150.f);
-		else
-			UFO->SetPos(-(W_WIDTH / 2) + 21.f, (W_HEIGHT / 2) - 150.f);
+		//Move invaders
+		if (UFO_dt > UFO->GetSpawnTime())
+		{
+			std::cout << "!! UFO has spawned !! Spawn Time : " << UFO->GetSpawnTime() << ", POINTS : " << UFO->GetPoints() << std::endl;
+			if (move_dir > 0)
+				UFO->SetPos(W_WIDTH / 2 - 21.f, (W_HEIGHT / 2) - 150.f);
+			else
+				UFO->SetPos(-(W_WIDTH / 2) + 21.f, (W_HEIGHT / 2) - 150.f);
 
-		UFO->SetSpeed(20.f * move_dir);
-		UFO->alive = true;
-		UFO->Visible(true);
-		UFO->move = true;
+			UFO->SetSpeed(UFO->GetSpeed() * move_dir);
+			UFO->alive = true;
+			UFO->Visible(true);
+			UFO->move = true;
 
-		UFO->SetRandomSpawn();
-		UFO->SetRandomPoints();
-		UFO_dt = 0.0f;
-	}
+			UFO->SetRandomSpawn();
+			UFO->SetRandomPoints();
+			UFO_dt = 0.0f;
+		}
 
-	ColliderComponent* uc = (ColliderComponent*)UFO->FindComponent("Collider");
-	if (uc->IsCollision(lc) || uc->IsCollision(rc))
-	{
-		//std::cout << "UFO collision" << std::endl;
-		UFO->SetPos(0, -W_HEIGHT);
-		UFO->Visible(false);
-		UFO->move = false;
-		UFO->alive = false;
-	}
-	for (int i = 0; i < COL; i++)
-	{
-		float v = 1.0f;
-		if (InvaderNum < (InvaderNum / 2))
-			v = 10.f;
-
-		Octopus0[i]->SetSpeed(20.f * move_dir * v);
-		Octopus1[i]->SetSpeed(20.f * move_dir * v);
-		Crab0[i]->SetSpeed(20.f * move_dir * v);
-		Crab1[i]->SetSpeed(20.f * move_dir * v);
-		Squid[i]->SetSpeed(20.f * move_dir * v);
-	}
-	
-	for (int i = 0; i < COL; i++)
-	{
-		Octopus0[i]->Move(dt);
-		Octopus1[i]->Move(dt);
-		Crab0[i]->Move(dt);
-		Crab1[i]->Move(dt);
-		Squid[i]->Move(dt);
-		UFO->Move(dt);
-	}
-	
-
-	//Bullet
-	ColliderComponent* bc = (ColliderComponent*)player->GetBullet()->FindComponent("Collider");
-	if (player->GetBullet()->alive)
-	{
-		player->GetBullet()->Fly(dt);
-		//Check Bullet Invaders Collision : If Collision is true -> The invader is dead.
+		ColliderComponent* uc = (ColliderComponent*)UFO->FindComponent("Collider");
+		if (uc->IsCollision(lc) || uc->IsCollision(rc))
+		{
+			//std::cout << "UFO collision" << std::endl;
+			UFO->SetPos(0, -W_HEIGHT);
+			UFO->Visible(false);
+			UFO->move = false;
+			UFO->alive = false;
+		}
 		for (int i = 0; i < COL; i++)
 		{
-			ColliderComponent* oc1 = (ColliderComponent*)Octopus0[i]->FindComponent("Collider");
-			ColliderComponent* oc2 = (ColliderComponent*)Octopus1[i]->FindComponent("Collider");
-			ColliderComponent* cc1 = (ColliderComponent*)Crab0[i]->FindComponent("Collider");
-			ColliderComponent* cc2 = (ColliderComponent*)Crab1[i]->FindComponent("Collider");
-			ColliderComponent* sc = (ColliderComponent*)Squid[i]->FindComponent("Collider");
+			float v = 1.0f;
+			if (GetLiveInvaders() < 9/*(InvaderNum / 2)*/)
+				v = 50.f;
+			else if (GetLiveInvaders() < 5)
+				v = 100.f;
+			else if (GetLiveInvaders() < 3)
+				v = 150.f;
 
-			if (bc->IsCollision(oc1))
+			Octopus0[i]->SetSpeed(5.f * move_dir * v);
+			Octopus1[i]->SetSpeed(5.f * move_dir * v);
+			Crab0[i]->SetSpeed(5.f * move_dir * v);
+			Crab1[i]->SetSpeed(5.f * move_dir * v);
+			Squid[i]->SetSpeed(5.f * move_dir * v);
+		}
+
+		for (int i = 0; i < COL; i++)
+		{
+			Octopus0[i]->Move(dt);
+			Octopus1[i]->Move(dt);
+			Crab0[i]->Move(dt);
+			Crab1[i]->Move(dt);
+			Squid[i]->Move(dt);
+			UFO->Move(dt);
+		}
+
+
+		//Bullet
+		ColliderComponent* bc = (ColliderComponent*)player->GetBullet()->FindComponent("Collider");
+		if (player->GetBullet()->alive)
+		{
+			player->GetBullet()->Fly(dt);
+			//Check Bullet Invaders Collision : If Collision is true -> The invader is dead.
+			for (int i = 0; i < COL; i++)
 			{
-				player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
-				player->GetBullet()->Dead();
+				ColliderComponent* oc1 = (ColliderComponent*)Octopus0[i]->FindComponent("Collider");
+				ColliderComponent* oc2 = (ColliderComponent*)Octopus1[i]->FindComponent("Collider");
+				ColliderComponent* cc1 = (ColliderComponent*)Crab0[i]->FindComponent("Collider");
+				ColliderComponent* cc2 = (ColliderComponent*)Crab1[i]->FindComponent("Collider");
+				ColliderComponent* sc = (ColliderComponent*)Squid[i]->FindComponent("Collider");
 
-				Octopus0[i]->Dead();
-				score += Octopus0[i]->GetPoints();
-				InvaderNum--;
-			}
-			if (bc->IsCollision(oc2))
-			{
-				player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
-				player->GetBullet()->Dead();
-
-				Octopus1[i]->Dead();
-				score += Octopus1[i]->GetPoints();
-				InvaderNum--;
-			}
-			if (bc->IsCollision(cc1))
-			{
-				player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
-				player->GetBullet()->Dead();
-
-				Crab0[i]->Dead();
-				score += Crab0[i]->GetPoints();
-				InvaderNum--;
-			}
-			if (bc->IsCollision(cc2))
-			{
-				player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
-				player->GetBullet()->Dead();
-
-				Crab1[i]->Dead();
-				score += Crab1[i]->GetPoints();
-				InvaderNum--;
-			}
-			if (bc->IsCollision(sc))
-			{
-				player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
-				player->GetBullet()->Dead();
-
-				Squid[i]->Dead();
-				score += Squid[i]->GetPoints();
-				InvaderNum--;
-			}
-
-			if (UFO->alive)
-			{
-				if (bc->IsCollision(uc))
+				if (bc->IsCollision(oc1))
 				{
 					player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
 					player->GetBullet()->Dead();
 
-					UFO->SetPos(0, -W_HEIGHT);
-					UFO->Visible(false);
-					UFO->move = false;
-					UFO->alive = false;
-					score += UFO->GetPoints();
+					Octopus0[i]->Dead();
+					score += Octopus0[i]->GetPoints();
+					InvaderNum--;
+				}
+				if (bc->IsCollision(oc2))
+				{
+					player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
+					player->GetBullet()->Dead();
+
+					Octopus1[i]->Dead();
+					score += Octopus1[i]->GetPoints();
+					InvaderNum--;
+				}
+				if (bc->IsCollision(cc1))
+				{
+					player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
+					player->GetBullet()->Dead();
+
+					Crab0[i]->Dead();
+					score += Crab0[i]->GetPoints();
+					InvaderNum--;
+				}
+				if (bc->IsCollision(cc2))
+				{
+					player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
+					player->GetBullet()->Dead();
+
+					Crab1[i]->Dead();
+					score += Crab1[i]->GetPoints();
+					InvaderNum--;
+				}
+				if (bc->IsCollision(sc))
+				{
+					player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
+					player->GetBullet()->Dead();
+
+					Squid[i]->Dead();
+					score += Squid[i]->GetPoints();
+					InvaderNum--;
+				}
+
+				if (UFO->alive)
+				{
+					if (bc->IsCollision(uc))
+					{
+						player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
+						player->GetBullet()->Dead();
+
+						UFO->SetPos(0, -W_HEIGHT);
+						UFO->Visible(false);
+						UFO->move = false;
+						UFO->alive = false;
+						score += UFO->GetPoints();
+					}
+				}
+			}
+
+			//Check Bullet Wall Collision : If Bullet hits the wall, the bullet is destroyed.
+			if (bc->IsCollision(tc))
+			{
+				player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
+				player->GetBullet()->Dead();
+			}
+		}
+
+#if 0 //Invader Attack octo1
+		ColliderComponent* obc = (ColliderComponent*)Octopus0[0]->GetBullet()->FindComponent("Collider");
+		Octopus0[0]->attackDt += dt;
+		if (Octopus0[0]->attackDt > Octopus0[0]->attackTime)
+		{
+			if (!Octopus0[0]->attack)
+			{
+				Octopus0[0]->attack = true;
+				Octopus0[0]->Attack();
+			}
+			else
+			{
+				Octopus0[0]->GetBullet()->FromInvader(dt);
+				if (obc->IsCollision(wbc))
+				{
+					Octopus0[0]->GetBullet()->SetPos(Octopus0[0]->GetPos().x, Octopus0[0]->GetPos().y - Octopus0[0]->GetSize().y / 2.f);
+					Octopus0[0]->GetBullet()->Dead();
+					Octopus0[0]->attack = false;
+					Octopus0[0]->SetAttackTime();
+					Octopus0[0]->GetBullet()->SetMissileRandom();
+				}
+			}
+	}
+#endif
+
+		for (int i = 0; i < COL; i++)
+		{
+			if (Attacker[i].first && Attacker[i].second)
+			{
+				ColliderComponent* obc = (ColliderComponent*)Attacker[i].first->GetBullet()->FindComponent("Collider");
+				Attacker[i].first->attackDt += dt;
+				if (Attacker[i].first->attackDt > Attacker[i].first->attackTime)
+				{
+					if (!Attacker[i].first->attack)
+					{
+						Attacker[i].first->attack = true;
+						Attacker[i].first->Attack();
+					}
+					else
+					{
+						Attacker[i].first->GetBullet()->FromInvader(dt);
+						if (obc->IsCollision(wbc))
+						{
+							Attacker[i].first->GetBullet()->SetPos(Attacker[i].first->GetPos().x, Attacker[i].first->GetPos().y - Attacker[i].first->GetSize().y / 2.f);
+							Attacker[i].first->GetBullet()->Dead();
+							Attacker[i].first->attack = false;
+							Attacker[i].second = false;
+							CurAttackNum--;
+							//Attacker[i].first->SetAttackTime();
+							//Attacker[i].first->GetBullet()->SetMissileRandom();
+						}
+
+					}
 				}
 			}
 		}
-		
-		//Check Bullet Wall Collision : If Bullet hits the wall, the bullet is destroyed.
-		if (bc->IsCollision(tc))
+		if (CurAttackNum == 0)
 		{
-			player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
-			player->GetBullet()->Dead();
+			UpdateBottom();
+			SetAttacker(2);
 		}
 	}
-
-
-	//Set Attacker
-	for (int i = 0; i < COL; i++)
-	{
-		if (Octopus0[i]->attack)
-			Octopus0[i]->GetBullet()->FromInvader(dt);
-		if (Octopus1[i]->attack)
-			Octopus1[i]->GetBullet()->FromInvader(dt);
-		if (Crab0[i]->attack)
-			Crab0[i]->GetBullet()->FromInvader(dt);
-		if (Crab1[i]->attack)
-			Crab1[i]->GetBullet()->FromInvader(dt);
-		if (Squid[i]->attack)
-			Squid[i]->GetBullet()->FromInvader(dt);
-	}
-	//SetAttaker();
+	else
+		GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GoalLevel);
 
 	//std::cout << "Points : " << score << "\n";
 	/*
 	//If goal was reached change level
 	counter++;
-	if (counter >= 10000)
+	if (counter >= 10000) 
 	{
 		//Change to goal
 		//GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GoalLevel);
@@ -525,7 +574,6 @@ void Levels::MainLevel::Exit()
 		delete Crab1[i];
 		delete Squid[i];
 	}
+	delete UFO;
 
-	for(int i = 0; i < 5; i++)
-		delete missile[i];
 }

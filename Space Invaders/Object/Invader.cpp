@@ -61,10 +61,14 @@ void Invader::SetInvader(std::string id, InvaderType type, float sizeX, float si
 	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
 	c->SetCollision(pos.x, pos.y, size.x, size.y);
 
+	bullet = new Bullet;
+	bullet->InitBullet();
+	bullet->SetSize(2.f, 12.f);
+	bullet->SetMissileRandom();
+	bullet->Dead();
+
 	//AudioComponent* a = (AudioComponent*)FindComponent("Audio");
 	//a->SetAudio("Assets/pong.mp3");
-
-	//set texture
 }
 
 void Invader::SetMore(std::string texName, int point)
@@ -140,8 +144,9 @@ void Invader::Dead()
 void Invader::Attack()
 {
 	bullet->alive = true;
-	bullet->SetPos(this->pos.x, this->pos.y + (size.y / 2.f));
+	bullet->SetPos(this->pos.x, this->pos.y - (size.y / 2.f));
 	bullet->Visible(true);
+	bullet->SetSpeed(attackSpeed);
 }
 
 void Invader::Sound(bool play)
@@ -171,6 +176,19 @@ void Invader::SetRandomSpawn()
 	this->spawnTime = dist(mt);
 }
 
+void Invader::SetAttackTime()
+{
+	this->attackDt = 0.0f;
+
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_real_distribution<float> dist(1.f, 10.f);
+
+	this->attackTime = dist(mt);
+
+	std::cout << "Attack Time : " << attackTime << std::endl;
+}
+
 void Invader::SetRandomPoints()
 {
 	std::random_device rd;
@@ -180,13 +198,18 @@ void Invader::SetRandomPoints()
 	this->point = dist(mt);
 }
 
-void Invader::SetAttack()
+bool Invader::SetAttack()
 {
 	std::random_device rd;
 	std::mt19937 mt(rd());
-	std::uniform_int_distribution<int> dist(0, 1);
+	std::uniform_int_distribution<int> dist(0, 99);
 
-	attack = dist(mt);
+	int n = dist(mt);
+
+	if (n > 49)
+		return true;
+	else
+		return false;
 }
 
 void Invader::printInfo()

@@ -29,7 +29,7 @@ class Invader : public GameObject
 	AEVec2 pos;
 	Color color;
 	
-	float speed = 20.f;
+	float speed = 5.f;
 	float spawnTime = 0.0f;
 
 	Bullet* bullet;
@@ -41,6 +41,10 @@ public:
 	bool alive = true;
 	bool move = true;
 	bool attack = false;
+
+	float attackTime = 0.0f;
+	float attackDt = 0.0f;
+	float attackSpeed = 550.f;
 
 public:
 	~Invader();
@@ -55,6 +59,7 @@ public:
 	void SetColor(float r, float g, float b);
 	void SetSpeed(float v) { speed = v; }
 	void SetBullet(Bullet* b) { bullet = b; }
+
 	void Visible(bool);
 	void Sound(bool);
 	void Dead();
@@ -62,14 +67,17 @@ public:
 
 	AEVec2 GetSize() const { return size; }
 	AEVec2 GetPos() const { return pos; }
+	float GetSpeed() const { return speed; }
 	Bullet* GetBullet() const { return bullet; }
 	float GetSpawnTime() const { return spawnTime; }
 	int GetPoints() const { return point; }
 
 	void Move(float dt);
+	void Stop() { move = false; }
 	void SetRandomSpawn();
+	void SetAttackTime();
 	void SetRandomPoints();
-	void SetAttack();
+	bool SetAttack();
 
 	void printInfo();
 };

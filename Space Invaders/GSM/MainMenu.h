@@ -5,6 +5,7 @@
 #include "../Object/Player.h"
 #include "../Object/Invader.h"
 #include "../Object/Wall.h"
+
 namespace Levels
 {
 	class MainLevel : public GSM::BaseLevel
@@ -13,17 +14,17 @@ namespace Levels
 
 		Player* player;
 
-		Invader* Octopus0[11];
-		Invader* Octopus1[11];
-		Invader* Crab0[11];
-		Invader* Crab1[11];
-		Invader* Squid[11];
+		Invader* Octopus0[COL];
+		Invader* Octopus1[COL];
+		Invader* Crab0[COL];
+		Invader* Crab1[COL];
+		Invader* Squid[COL];
 		Invader* UFO;
 
-		Bullet* missile[5];
-
+		//Invader* Attacker[11];
+		std::pair<Invader*, bool> Attacker[COL];
 		Wall* wLeft, * wRight;
-		Wall* wTop;// , * wBot;
+		Wall* wTop, * wBot;
 		
 		void Init() override;
 		void Update() override;
@@ -32,8 +33,13 @@ namespace Levels
 	public:
 		Invader* GetLeft();
 		Invader* GetRight();
-		
-		void SetAttaker();
-		void SetInvaderBullet();
+
+		void UpdateBottom();
+		void InitAttacker();
+		void SetAttacker(int n);
+
+		int GetLiveAttacker();
+		int GetLiveInvaders();
+		void PrintAttacker();
 	};
 }

@@ -29,6 +29,8 @@ void GameObject::AddComponent(BaseComponent* component)
 
 BaseComponent* GameObject::FindComponent(string cmpID)
 {	
+	if (components.empty()) return nullptr;
+
 	for (auto it = components.begin(); it != components.end(); it++)
 	{
 		if ((*it)->GetID() == cmpID)

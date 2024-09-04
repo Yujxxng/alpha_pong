@@ -21,7 +21,7 @@
 
 #define WIN_POINT 11
 
-#define COL 11
+#define COL 3
 
 struct Color
 {

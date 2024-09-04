@@ -4,6 +4,7 @@
 #include "..\ComponentManager\LogicComponent.h"
 #include "..\ComponentManager\EngineComponentManager.h"
 #include "..\ComponentManager\GraphicComponentManager.h"
+#include "..\ComponentManager\ResourceManager.h"
 
 GSM::GameStateManager* GSM::GameStateManager::ptr = nullptr;
 
@@ -64,6 +65,7 @@ void GSM::GameStateManager::Exit()
         LogicComponentManager::DeletePtr();
         EngineComponentManager::DeletePtr();
         GraphicComponentManager::DeletePtr();
+        //ResourceManager::DeletePtr();
 
         currentLevel->Exit();
     }

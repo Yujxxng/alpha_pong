@@ -32,7 +32,8 @@ void EngineComponentManager::AddEngine(EngineComponent* lc)
 
 void EngineComponentManager::DeleteEngine(EngineComponent* c)
 {
-    engines.remove(c);
+    if(!engines.empty())
+        engines.remove(c);
 }
 
 void EngineComponentManager::Update()
