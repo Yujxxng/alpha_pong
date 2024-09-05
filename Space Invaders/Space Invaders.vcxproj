@@ -163,6 +163,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="Object\Player.h" />
     <ClInclude Include="Object\Score.h" />
     <ClInclude Include="Object\Wall.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Resource\AudioResource.h" />
     <ClInclude Include="Resource\FontResource.h" />
     <ClInclude Include="Resource\Resource.h" />
@@ -173,6 +174,9 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
   </ItemGroup>
   <ItemGroup>
     <None Include="ComponentManager\ResourceManager.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Space Invaders.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

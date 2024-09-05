@@ -48,9 +48,9 @@ void Life::SetPos(float x, float y)
 
 void Life::SetColor(float r, float g, float b)
 {
-	color.r = r;
-	color.g = g;
-	color.b = b;
+	color.r = (unsigned char)r;
+	color.g = (unsigned char)g;
+	color.b = (unsigned char)b;
 
 	SpriteComponent* s = (SpriteComponent*)FindComponent("Sprite");
 	if (s != nullptr)

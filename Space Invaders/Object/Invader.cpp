@@ -73,8 +73,13 @@ void Invader::SetInvader(std::string id, InvaderType type, float sizeX, float si
 	bullet->SetMissileRandom();
 	bullet->Dead();
 
-	//AudioComponent* a = (AudioComponent*)FindComponent("Audio");
-	//a->SetAudio("Assets/pong.mp3");
+	if (type == UFO)
+	{
+		AudioComponent* a = (AudioComponent*)FindComponent("Audio");
+		a->SetAudio("Assets/space_invaders/ufo.mp3");
+		a->SetPlay(true);
+	}
+	
 }
 
 void Invader::SetMore(std::string texName, int point)
@@ -160,7 +165,7 @@ void Invader::Dead()
 	this->alive = false;
 	Visible(false);
 	SetSize(0.f, 0.f);
-
+	
 	//std::cout << "\"" << this->GetID() << "\"" << " is DEAD" << std::endl;
 }
 
@@ -179,6 +184,8 @@ void Invader::Sound(bool play)
 	{
 		a->SetPlay(play);
 	}
+	if(play)
+		a->SetPause();
 }
 
 void Invader::Move(float dt)
@@ -188,12 +195,6 @@ void Invader::Move(float dt)
 	float x = this->pos.x - speed * dt;
 	float y = this->pos.y;
 
-	//if (this->GetID() != "UFO")
-	//{
-	//	if (x < -(W_WIDTH / 2) + (this->size.x / 2)) x = -(W_WIDTH / 2) + (this->size.x / 2);
-	//	else if (x > (W_WIDTH / 2) - (this->size.x / 2)) x = (W_WIDTH / 2) - (this->size.x / 2);
-	//}
-
 	SetPos(x, y);
 }
 
@@ -201,7 +202,7 @@ void Invader::SetRandomSpawn()
 {
 	std::random_device rd;
 	std::mt19937 mt(rd());
-	std::uniform_real_distribution<float> dist(20.f, 80.f);
+	std::uniform_real_distribution<float> dist(20.f, 60.f);
 	//std::uniform_real_distribution<float> dist(1.f, 10.f);
 
 	this->spawnTime = dist(mt);

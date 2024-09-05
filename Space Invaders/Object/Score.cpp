@@ -45,9 +45,9 @@ void Score::SetPos(float x, float y)
 
 void Score::SetColor(float r, float g, float b)
 {
-	color.r = r;
-	color.g = g;
-	color.b = b;
+	color.r = (unsigned char)r;
+	color.g = (unsigned char)g;
+	color.b = (unsigned char)b;
 
 	Font* f = (Font*)FindComponent("Font");
 	if (f != nullptr)

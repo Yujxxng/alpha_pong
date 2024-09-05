@@ -7,7 +7,6 @@
 #include "../Object/Wall.h"
 #include "../Object/Score.h"
 
-
 namespace Levels
 {
 	class MainLevel : public GSM::BaseLevel

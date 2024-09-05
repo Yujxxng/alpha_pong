@@ -37,6 +37,11 @@ void AudioComponent::SetAudio(std::string s)
 	mAudio = *(ResourceManager::GetPtr()->Get<AudioResource>(s)->GetData());
 }
 
+void AudioComponent::SetPause()
+{
+	AEAudioStopGroup(mGroup);
+}
+
 void AudioComponent::LoadFromJson(const json& data)
 {
 	auto componentData = data.find("componentData");

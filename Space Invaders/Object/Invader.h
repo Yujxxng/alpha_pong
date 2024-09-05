@@ -23,11 +23,11 @@ enum InvaderType
 
 class Invader : public GameObject
 {
-	InvaderType type;
+	InvaderType type{};
 
-	AEVec2 size;
-	AEVec2 pos;
-	Color color;
+	AEVec2 size{};
+	AEVec2 pos{};
+	Color color{};
 	
 	float speed = 100.f;
 	float spawnTime = 0.0f;

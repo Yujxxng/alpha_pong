@@ -29,6 +29,8 @@ public:
 
 	void SetAudio(std::string s);
 	void SetPlay(bool p) { playing = p; }
+	void SetPause();
+	void Setloop(bool p) { loop = p; }
 
 	void LoadFromJson(const json&) override;
 	json SaveToJson() override;

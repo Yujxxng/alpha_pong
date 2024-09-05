@@ -28,13 +28,18 @@ float UFO_dt = 0.0f;
 float idx_dt = 0.0f;
 
 s8 fontName;
-
+AEAudio bgm;
+AEAudioGroup bgm_group;
 void Levels::MainLevel::Init()
 {
 	//std::cout << "Main level Init:" << std::endl;
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
 	fontName = AEGfxCreateFont("Assets/space_invaders.ttf", 30);
+	bgm = AEAudioLoadMusic("Assets/space_invaders/Invader Homeworld.mp3");
+	bgm_group = AEAudioCreateGroup();
+
+	AEAudioPlay(bgm, bgm_group, 0.5f, 1.f, -1);
 
 	//Init Score
 	score = new Score;
@@ -400,7 +405,7 @@ void Levels::MainLevel::Update()
 				Crab1[i]->SetSpeed(0.f);
 				Squid[i]->SetSpeed(0.f);
 
-				float x = (W_WIDTH / 2) - abs(leftMost->GetPos().x);
+				float x = (W_WIDTH / 2) - abs(leftMost->GetPos().x) + 1.f;
 	
 				Octopus0[i]->SetPos(Octopus0[i]->GetPos().x + x, Octopus0[i]->GetPos().y - 20.f);
 				Octopus1[i]->SetPos(Octopus1[i]->GetPos().x + x, Octopus1[i]->GetPos().y - 20.f);
@@ -421,7 +426,7 @@ void Levels::MainLevel::Update()
 				Crab1[i]->SetSpeed(0.f);
 				Squid[i]->SetSpeed(0.f);
 
-				float x = (W_WIDTH / 2) - abs(rightMost->GetPos().x);
+				float x = (W_WIDTH / 2) - abs(rightMost->GetPos().x) + 1.f;
 			
 				Octopus0[i]->SetPos(Octopus0[i]->GetPos().x - x, Octopus0[i]->GetPos().y - 20.f);
 				Octopus1[i]->SetPos(Octopus1[i]->GetPos().x - x, Octopus1[i]->GetPos().y - 20.f);
@@ -445,6 +450,7 @@ void Levels::MainLevel::Update()
 			UFO->alive = true;
 			UFO->Visible(true);
 			UFO->move = true;
+			UFO->Sound(false);
 
 			UFO->SetRandomSpawn();
 			UFO->SetRandomPoints();
@@ -458,6 +464,7 @@ void Levels::MainLevel::Update()
 			UFO->Visible(false);
 			UFO->move = false;
 			UFO->alive = false;
+			UFO->Sound(true);
 		}
 
 		//std::cout << "Left Invader : " << GetLiveInvaders() << std::endl;
@@ -673,14 +680,13 @@ void Levels::MainLevel::Update()
 			}
 		}
 
-		//std::cout << CurAttackNum << std::endl;
 		if (CurAttackNum == 0)
 		{
 			UpdateBottom();
 			SetAttacker(2);
 		}
 
-		if(player->GetLife() < 1)
+		if (player->GetLife() < 1)
 			GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GameOver);
 		if(GetLiveInvaders() > 0)
 		{
@@ -694,7 +700,8 @@ void Levels::MainLevel::Update()
 
 void Levels::MainLevel::Exit()
 {
-	//std::cout << "Main level Exit:" << std::endl;
+	AEAudioUnloadAudio(bgm);
+	AEAudioUnloadAudioGroup(bgm_group);
 
 	delete score;
 	delete player;

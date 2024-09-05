@@ -6,6 +6,9 @@
 
 #include "GSM/GameStateManager.h"
 #include "GSM/MainMenu.h"
+#include "GSM/Title.h"
+#include "GSM/GoalLevel.h"
+
 #include "ComponentManager/GameObject.h"
 #include "ComponentManager/LogicComponent.h"
 #include "ComponentManager/LogicComponentManager.h"
@@ -31,7 +34,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// Using custom window procedure
 	AESysInit(hInstance, nCmdShow, 450, 600, 1, 60, true, NULL);
-
+	
 	// Changing the window title
 	AESysSetWindowTitle("Space Invader");
 
@@ -39,7 +42,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// reset the system modules
 	AESysReset();
 
-	gsm->ChangeLevel(new Levels::MainLevel);
+	gsm->ChangeLevel(new Levels::Title);
 
 	// Game Loop
 	while (gsm->ShouldExit() == false)
