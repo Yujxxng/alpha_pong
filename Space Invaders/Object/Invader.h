@@ -29,7 +29,7 @@ class Invader : public GameObject
 	AEVec2 pos;
 	Color color;
 	
-	float speed = 5.f;
+	float speed = 2.f;
 	float spawnTime = 0.0f;
 
 	Bullet* bullet;
@@ -37,6 +37,7 @@ class Invader : public GameObject
 	int point;
 	void SetMore(std::string texName, int point);
 
+	//std::string 
 public:
 	bool alive = true;
 	bool move = true;
@@ -44,11 +45,10 @@ public:
 
 	float attackTime = 0.0f;
 	float attackDt = 0.0f;
-	float attackSpeed = 550.f;
+	float attackSpeed = 400.f;
 
 public:
 	~Invader();
-
 
 	void InitInvader();
 
@@ -59,6 +59,7 @@ public:
 	void SetColor(float r, float g, float b);
 	void SetSpeed(float v) { speed = v; }
 	void SetBullet(Bullet* b) { bullet = b; }
+	void SetCollider(float x, float y);
 
 	void Visible(bool);
 	void Sound(bool);
@@ -75,7 +76,7 @@ public:
 	void Move(float dt);
 	void Stop() { move = false; }
 	void SetRandomSpawn();
-	void SetAttackTime();
+	void SetAttackTime(float range);
 	void SetRandomPoints();
 	bool SetAttack();
 

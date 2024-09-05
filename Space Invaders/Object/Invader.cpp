@@ -26,27 +26,27 @@ void Invader::SetInvader(std::string id, InvaderType type, float sizeX, float si
 	this->SetID(id);
 	this->type = type;
 
-	std::string texName = "Assets/";
+	std::string texName = "Assets/space_invaders/";
 
 	switch (type)
 	{
 	case OCTOPUS:
-		texName += "Octopus.png";
+		texName += "octopus0.png";
 		SetMore(texName, 10);
 		break;
 
 	case CRAB:
-		texName += "Crab.png";
+		texName += "crab0.png";
 		SetMore(texName, 20);
 		break;
 
 	case SQUID:
-		texName += "Squid.png";
+		texName += "squid0.png";
 		SetMore(texName, 30);
 		break;
 
 	case UFO:
-		texName += "UFO.png";
+		texName += "ufo.png";
 		SetMore(texName, -1);
 		break;
 
@@ -73,8 +73,8 @@ void Invader::SetInvader(std::string id, InvaderType type, float sizeX, float si
 
 void Invader::SetMore(std::string texName, int point)
 {
-	//SpriteComponent* s = (SpriteComponent*)FindComponent("Sprite");
-	//s->SetTexture(texName);
+	SpriteComponent* s = (SpriteComponent*)FindComponent("Sprite");
+	s->SetTexture(texName);
 
 	this->point = point;
 }
@@ -88,8 +88,9 @@ void Invader::SetSize(float x, float y)
 	if(t != nullptr)
 		t->SetScale({ x, y });
 
-	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
-	c->SetCollision(pos.x, pos.y, size.x, size.y);
+	//ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
+	//c->SetCollision(pos.x, pos.y, size.x, size.y);
+	SetCollider(0.f, 0.f);
 }
 
 void Invader::SetPos(float x, float y)
@@ -111,6 +112,12 @@ void Invader::SetColor(float r, float g, float b)
 	SpriteComponent* s = (SpriteComponent*)FindComponent("Sprite");
 	if (s != nullptr)
 		s->SetColor(color);
+}
+
+void Invader::SetCollider(float x, float y)
+{
+	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
+	c->SetCollision(pos.x, pos.y, x, y);
 }
 
 void Invader::Visible(bool v)
@@ -170,19 +177,19 @@ void Invader::SetRandomSpawn()
 {
 	std::random_device rd;
 	std::mt19937 mt(rd());
-	//std::uniform_real_distribution<float> dist(20.f, 180.f);
-	std::uniform_real_distribution<float> dist(1.f, 10.f);
+	std::uniform_real_distribution<float> dist(20.f, 180.f);
+	//std::uniform_real_distribution<float> dist(1.f, 10.f);
 
 	this->spawnTime = dist(mt);
 }
 
-void Invader::SetAttackTime()
+void Invader::SetAttackTime(float range)
 {
 	this->attackDt = 0.0f;
 
 	std::random_device rd;
 	std::mt19937 mt(rd());
-	std::uniform_real_distribution<float> dist(1.f, 10.f);
+	std::uniform_real_distribution<float> dist(1.f, range);
 
 	this->attackTime = dist(mt);
 

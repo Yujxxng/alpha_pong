@@ -13,6 +13,9 @@ void Life::InitLife()
 	AddComponent(new TransformComponent(this));
 	AddComponent(new SpriteComponent(this));
 	SetSize(this->size.x, this->size.y);
+
+	SpriteComponent* s = (SpriteComponent*)FindComponent("Sprite");
+	s->SetTexture("Assets/space_invaders/player.png");
 }
 
 void Life::SetLife(std::string id, float sizeX, float sizeY, float posX, float posY, float r, float g, float b)

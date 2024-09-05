@@ -13,6 +13,9 @@ ColliderComponent::ColliderComponent(GameObject* owner) : EngineComponent(owner)
 {
 	ID = "Collider";
 
+	pos = { 0, 0 };
+	size = { 0, 0 };
+
 	TransformComponent* t = (TransformComponent*)this->GetOwner()->FindComponent("Transform");
 	if (t != nullptr)
 	{

@@ -26,21 +26,24 @@ void PlayerComponent::Update()
 		return;
 
 	Player* p = (Player*)this->GetOwner();
-	float dt = AEFrameRateControllerGetFrameTime();
 	//Check for input
 
-	if (AEInputCheckCurr(AEVK_LEFT)) r->AddVelocity(-speed, 0);
-	if (AEInputCheckCurr(AEVK_RIGHT)) r->AddVelocity(speed, 0);
-
-	if (AEInputCheckCurr(AEVK_SPACE))
+	if(!p->stop)
 	{
-		//r->ClearVelocity();
-		if (!(p->GetBullet()->alive))
+		if (AEInputCheckCurr(AEVK_LEFT)) r->AddVelocity(-speed, 0);
+		if (AEInputCheckCurr(AEVK_RIGHT)) r->AddVelocity(speed, 0);
+
+		if (AEInputCheckCurr(AEVK_SPACE))
 		{
-			std::cout << "shh" << std::endl;
-			p->Shoot();
+			//r->ClearVelocity();
+			if (!(p->GetBullet()->alive))
+			{
+				//std::cout << "shh" << std::endl;
+				p->Shoot();
+			}
 		}
 	}
+
 	
 }
 

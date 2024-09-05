@@ -30,8 +30,9 @@ void Player::InitPlayer()
 		life.push_back(new Life);
 		life[i]->InitLife();
 		life[i]->SetColor(0.f, 255.f, 0.f);
-		life[i]->SetPos((W_WIDTH / 2) - 80.f + (30.f * i), (W_HEIGHT / 2) - 20.f);
+		life[i]->SetPos((W_WIDTH / 2) - 50.f + (30.f * i), (W_HEIGHT / 2) - 20.f);
 	}
+
 }
 
 void Player::SetPlayer(std::string id, float sizeX, float sizeY, float posX, float posY, float r, float g, float b)
@@ -43,6 +44,9 @@ void Player::SetPlayer(std::string id, float sizeX, float sizeY, float posX, flo
 
 	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
 	c->SetCollision(pos.x, pos.y, size.x, size.y);
+
+	SpriteComponent* s = (SpriteComponent*)FindComponent("Sprite");
+	s->SetTexture("Assets/space_invaders/player.png");
 
 	bullet = new Bullet;
 	bullet->InitBullet();
@@ -84,6 +88,12 @@ void Player::SetColor(float r, float g, float b)
 		s->SetColor(color);
 }
 
+void Player::SetCollider(float x, float y)
+{
+	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
+	c->SetCollision(pos.x, pos.y, x, y);
+}
+
 void Player::Sound(bool play)
 {
 	AudioComponent* a = (AudioComponent*)FindComponent("Audio");
@@ -104,10 +114,16 @@ void Player::Shoot()
 void Player::LoseLife()
 {
 	if (lifeNum < 2)
+	{
+		lifeNum = 0;
 		return;
+	}
 
 	life[lifeNum-2]->Visible(false);
 	lifeNum--;
+
+	//alive = false;
+	//set sprite
 }
 
 void Player::printInfo()

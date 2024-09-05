@@ -15,7 +15,7 @@ using namespace std;
 class SpriteComponent : public GraphicComponent
 {
 private:
-	Color mColor;
+	Color mColor{};
 	float alpha{ 255.f };
 	AEGfxTexture* mTex = nullptr;
 	std::string texName;

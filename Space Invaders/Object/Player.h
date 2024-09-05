@@ -16,12 +16,18 @@
 class Player : public GameObject
 {
 	AEVec2 size{ 5.f, 5.f };
-	AEVec2 pos;
-	Color color;
+	AEVec2 pos{};
+	Color color{};
 
 	int lifeNum = 3;
 	std::vector<Life*> life;
-	Bullet* bullet;
+
+	Bullet* bullet{};
+	
+	bool alive = true;
+public:
+	bool stop = false;
+
 public:
 	~Player();
 
@@ -30,16 +36,17 @@ public:
 	void SetSize(float x, float y);
 	void SetPos(float x, float y);
 	void SetColor(float r, float g, float b);
+	void SetCollider(float x, float y);
 	
 	void Sound(bool);
 
 	AEVec2 GetSize() const { return size; }
 	AEVec2 GetPos() const { return pos; }
 	Bullet* GetBullet() const { return bullet; }
+	int GetLife() const { return lifeNum; }
 
 	void Shoot();
 	void LoseLife();
-	void GetLife();
 	
 	void printInfo();
 };

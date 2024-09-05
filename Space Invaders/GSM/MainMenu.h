@@ -34,12 +34,15 @@ namespace Levels
 		void Exit() override;
 
 	public:
+		void Stop();
 		Invader* GetLeft();
 		Invader* GetRight();
+		Invader* GetBottom();
 
 		void UpdateBottom();
 		void InitAttacker();
 		void SetAttacker(int n);
+		bool IsAttacker(Invader* invader);
 
 		int GetLiveAttacker();
 		int GetLiveInvaders();

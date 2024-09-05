@@ -3,7 +3,7 @@
 
 class PlayerComponent : public LogicComponent
 {
-	float speed = 300.f;
+	float speed = 200.f;
 public:
 	PlayerComponent(GameObject* owner);
 

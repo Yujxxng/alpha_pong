@@ -19,9 +19,8 @@
 #define W_WIDTH 500
 #define W_HEIGHT 800
 
-#define WIN_POINT 11
 
-#define COL 3
+#define COL 11
 
 struct Color
 {

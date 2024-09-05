@@ -15,9 +15,9 @@
 
 class Wall : public GameObject
 {
-	AEVec2 size;
-	AEVec2 pos;
-	Color color;
+	AEVec2 size{};
+	AEVec2 pos{};
+	Color color{};
 
 public:
 	~Wall();

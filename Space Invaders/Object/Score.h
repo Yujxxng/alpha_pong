@@ -7,9 +7,9 @@
 
 class Score : public GameObject
 {
-	float size;
-	AEVec2 pos;
-	Color color;
+	float size{};
+	AEVec2 pos{};
+	Color color{};
 
 	int point = 0;
 

@@ -5,8 +5,8 @@
 
 class ColliderComponent : public EngineComponent
 {
-	AEVec2 pos;
-	AEVec2 size;
+	AEVec2 pos{};
+	AEVec2 size{};
 
 	bool CheckEpsilon(float v, float EP = EPSILON);
 

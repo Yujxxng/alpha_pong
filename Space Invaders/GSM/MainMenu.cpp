@@ -1,6 +1,7 @@
 #include "MainMenu.h"
 #include "GameStateManager.h"
 #include "GoalLevel.h"
+#include "GameOver.h"
 
 #include <iostream>
 
@@ -12,9 +13,10 @@
 #include "../Components/RigidbodyComponent.h"
 #include "../Components/AudioComponent.h"
 
+bool stopMain = false;
+
 float dt = 0.0f;
-float _dt = 0.02f;
-float t = 0.0f;
+float stopDt = 0.0f;
 
 //About Invader
 int move_dir = 1;
@@ -51,45 +53,43 @@ void Levels::MainLevel::Init()
 		std::string ID = "o0" + to_string(i);
 		Octopus0[i] = new Invader();
 		Octopus0[i]->InitInvader();
-		Octopus0[i]->SetInvader(ID, OCTOPUS, 20.f, 20.f, -(320.f / 2) + 10.f + (30.f * i), 0.f, 255.f, 255.f, 255.f);
-		Octopus0[i]->printInfo();
+		Octopus0[i]->SetInvader(ID, OCTOPUS, 22.f, 22.f, -(320.f / 2) + 10.f + (30.f * i), 0.f, 255.f, 255.f, 255.f);
+		//Octopus0[i]->printInfo();
 
 		ID = "o1" + to_string(i);
 		Octopus1[i] = new Invader();
 		Octopus1[i]->InitInvader();
-		Octopus1[i]->SetInvader(ID, OCTOPUS, 20.f, 20.f, -(320.f / 2) + 10.f + (30.f * i), 30.f, 255.f, 255.f, 255.f);
-		Octopus1[i]->printInfo();
+		Octopus1[i]->SetInvader(ID, OCTOPUS, 22.f, 22.f, -(320.f / 2) + 10.f + (30.f * i), 30.f, 255.f, 255.f, 255.f);
+		//Octopus1[i]->printInfo();
 
 		ID = "c0" + to_string(i);
 		Crab0[i] = new Invader();
 		Crab0[i]->InitInvader();
-		Crab0[i]->SetInvader(ID, CRAB, 20.f, 20.f, -(320.f / 2) + 10.f + (30.f * i), 60.f, 0.f, 255.f, 0.f);
-		Crab0[i]->printInfo();
+		Crab0[i]->SetInvader(ID, CRAB, 22.f, 22.f, -(320.f / 2) + 10.f + (30.f * i), 60.f, 0.f, 255.f, 0.f);
+		//Crab0[i]->printInfo();
 
 		ID = "c1" + to_string(i);
 		Crab1[i] = new Invader();
 		Crab1[i]->InitInvader();
-		Crab1[i]->SetInvader(ID, CRAB, 20.f, 20.f, -(320.f / 2) + 10.f + (30.f * i), 90.f, 0.f, 255.f, 0.f);
-		Crab1[i]->printInfo();
+		Crab1[i]->SetInvader(ID, CRAB, 22.f, 22.f, -(320.f / 2) + 10.f + (30.f * i), 90.f, 0.f, 255.f, 0.f);
+		//Crab1[i]->printInfo();
 
 		ID = "s" + to_string(i);
 		Squid[i] = new Invader();
 		Squid[i]->InitInvader();
 		Squid[i]->SetInvader(ID, SQUID, 20.f, 20.f, -(320.f / 2) + 10.f + (30.f * i), 120.f, 0.f, 0.f, 255.f);
-		Squid[i]->printInfo();
+		//Squid[i]->printInfo();
 	}
 
 	UFO = new Invader;
 	UFO->InitInvader();
-	UFO->SetInvader("UFO", InvaderType::UFO, 20.f, 20.f, 0.f, (W_HEIGHT / 2) - 150.f, 255.f, 0.f, 0.f);
+	UFO->SetInvader("UFO", InvaderType::UFO, 30.f, 20.f, 0.f, (W_HEIGHT / 2) - 150.f, 255.f, 0.f, 0.f);
 	UFO->SetRandomSpawn();
 	UFO->SetRandomPoints();
 	UFO->alive = false;
 	UFO->move = false;
 	UFO->Visible(false);
 
-	//Octopus0[0]->attack = true;
-	//Octopus0[0]->SetAttackTime();
 	InitAttacker();
 	SetAttacker(2);
 
@@ -100,7 +100,7 @@ void Levels::MainLevel::Init()
 
 	wBot = new Wall;
 	wBot->InitWall();
-	wBot->SetWall("bot", W_WIDTH, 1.f, 0.f, -(W_HEIGHT / 2) + 1.f, 255.f, 0.f, 0.f);
+	wBot->SetWall("bot", W_WIDTH, 100.f, 0.f, -(W_HEIGHT / 2) - 48.f, 255.f, 0.f, 0.f);
 
 	wLeft = new Wall;
 	wLeft->InitWall();
@@ -109,6 +109,12 @@ void Levels::MainLevel::Init()
 	wRight = new Wall;
 	wRight->InitWall();
 	wRight->SetWall("right", 1.f, W_HEIGHT, (W_WIDTH / 2) - 1.f, 0.f, 255.f, 0.f, 0.f);
+}
+
+void Levels::MainLevel::Stop()
+{
+	stopMain = true;
+	player->stop = true;
 }
 
 Invader* Levels::MainLevel::GetLeft()
@@ -185,6 +191,24 @@ Invader* Levels::MainLevel::GetRight()
 	return tmp;
 }
 
+Invader* Levels::MainLevel::GetBottom()
+{
+	float min = 800.f;
+	Invader* p = nullptr;
+	for (int i = 0; i < COL; i++)
+	{
+		if (Attacker[i].first)
+		{
+			if (min > Attacker[i].first->GetPos().y)
+			{
+				min = Attacker[i].first->GetPos().y;
+				p = Attacker[i].first;
+			}
+		}
+	}
+	return p;
+}
+
 void Levels::MainLevel::UpdateBottom()
 {
 	for (int i = 0; i < COL; i++)
@@ -223,14 +247,18 @@ void Levels::MainLevel::SetAttacker(int n)
 
 	for (int i = 0; i < COL; i++)
 	{
-		if (CurAttackNum <= n)
+		if (CurAttackNum < n)
 		{
 			if (Attacker[i].first)
 			{
 				Attacker[i].second = Attacker[i].first->SetAttack();
 				if (Attacker[i].second)
 				{
-					Attacker[i].first->SetAttackTime();
+					if(InvaderNum < 3)
+						Attacker[i].first->SetAttackTime(2);
+					else
+						Attacker[i].first->SetAttackTime(10);
+
 					Attacker[i].first->GetBullet()->SetMissileRandom();
 					CurAttackNum++;
 				}
@@ -238,6 +266,19 @@ void Levels::MainLevel::SetAttacker(int n)
 		}
 		else break;
 	}
+}
+
+bool Levels::MainLevel::IsAttacker(Invader* invader)
+{
+	for (int i = 0; i < COL; i++)
+	{
+		if (invader == Attacker[i].first)
+		{
+			if (Attacker[i].second)
+				return true;
+		}
+	}
+	return false;
 }
 
 int Levels::MainLevel::GetLiveAttacker()
@@ -280,10 +321,24 @@ void Levels::MainLevel::PrintAttacker()
 void Levels::MainLevel::Update()
 {
 	AEGfxPrint(fontName, "<SCORE>", -0.3f, 0.87f, 1.f, 1.f, 1.f, 1.f, 1.f);
-
+	
+	AEGfxPrint(fontName, "LIFE : ", 0.52f, 0.935f, 0.5f, 1.f, 1.f, 1.f, 1.f);
 	if (GetLiveInvaders() > 0)
 	{
-		dt = AEFrameRateControllerGetFrameTime();
+		if(!stopMain)
+			dt = static_cast<float>(AEFrameRateControllerGetFrameTime());
+		else
+		{
+			dt = 0.0f;
+			stopDt += static_cast<float>(AEFrameRateControllerGetFrameTime());
+			if (stopDt > 2.f)
+			{
+				stopMain = false;
+				player->stop = false;
+				stopDt = 0.0f;
+			}
+		}
+
 		UFO_dt += dt;
 
 		//Update the player's position
@@ -385,19 +440,25 @@ void Levels::MainLevel::Update()
 		//std::cout << "Left Invader : " << GetLiveInvaders() << std::endl;
 		for (int i = 0; i < COL; i++)
 		{
-			float v = 1.0f;
-			if (GetLiveInvaders() < 9/*(InvaderNum / 2)*/)
-				v = 30.f;
-			else if (GetLiveInvaders() < 5)
-				v = 60.f;
-			else if (GetLiveInvaders() < 3)
-				v = 100.f;
+			float ySpeed = 10.f - fabs(GetBottom()->GetPos().y) / 10.f;
 
-			Octopus0[i]->SetSpeed(5.f * move_dir * v);
-			Octopus1[i]->SetSpeed(5.f * move_dir * v);
-			Crab0[i]->SetSpeed(5.f * move_dir * v);
-			Crab1[i]->SetSpeed(5.f * move_dir * v);
-			Squid[i]->SetSpeed(5.f * move_dir * v);
+			float v = 1.0f;
+			if (GetLiveInvaders() < 33)
+				v = 20.f;
+			else if (GetLiveInvaders() < 25)
+				v = 40.f;
+			else if (GetLiveInvaders() < 15)
+				v = 80.f;
+			else if (GetLiveInvaders() < 3)
+			{
+				v = 120.f;
+
+			}
+			Octopus0[i]->SetSpeed(2.f * move_dir * v);
+			Octopus1[i]->SetSpeed(2.f * move_dir * v);
+			Crab0[i]->SetSpeed(2.f * move_dir * v);
+			Crab1[i]->SetSpeed(2.f * move_dir * v);
+			Squid[i]->SetSpeed(2.f * move_dir * v);
 		}
 
 		for (int i = 0; i < COL; i++)
@@ -433,6 +494,7 @@ void Levels::MainLevel::Update()
 					Octopus0[i]->Dead();
 					score->AddPoint(Octopus0[i]->GetPoints());
 					InvaderNum--;
+					if (IsAttacker(Octopus0[i])) CurAttackNum--;
 				}
 				if (bc->IsCollision(oc2))
 				{
@@ -442,6 +504,7 @@ void Levels::MainLevel::Update()
 					Octopus1[i]->Dead();
 					score->AddPoint(Octopus1[i]->GetPoints());
 					InvaderNum--;
+					if (IsAttacker(Octopus1[i])) CurAttackNum--;
 				}
 				if (bc->IsCollision(cc1))
 				{
@@ -451,6 +514,7 @@ void Levels::MainLevel::Update()
 					Crab0[i]->Dead();
 					score->AddPoint(Crab0[i]->GetPoints());
 					InvaderNum--;
+					if (IsAttacker(Crab0[i])) CurAttackNum--;
 				}
 				if (bc->IsCollision(cc2))
 				{
@@ -460,6 +524,7 @@ void Levels::MainLevel::Update()
 					Crab1[i]->Dead();
 					score->AddPoint(Crab1[i]->GetPoints());
 					InvaderNum--;
+					if (IsAttacker(Crab1[i])) CurAttackNum--;
 				}
 				if (bc->IsCollision(sc))
 				{
@@ -469,6 +534,7 @@ void Levels::MainLevel::Update()
 					Squid[i]->Dead();
 					score->AddPoint(Squid[i]->GetPoints());
 					InvaderNum--;
+					if (IsAttacker(Squid[i])) CurAttackNum--;
 				}
 
 				if (UFO->alive)
@@ -549,23 +615,36 @@ void Levels::MainLevel::Update()
 						//Player - Invader Bullet Collision
 						if (obc->IsCollision(pc))
 						{ 
-							//Attacker[i].first->GetBullet()->SetPos(Attacker[i].first->GetPos().x, Attacker[i].first->GetPos().y - Attacker[i].first->GetSize().y / 2.f);
-							//Attacker[i].first->GetBullet()->Dead();
-							//Attacker[i].first->attack = false;
-							//Attacker[i].second = false;
-							//CurAttackNum--;
+							Attacker[i].first->GetBullet()->SetPos(Attacker[i].first->GetPos().x, Attacker[i].first->GetPos().y - Attacker[i].first->GetSize().y / 2.f);
+							Attacker[i].first->GetBullet()->Dead();
+							Attacker[i].first->attack = false;
+							Attacker[i].second = false;
+							CurAttackNum--;
 
 							player->LoseLife();
+							Stop();
 						}
 					}
 				}
+				if (CurAttackNum > 0 && Attacker[i].second && Attacker[i].first->attackDt > 15.f)
+				{
+					Attacker[i].second = false;
+					CurAttackNum = 0;
+				}
 			}
 		}
+		//std::cout << CurAttackNum << std::endl;
+		
 		if (CurAttackNum == 0)
 		{
 			UpdateBottom();
 			SetAttacker(2);
 		}
+
+		if(player->GetLife() < 1)
+			GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GameOver);
+		if(GetBottom()->GetPos().y <= player->GetPos().y + player->GetSize().y)
+			GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GameOver);
 	}
 	else
 		GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GoalLevel);
