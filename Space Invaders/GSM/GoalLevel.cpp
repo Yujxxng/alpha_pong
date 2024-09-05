@@ -11,9 +11,9 @@
 
 void Levels::GoalLevel::Init()
 {
-	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
-	std::cout << "Goal level INIT:" << std::endl;
-	std::cout << "YOU WIN!" << std::endl;
+	AEGfxSetBackgroundColor(0.0f, 1.0f, 1.0f);
+	//std::cout << "Goal level INIT:" << std::endl;
+	//std::cout << "YOU WIN!" << std::endl;
 }
 
 void Levels::GoalLevel::Update()
@@ -27,5 +27,5 @@ void Levels::GoalLevel::Update()
 
 void Levels::GoalLevel::Exit()
 {
-	std::cout << "Goal level Exit:" << std::endl;
+	//std::cout << "Goal level Exit:" << std::endl;
 }

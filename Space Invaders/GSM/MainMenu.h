@@ -12,7 +12,6 @@ namespace Levels
 {
 	class MainLevel : public GSM::BaseLevel
 	{
-		int counter = 0;
 		Score* score;
 
 		Player* player;
@@ -24,7 +23,6 @@ namespace Levels
 		Invader* Squid[COL];
 		Invader* UFO;
 
-		//Invader* Attacker[11];
 		std::pair<Invader*, bool> Attacker[COL];
 		Wall* wLeft, * wRight;
 		Wall* wTop, * wBot;
@@ -40,6 +38,7 @@ namespace Levels
 		Invader* GetBottom();
 
 		void UpdateBottom();
+		void UpdateDead();
 		void InitAttacker();
 		void SetAttacker(int n);
 		bool IsAttacker(Invader* invader);

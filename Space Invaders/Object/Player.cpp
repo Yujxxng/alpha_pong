@@ -51,7 +51,9 @@ void Player::SetPlayer(std::string id, float sizeX, float sizeY, float posX, flo
 	bullet = new Bullet;
 	bullet->InitBullet();
 	bullet->SetType(MissileType::PLAYER);
-	bullet->SetSize(2.f, 4.f);
+	bullet->SetSize(2.f, 6.f);
+	bullet->SetColor(0.f, 255.f, 0.f);
+	bullet->Visible(false);
 
 	//AudioComponent* a = (AudioComponent*)FindComponent("Audio");
 	//a->SetAudio("Assets/pong.mp3");

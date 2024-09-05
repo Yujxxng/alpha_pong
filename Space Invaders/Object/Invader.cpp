@@ -33,16 +33,19 @@ void Invader::SetInvader(std::string id, InvaderType type, float sizeX, float si
 	case OCTOPUS:
 		texName += "octopus0.png";
 		SetMore(texName, 10);
+		SetTexture("Assets/space_invaders/octopus1.png");
 		break;
 
 	case CRAB:
 		texName += "crab0.png";
 		SetMore(texName, 20);
+		SetTexture("Assets/space_invaders/crab1.png");
 		break;
 
 	case SQUID:
 		texName += "squid0.png";
 		SetMore(texName, 30);
+		SetTexture("Assets/space_invaders/squid1.png");
 		break;
 
 	case UFO:
@@ -53,6 +56,9 @@ void Invader::SetInvader(std::string id, InvaderType type, float sizeX, float si
 	default:
 		break;
 	}
+
+	if(type != UFO)
+		SetTexture("Assets/space_invaders/boom.png");
 
 	SetSize(sizeX, sizeY);
 	SetPos(posX, posY);
@@ -88,8 +94,6 @@ void Invader::SetSize(float x, float y)
 	if(t != nullptr)
 		t->SetScale({ x, y });
 
-	//ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
-	//c->SetCollision(pos.x, pos.y, size.x, size.y);
 	SetCollider(0.f, 0.f);
 }
 
@@ -105,9 +109,9 @@ void Invader::SetPos(float x, float y)
 
 void Invader::SetColor(float r, float g, float b)
 {
-	color.r = r;
-	color.g = g;
-	color.b = b;
+	color.r = (unsigned char)r;
+	color.g = (unsigned char)g;
+	color.b = (unsigned char)b;
 
 	SpriteComponent* s = (SpriteComponent*)FindComponent("Sprite");
 	if (s != nullptr)
@@ -118,6 +122,18 @@ void Invader::SetCollider(float x, float y)
 {
 	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
 	c->SetCollision(pos.x, pos.y, x, y);
+}
+
+void Invader::SetTexture(std::string texName)
+{
+	SpriteComponent* s = (SpriteComponent*)FindComponent("Sprite");
+	s->SetTexture(texName);
+}
+
+void Invader::SetTexIndex(int idx)
+{
+	SpriteComponent* s = (SpriteComponent*)FindComponent("Sprite");
+	s->index = idx;
 }
 
 void Invader::Visible(bool v)
@@ -145,7 +161,7 @@ void Invader::Dead()
 	Visible(false);
 	SetSize(0.f, 0.f);
 
-	std::cout << "\"" << this->GetID() << "\"" << " is DEAD" << std::endl;
+	//std::cout << "\"" << this->GetID() << "\"" << " is DEAD" << std::endl;
 }
 
 void Invader::Attack()
@@ -167,8 +183,16 @@ void Invader::Sound(bool play)
 
 void Invader::Move(float dt)
 {
-	float x = this->pos.x - speed * dt * move;
+	//float x = this->pos.x - speed * dt * move;
+	//float y = this->pos.y;
+	float x = this->pos.x - speed * dt;
 	float y = this->pos.y;
+
+	//if (this->GetID() != "UFO")
+	//{
+	//	if (x < -(W_WIDTH / 2) + (this->size.x / 2)) x = -(W_WIDTH / 2) + (this->size.x / 2);
+	//	else if (x > (W_WIDTH / 2) - (this->size.x / 2)) x = (W_WIDTH / 2) - (this->size.x / 2);
+	//}
 
 	SetPos(x, y);
 }
@@ -177,7 +201,7 @@ void Invader::SetRandomSpawn()
 {
 	std::random_device rd;
 	std::mt19937 mt(rd());
-	std::uniform_real_distribution<float> dist(20.f, 180.f);
+	std::uniform_real_distribution<float> dist(20.f, 80.f);
 	//std::uniform_real_distribution<float> dist(1.f, 10.f);
 
 	this->spawnTime = dist(mt);
@@ -193,7 +217,7 @@ void Invader::SetAttackTime(float range)
 
 	this->attackTime = dist(mt);
 
-	std::cout << "Attack Time : " << attackTime << std::endl;
+	//std::cout << "Attack Time : " << attackTime << std::endl;
 }
 
 void Invader::SetRandomPoints()

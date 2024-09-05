@@ -51,9 +51,12 @@ bool ColliderComponent::IsCollision(ColliderComponent* other) const
 	float other_rightX = other->pos.x + (other->size.x / 2.f);
 	float other_rightY = other->pos.y - (other->size.y / 2.f);
 
+
 	if (my_leftX > other_rightX || my_rightX < other_leftX ||
 		my_leftY < other_rightY || my_rightY > other_leftY)
 		return false;
+	
+	if (my_leftX <= -(W_WIDTH / 2) || my_rightX >= (W_WIDTH / 2)) return true;
 
 	return true;
 }

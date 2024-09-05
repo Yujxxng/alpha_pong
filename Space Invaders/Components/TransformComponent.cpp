@@ -40,7 +40,7 @@ void TransformComponent::Update()
 	//PrintMatrix();
 	CalculateMatrix();
 
-	float x = AEClamp(pos.x, -limit.x, limit.y);
+	float x = AEClamp(pos.x, -limit.x /* + scale.x / 2*/, limit.y);
 	float y = AEClamp(pos.y, -limit.y, limit.y);
 
 	SetPos({ x, y });

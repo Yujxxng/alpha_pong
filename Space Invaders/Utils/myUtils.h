@@ -16,8 +16,8 @@
 //#include "AEMath.h"
 //#include "AEGraphics.h"
 
-#define W_WIDTH 500
-#define W_HEIGHT 800
+#define W_WIDTH 450
+#define W_HEIGHT 600
 
 
 #define COL 11

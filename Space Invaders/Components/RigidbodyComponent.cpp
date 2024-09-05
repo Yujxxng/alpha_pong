@@ -55,8 +55,8 @@ void RigidbodyComponent::Update()
 	if (!t)
 		return;
 
-	float x = t->GetPos().x + Velocity.x * AEFrameRateControllerGetFrameTime(); // + 1.0f + 2 * acc * time * time
-	float y = t->GetPos().y + Velocity.y * AEFrameRateControllerGetFrameTime(); // + 1.0f + 2 * acc * time * time
+	float x = (float)(t->GetPos().x + Velocity.x * AEFrameRateControllerGetFrameTime()); // + 1.0f + 2 * acc * time * time
+	float y = (float)(t->GetPos().y + Velocity.y * AEFrameRateControllerGetFrameTime()); // + 1.0f + 2 * acc * time * time
 
 	t->SetPos({ x,y });
 

@@ -119,7 +119,7 @@ void Bullet::Dead()
 	this->alive = false;
 	Visible(false);
 
-	std::cout << "\"BULLET\"" << " is DEAD" << std::endl;
+	//std::cout << "\"BULLET\"" << " is DEAD" << std::endl;
 }
 
 void Bullet::printInfo()
