@@ -57,7 +57,6 @@ void Player::SetPlayer(std::string id, float sizeX, float sizeY, float posX, flo
 
 	AudioComponent* a = (AudioComponent*)FindComponent("Audio");
 	a->SetAudio("Assets/space_invaders/shoot.mp3");
-	a->Setloop(false);
 	a->SetPlay(true);
 }
 
@@ -105,8 +104,6 @@ void Player::Sound(bool play)
 	{
 		a->SetPlay(play);
 	}
-	if (play)
-		a->SetPause();
 }
 
 void Player::Shoot()
@@ -115,10 +112,8 @@ void Player::Shoot()
 	bullet->SetPos(this->pos.x, this->pos.y + (size.y / 2.f));
 	bullet->SetColor(255.f, 0.f, 0.f);
 	bullet->Visible(true);
-
 	AudioComponent* a = (AudioComponent*)FindComponent("Audio");
 	a->SetPlay(false);
-
 }
 
 void Player::LoseLife()

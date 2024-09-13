@@ -18,20 +18,21 @@ class AudioComponent : public EngineComponent
 	float volume = 0.25f;
 	float pitch = 1;
 
-	bool loop = true;
+	bool loop = false;
 	bool playing = false;
 public:
 	AudioComponent() = delete;
 	AudioComponent(GameObject* owner);
-	~AudioComponent();
+	virtual ~AudioComponent() override;
 
 	void Update() override;
 
+	void PlayAudio();
+
 	void SetAudio(std::string s);
 	void SetPlay(bool p) { playing = p; }
-	void SetPause();
 	void Setloop(bool p) { loop = p; }
-
+	void SetVolume(float v) { volume = v; }
 	void LoadFromJson(const json&) override;
 	json SaveToJson() override;
 

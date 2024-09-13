@@ -1,9 +1,18 @@
 #include "AudioResource.h"
-
+#include <iostream>
 void AudioResource::Load(const std::string& s)
 {
-	AEAudio audioData = AEAudioLoadMusic(s.c_str());
+	audioData = AEAudioLoadMusic(s.c_str());
 	data = static_cast<void*>(&audioData);
+}
+
+AudioResource::AudioResource()
+{
+}
+
+AudioResource::~AudioResource()
+{
+	Unload();
 }
 
 void AudioResource::Unload()

@@ -66,6 +66,52 @@ void ColliderComponent::Update()
 	TransformComponent* t = (TransformComponent*)this->owner->FindComponent("Transform");
 	SetPos(t->GetPos().x, t->GetPos().y);
 
+	AEGfxMeshStart();
+
+	AEGfxTriAdd(
+		-0.5f, -0.5f, 0xFFFFFFFF, 0.0f, 1.0f,
+		0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
+		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 0.0f);
+
+	AEGfxTriAdd(
+		0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
+		0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
+		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 0.0f);
+
+	AEGfxVertexList* mesh = AEGfxMeshEnd();
+
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+
+	//AEGfxSetColorToMultiply(mColor.r / 255.f, mColor.g / 255.f, mColor.b / 255.f, 255.f);
+	AEGfxSetColorToMultiply(1.f, 0.f, 0.f, 1.f);
+
+	AEGfxSetColorToAdd(1.f, 0.f, 0.f, 1.f);
+
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTransparency(1);
+
+	AEMtx33 tranf;
+	//Create a transtorm matrix
+	AEMtx33 translateMtx;
+	AEMtx33Trans(&translateMtx, pos.x, pos.y);
+
+	//Create a Rotation matrix
+	AEMtx33 rotationMtx;
+	AEMtx33Rot(&rotationMtx, 0);
+
+	//Create a scale matrix
+	AEMtx33 scaleMtx;
+	AEMtx33Scale(&scaleMtx, size.x, size.y);
+
+	//Concatenate them
+	AEMtx33Concat(&tranf, &rotationMtx, &scaleMtx);
+	AEMtx33Concat(&tranf, &translateMtx, &tranf);
+
+	AEGfxSetTransform(tranf.m);
+
+	AEGfxMeshDraw(mesh, AE_GFX_MDM_TRIANGLES);
+
+	AEGfxMeshFree(mesh);
 }
 
 void ColliderComponent::LoadFromJson(const json& data)

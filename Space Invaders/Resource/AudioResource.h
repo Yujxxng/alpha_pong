@@ -6,10 +6,11 @@
 class AudioResource : public Resource
 {
 private:
-	AudioResource() = default;
+	AudioResource();
+	AEAudio audioData;
 
 public:
-	~AudioResource() { Unload(); }
+	~AudioResource() override;
 	
 	void Load(const std::string& name) override;
 	void Unload() override;

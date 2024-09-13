@@ -36,9 +36,9 @@ void Levels::MainLevel::Init()
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
 	fontName = AEGfxCreateFont("Assets/space_invaders.ttf", 30);
-	bgm = AEAudioLoadMusic("Assets/space_invaders/Invader Homeworld.mp3");
 	bgm_group = AEAudioCreateGroup();
-
+	bgm = AEAudioLoadMusic("Assets/space_invaders/Invader Homeworld.mp3");
+	
 	AEAudioPlay(bgm, bgm_group, 0.5f, 1.f, -1);
 
 	//Init Score
@@ -450,21 +450,22 @@ void Levels::MainLevel::Update()
 			UFO->alive = true;
 			UFO->Visible(true);
 			UFO->move = true;
-			UFO->Sound(false);
+			UFO->Sound(true);
 
 			UFO->SetRandomSpawn();
 			UFO->SetRandomPoints();
 			UFO_dt = 0.0f;
 		}
+
 		ColliderComponent* uc = (ColliderComponent*)UFO->FindComponent("Collider");
 		if (uc->IsCollision(lc) || uc->IsCollision(rc))
 		{
-			//std::cout << "UFO collision" << std::endl;
+			std::cout << "UFO collision" << std::endl;
 			UFO->SetPos(0, -W_HEIGHT);
 			UFO->Visible(false);
 			UFO->move = false;
 			UFO->alive = false;
-			UFO->Sound(true);
+			UFO->Sound(false);
 		}
 
 		//std::cout << "Left Invader : " << GetLiveInvaders() << std::endl;
@@ -532,6 +533,7 @@ void Levels::MainLevel::Update()
 		{
 			player->GetBullet()->SetSpeed(500.f);
 			player->GetBullet()->Fly(dt);
+			
 			//Check Bullet Invaders Collision : If Collision is true -> The invader is dead.
 			for (int i = 0; i < COL; i++)
 			{
@@ -543,11 +545,13 @@ void Levels::MainLevel::Update()
 
 				if (bc->IsCollision(oc1))
 				{
+					std::cout << "Bullet collision " << oc1->GetOwner()->GetID() << std::endl;
 					player->GetBullet()->SetSpeed(0.f);
 					player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
 					player->GetBullet()->Dead();
 
-					Octopus0[i]->alive = false;
+					//Octopus0[i]->alive = false;
+					Octopus0[i]->Dead();
 					Octopus0[i]->SetTexIndex(2);
 
 					score->AddPoint(Octopus0[i]->GetPoints());
@@ -556,11 +560,13 @@ void Levels::MainLevel::Update()
 				}
 				if (bc->IsCollision(oc2))
 				{
+					std::cout << "Bullet collision " << oc2->GetOwner()->GetID() << std::endl;
 					player->GetBullet()->SetSpeed(0.f);
 					player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
 					player->GetBullet()->Dead();
 
-					Octopus1[i]->alive = false;
+					//Octopus1[i]->alive = false;
+					Octopus1[i]->Dead();
 					Octopus1[i]->SetTexIndex(2);
 
 					score->AddPoint(Octopus1[i]->GetPoints());
@@ -569,11 +575,13 @@ void Levels::MainLevel::Update()
 				}
 				if (bc->IsCollision(cc1))
 				{
+					std::cout << "Bullet collision " << cc1->GetOwner()->GetID() << std::endl;
 					player->GetBullet()->SetSpeed(0.f);
 					player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
 					player->GetBullet()->Dead();
 
-					Crab0[i]->alive = false;
+					//Crab0[i]->alive = false;
+					Crab0[i]->Dead();
 					Crab0[i]->SetTexIndex(2);
 
 					score->AddPoint(Crab0[i]->GetPoints());
@@ -582,11 +590,13 @@ void Levels::MainLevel::Update()
 				}
 				if (bc->IsCollision(cc2))
 				{
+					std::cout << "Bullet collision " << cc2->GetOwner()->GetID() << std::endl;
 					player->GetBullet()->SetSpeed(0.f);
 					player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
 					player->GetBullet()->Dead();
 
-					Crab1[i]->alive = false;
+					//Crab1[i]->alive = false;
+					Crab1[i]->Dead();
 					Crab1[i]->SetTexIndex(2);
 					
 					score->AddPoint(Crab1[i]->GetPoints());
@@ -595,11 +605,13 @@ void Levels::MainLevel::Update()
 				}
 				if (bc->IsCollision(sc))
 				{
+					std::cout << "Bullet collision " << sc->GetOwner()->GetID() << std::endl;
 					player->GetBullet()->SetSpeed(0.f);
 					player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
 					player->GetBullet()->Dead();
 
-					Squid[i]->alive = false;
+					//Squid[i]->alive = false;
+					Squid[i]->Dead();
 					Squid[i]->SetTexIndex(2);
 
 					score->AddPoint(Squid[i]->GetPoints());
@@ -618,6 +630,7 @@ void Levels::MainLevel::Update()
 						UFO->Visible(false);
 						UFO->move = false;
 						UFO->alive = false;
+						UFO->Sound(false);
 						score->AddPoint(UFO->GetPoints());
 					}
 				}

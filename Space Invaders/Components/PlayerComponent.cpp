@@ -26,8 +26,9 @@ void PlayerComponent::Update()
 		return;
 
 	Player* p = (Player*)this->GetOwner();
-	//Check for input
+	AudioComponent* a = (AudioComponent*)owner->FindComponent("Audio");
 
+	//Check for input
 	if(!p->stop)
 	{
 		if (AEInputCheckCurr(AEVK_LEFT)) r->AddVelocity(-speed, 0);
@@ -38,13 +39,17 @@ void PlayerComponent::Update()
 			//r->ClearVelocity();
 			if (!(p->GetBullet()->alive))
 			{
-				//std::cout << "shh" << std::endl;
 				p->Shoot();
+				if(a != nullptr)
+					a->PlayAudio();
 			}
 		}
 	}
-
 	
+	if (t->GetPos().x + t->GetScale().x / 2 > W_WIDTH / 2)
+		t->SetPos({ W_WIDTH / 2 - t->GetScale().x / 2, t->GetPos().y });
+	if (t->GetPos().x - t->GetScale().x / 2 < -W_WIDTH / 2)
+		t->SetPos({ -W_WIDTH / 2 + t->GetScale().x / 2, t->GetPos().y });
 }
 
 void PlayerComponent::SetSpeed(float speed)

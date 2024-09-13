@@ -76,8 +76,12 @@ void Invader::SetInvader(std::string id, InvaderType type, float sizeX, float si
 	if (type == UFO)
 	{
 		AudioComponent* a = (AudioComponent*)FindComponent("Audio");
-		a->SetAudio("Assets/space_invaders/ufo.mp3");
-		a->SetPlay(true);
+		if (a != nullptr)
+		{
+			a->SetAudio("Assets/space_invaders/ufo.mp3");
+			a->SetPlay(true);
+			a->Setloop(true);
+		}
 	}
 	
 }
@@ -127,6 +131,7 @@ void Invader::SetCollider(float x, float y)
 {
 	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
 	c->SetCollision(pos.x, pos.y, x, y);
+	std::cout << "collider : " << c->GetPos().x << ", " << c->GetPos().y << ", " << c->GetSize().x << ", " << c->GetSize().y << std::endl;
 }
 
 void Invader::SetTexture(std::string texName)
@@ -166,7 +171,7 @@ void Invader::Dead()
 	Visible(false);
 	SetSize(0.f, 0.f);
 	
-	//std::cout << "\"" << this->GetID() << "\"" << " is DEAD" << std::endl;
+	std::cout << "\"" << this->GetID() << "\"" << " is DEAD" << std::endl;
 }
 
 void Invader::Attack()
@@ -182,10 +187,9 @@ void Invader::Sound(bool play)
 	AudioComponent* a = (AudioComponent*)FindComponent("Audio");
 	if (a != nullptr)
 	{
-		a->SetPlay(play);
+		a->SetPlay(!play);
+		a->PlayAudio();
 	}
-	if(play)
-		a->SetPause();
 }
 
 void Invader::Move(float dt)

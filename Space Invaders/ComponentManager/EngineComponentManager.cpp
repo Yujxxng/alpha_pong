@@ -1,4 +1,5 @@
 #include "EngineComponentManager.h"
+#include <iostream>
 
 EngineComponentManager* EngineComponentManager::engine_ptr = nullptr;
 
@@ -12,7 +13,9 @@ EngineComponentManager* EngineComponentManager::getPtr()
         return engine_ptr;
     }
     else
+    {
         return engine_ptr;
+    }
 }
 
 void EngineComponentManager::DeletePtr()

@@ -45,7 +45,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	gsm->ChangeLevel(new Levels::Title);
 
 	// Game Loop
-	while (gsm->ShouldExit() == false)
+	while (gGameRunning)
 	{
 		// Informing the system about the loop's start
 		AESysFrameStart();

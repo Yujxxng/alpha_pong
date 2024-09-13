@@ -1,5 +1,6 @@
 #include "ResourceManager.h"
 #include <stdexcept>
+#include <iostream>
 
 ResourceManager* ResourceManager::res_ptr = nullptr;
 
@@ -38,11 +39,15 @@ void ResourceManager::Unload(const std::string& filename)
 	Extension ext = StringToExtension(filename);
 
 	if (res[ext].find(filename) == res[ext].end())
-		throw std::invalid_argument("[ERROR] ResourceManager Unload | Invalid resource " + filename);
+	{
+		std::cerr << "[ERROR] ResourceManager Unload | Invalid resource " + filename << std::endl;
+		return;
+	}
 
 	res[ext][filename]->counter--;
+
 	if (res[ext][filename]->counter == 0 && !res[ext][filename]->persistent)
-		res[ext][filename]->Unload();
+		this->res[ext].erase(filename);
 }
 
 void ResourceManager::UnloadAll(bool persistent)
@@ -56,5 +61,6 @@ void ResourceManager::UnloadAll(bool persistent)
 			else
 				i++;
 		}
+		res.erase(it++);
 	}
 }

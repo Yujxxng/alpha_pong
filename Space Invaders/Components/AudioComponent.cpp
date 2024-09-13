@@ -1,5 +1,6 @@
 #include "AudioComponent.h"
 #include "../ComponentManager/EngineComponentManager.h"
+#include <iostream>
 
 AudioComponent::AudioComponent(GameObject* owner) : EngineComponent(owner), mGroup(), mAudio()
 {
@@ -11,16 +12,19 @@ AudioComponent::~AudioComponent()
 {
 	//EngineComponentManager::getPtr()->DeleteEngine(this);
 
-	if(!audioName.empty())
-		ResourceManager::GetPtr()->Unload(audioName);
+	//if(!audioName.empty())
+	//	ResourceManager::GetPtr()->Unload(audioName);
 
 	AEAudioUnloadAudioGroup(mGroup);
 }
 
 void AudioComponent::Update()
 {
-	
-	int loops = 0;
+}
+
+void AudioComponent::PlayAudio()
+{
+	s32 loops = 0;
 	if (loop)
 		loops = -1;
 
@@ -29,17 +33,14 @@ void AudioComponent::Update()
 		playing = true;
 		AEAudioPlay(mAudio, mGroup, volume, pitch, loops);
 	}
+	else
+		AEAudioStopGroup(mGroup);
 }
 
 void AudioComponent::SetAudio(std::string s)
 {
 	audioName = s;
 	mAudio = *(ResourceManager::GetPtr()->Get<AudioResource>(s)->GetData());
-}
-
-void AudioComponent::SetPause()
-{
-	AEAudioStopGroup(mGroup);
 }
 
 void AudioComponent::LoadFromJson(const json& data)

@@ -19,7 +19,7 @@ public:
 	BaseComponent(const BaseComponent&) = delete;
 	BaseComponent& operator=(const BaseComponent&) = delete;
 
-	virtual ~BaseComponent() {}
+	virtual ~BaseComponent() override {}
 
 	string GetID() { return this->ID; }
 
