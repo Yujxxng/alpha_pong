@@ -67,11 +67,11 @@ void Invader::SetInvader(std::string id, InvaderType type, float sizeX, float si
 	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
 	c->SetCollision(pos.x, pos.y, size.x, size.y);
 
-	bullet = new Bullet;
-	bullet->InitBullet();
-	bullet->SetSize(2.f, 12.f);
-	bullet->SetMissileRandom();
-	bullet->Dead();
+	//bullet = new Bullet;
+	//bullet->InitBullet();
+	//bullet->SetSize(2.f, 12.f);
+	//bullet->SetMissileRandom();
+	//bullet->Dead();
 
 	if (type == UFO)
 	{
@@ -131,7 +131,7 @@ void Invader::SetCollider(float x, float y)
 {
 	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
 	c->SetCollision(pos.x, pos.y, x, y);
-	std::cout << "collider : " << c->GetPos().x << ", " << c->GetPos().y << ", " << c->GetSize().x << ", " << c->GetSize().y << std::endl;
+	//std::cout << "collider : " << c->GetPos().x << ", " << c->GetPos().y << ", " << c->GetSize().x << ", " << c->GetSize().y << std::endl;
 }
 
 void Invader::SetTexture(std::string texName)
@@ -169,9 +169,9 @@ void Invader::Dead()
 {
 	this->alive = false;
 	Visible(false);
-	SetSize(0.f, 0.f);
+	//SetSize(0.f, 0.f);
 	
-	std::cout << "\"" << this->GetID() << "\"" << " is DEAD" << std::endl;
+	//std::cout << "\"" << this->GetID() << "\"" << " is DEAD" << std::endl;
 }
 
 void Invader::Attack()

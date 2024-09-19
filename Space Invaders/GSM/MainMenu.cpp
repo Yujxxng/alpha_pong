@@ -94,8 +94,8 @@ void Levels::MainLevel::Init()
 	UFO->move = false;
 	UFO->Visible(false);
 
-	InitAttacker();
-	SetAttacker(2);
+	//InitAttacker();
+	//SetAttacker(2);
 
 	//Init Scene
 	wTop = new Wall;
@@ -494,7 +494,7 @@ void Levels::MainLevel::Update()
 
 		if (idx_dt > _moveDt)
 		{
-			UpdateDead();
+			//UpdateDead();
 			for (int i = 0; i < COL; i++)
 			{
 				Octopus0[i]->idx = (Octopus0[i]->idx + 1) % 2;
@@ -543,7 +543,7 @@ void Levels::MainLevel::Update()
 				ColliderComponent* cc2 = (ColliderComponent*)Crab1[i]->FindComponent("Collider");
 				ColliderComponent* sc = (ColliderComponent*)Squid[i]->FindComponent("Collider");
 
-				if (bc->IsCollision(oc1))
+				if (bc->IsCollision(oc1) && Octopus0[i]->alive)
 				{
 					std::cout << "Bullet collision " << oc1->GetOwner()->GetID() << std::endl;
 					player->GetBullet()->SetSpeed(0.f);
@@ -558,7 +558,7 @@ void Levels::MainLevel::Update()
 					InvaderNum--;
 					if (IsAttacker(Octopus0[i])) CurAttackNum--;
 				}
-				if (bc->IsCollision(oc2))
+				if (bc->IsCollision(oc2) && Octopus1[i]->alive)
 				{
 					std::cout << "Bullet collision " << oc2->GetOwner()->GetID() << std::endl;
 					player->GetBullet()->SetSpeed(0.f);
@@ -573,7 +573,7 @@ void Levels::MainLevel::Update()
 					InvaderNum--;
 					if (IsAttacker(Octopus1[i])) CurAttackNum--;
 				}
-				if (bc->IsCollision(cc1))
+				if (bc->IsCollision(cc1) && Crab0[i]->alive)
 				{
 					std::cout << "Bullet collision " << cc1->GetOwner()->GetID() << std::endl;
 					player->GetBullet()->SetSpeed(0.f);
@@ -588,7 +588,7 @@ void Levels::MainLevel::Update()
 					InvaderNum--;
 					if (IsAttacker(Crab0[i])) CurAttackNum--;
 				}
-				if (bc->IsCollision(cc2))
+				if (bc->IsCollision(cc2) && Crab1[i]->alive)
 				{
 					std::cout << "Bullet collision " << cc2->GetOwner()->GetID() << std::endl;
 					player->GetBullet()->SetSpeed(0.f);
@@ -603,7 +603,7 @@ void Levels::MainLevel::Update()
 					InvaderNum--;
 					if (IsAttacker(Crab1[i])) CurAttackNum--;
 				}
-				if (bc->IsCollision(sc))
+				if (bc->IsCollision(sc) && Squid[i]->alive)
 				{
 					std::cout << "Bullet collision " << sc->GetOwner()->GetID() << std::endl;
 					player->GetBullet()->SetSpeed(0.f);
@@ -618,21 +618,21 @@ void Levels::MainLevel::Update()
 					InvaderNum--;
 					if (IsAttacker(Squid[i])) CurAttackNum--;
 				}
-				if (UFO->alive)
+			}
+			if (UFO->alive)
+			{
+				if (bc->IsCollision(uc))
 				{
-					if (bc->IsCollision(uc))
-					{
-						player->GetBullet()->SetSpeed(0.f);
-						player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
-						player->GetBullet()->Dead();
+					player->GetBullet()->SetSpeed(0.f);
+					player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
+					player->GetBullet()->Dead();
 
-						UFO->SetPos(0, -W_HEIGHT);
-						UFO->Visible(false);
-						UFO->move = false;
-						UFO->alive = false;
-						UFO->Sound(false);
-						score->AddPoint(UFO->GetPoints());
-					}
+					UFO->SetPos(0, -W_HEIGHT);
+					UFO->Visible(false);
+					UFO->move = false;
+					UFO->alive = false;
+					UFO->Sound(false);
+					score->AddPoint(UFO->GetPoints());
 				}
 			}
 			score->SetStr();
@@ -645,67 +645,67 @@ void Levels::MainLevel::Update()
 			}
 		}
 
-		//Invaders Attack
-		for (int i = 0; i < COL; i++)
-		{
-			if (Attacker[i].first && Attacker[i].second)
-			{
-				ColliderComponent* obc = (ColliderComponent*)Attacker[i].first->GetBullet()->FindComponent("Collider");
-				Attacker[i].first->attackDt += dt;
-				if (Attacker[i].first->attackDt > Attacker[i].first->attackTime)
-				{
-					if (!Attacker[i].first->attack)
-					{
-						Attacker[i].first->attack = true;
-						Attacker[i].first->Attack();
-					}
-					else
-					{
-						Attacker[i].first->GetBullet()->FromInvader(dt);
-						if (obc->IsCollision(wbc))
-						{
-							Attacker[i].first->GetBullet()->SetPos(Attacker[i].first->GetPos().x, Attacker[i].first->GetPos().y - Attacker[i].first->GetSize().y / 2.f);
-							Attacker[i].first->GetBullet()->Dead();
-							Attacker[i].first->attack = false;
-							Attacker[i].second = false;
-							CurAttackNum--;
-						}
+		////Invaders Attack
+		//for (int i = 0; i < COL; i++)
+		//{
+		//	if (Attacker[i].first && Attacker[i].second)
+		//	{
+		//		ColliderComponent* obc = (ColliderComponent*)Attacker[i].first->GetBullet()->FindComponent("Collider");
+		//		Attacker[i].first->attackDt += dt;
+		//		if (Attacker[i].first->attackDt > Attacker[i].first->attackTime)
+		//		{
+		//			if (!Attacker[i].first->attack)
+		//			{
+		//				Attacker[i].first->attack = true;
+		//				Attacker[i].first->Attack();
+		//			}
+		//			else
+		//			{
+		//				Attacker[i].first->GetBullet()->FromInvader(dt);
+		//				if (obc->IsCollision(wbc))
+		//				{
+		//					Attacker[i].first->GetBullet()->SetPos(Attacker[i].first->GetPos().x, Attacker[i].first->GetPos().y - Attacker[i].first->GetSize().y / 2.f);
+		//					Attacker[i].first->GetBullet()->Dead();
+		//					Attacker[i].first->attack = false;
+		//					Attacker[i].second = false;
+		//					CurAttackNum--;
+		//				}
 
-						//Player - Invader Bullet Collision
-						if (obc->IsCollision(pc))
-						{ 
-							Attacker[i].first->GetBullet()->SetPos(Attacker[i].first->GetPos().x, Attacker[i].first->GetPos().y - Attacker[i].first->GetSize().y / 2.f);
-							Attacker[i].first->GetBullet()->Dead();
-							Attacker[i].first->attack = false;
-							Attacker[i].second = false;
-							CurAttackNum--;
+		//				//Player - Invader Bullet Collision
+		//				if (obc->IsCollision(pc))
+		//				{ 
+		//					Attacker[i].first->GetBullet()->SetPos(Attacker[i].first->GetPos().x, Attacker[i].first->GetPos().y - Attacker[i].first->GetSize().y / 2.f);
+		//					Attacker[i].first->GetBullet()->Dead();
+		//					Attacker[i].first->attack = false;
+		//					Attacker[i].second = false;
+		//					CurAttackNum--;
 
-							player->LoseLife();
-							Stop();
-						}
-					}
-				}
-				if (CurAttackNum > 0 && Attacker[i].second && Attacker[i].first->attackDt > 15.f)
-				{
-					Attacker[i].second = false;
-					CurAttackNum = 0;
-				}
-			}
-		}
+		//					player->LoseLife();
+		//					Stop();
+		//				}
+		//			}
+		//		}
+		//		if (CurAttackNum > 0 && Attacker[i].second && Attacker[i].first->attackDt > 15.f)
+		//		{
+		//			Attacker[i].second = false;
+		//			CurAttackNum = 0;
+		//		}
+		//	}
+		//}
 
-		if (CurAttackNum == 0)
-		{
-			UpdateBottom();
-			SetAttacker(2);
-		}
+		//if (CurAttackNum == 0)
+		//{
+		//	UpdateBottom();
+		//	SetAttacker(2);
+		//}
 
 		if (player->GetLife() < 1)
 			GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GameOver);
-		if(GetLiveInvaders() > 0)
+	/*	if(GetLiveInvaders() > 0)
 		{
 			if (GetBottom()->GetPos().y <= player->GetPos().y + player->GetSize().y)
 				GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GameOver);
-		}
+		}*/
 	}
 	else
 		GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GoalLevel);
