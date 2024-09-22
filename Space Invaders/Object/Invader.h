@@ -32,7 +32,7 @@ class Invader : public GameObject
 	float speed = 100.f;
 	float spawnTime = 0.0f;
 
-	Bullet* bullet;
+	Bullet* bullet = nullptr;
 
 	int point;
 

@@ -103,7 +103,7 @@ void Invader::SetSize(float x, float y)
 	if(t != nullptr)
 		t->SetScale({ x, y });
 
-	SetCollider(0.f, 0.f);
+	SetCollider(x, y);
 }
 
 void Invader::SetPos(float x, float y)
@@ -218,7 +218,7 @@ void Invader::SetAttackTime(float range)
 
 	std::random_device rd;
 	std::mt19937 mt(rd());
-	std::uniform_real_distribution<float> dist(1.f, range);
+	std::uniform_real_distribution<float> dist(3.f, range);
 
 	this->attackTime = dist(mt);
 

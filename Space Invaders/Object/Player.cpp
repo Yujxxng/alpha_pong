@@ -49,7 +49,6 @@ void Player::SetPlayer(std::string id, float sizeX, float sizeY, float posX, flo
 	s->SetTexture("Assets/space_invaders/player.png");
 
 	bullet = new Bullet;
-	bullet->InitBullet();
 	bullet->SetType(MissileType::PLAYER);
 	bullet->SetSize(2.f, 6.f);
 	bullet->SetColor(0.f, 255.f, 0.f);

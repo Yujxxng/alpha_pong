@@ -32,20 +32,21 @@ class Bullet : public GameObject
 	float speed = 500.f;
 
 public:
-	float alive = false;
-
+	bool alive = false;
+	bool collision = false;
 public:
+	Bullet();
 	~Bullet();
 
-	void InitBullet();
+	void InitBullet(std::string id);
 	void SetBullet(std::string id, MissileType type, float sizeX, float sizeY, float posX, float posY, float r, float g, float b);
 	void SetType(MissileType type) { missile = type; }
 	void SetSize(float x, float y);
 	void SetPos(float x, float y);
 	void SetColor(float r, float g, float b);
 	void SetSpeed(float v) { speed = v; }
+	void SetRandomSpeed();
 	void SetMissileRandom();
-
 	void Visible(bool);
 
 	AEVec2 GetSize() const { return size; }

@@ -6,23 +6,22 @@
 #include "../Object/Invader.h"
 #include "../Object/Wall.h"
 #include "../Object/Score.h"
+#include "../Object/InvaderManager.h"
+#include "../Object/BulletManager.h"
+
+extern int TotalScore;
 
 namespace Levels
 {
 	class MainLevel : public GSM::BaseLevel
 	{
-		Score* score;
 
+		BulletManager bulletMgt;
+		InvaderManager invaderMgt;
+		
+		Score* score;
 		Player* player;
 
-		Invader* Octopus0[COL];
-		Invader* Octopus1[COL];
-		Invader* Crab0[COL];
-		Invader* Crab1[COL];
-		Invader* Squid[COL];
-		Invader* UFO;
-
-		std::pair<Invader*, bool> Attacker[COL];
 		Wall* wLeft, * wRight;
 		Wall* wTop, * wBot;
 		
@@ -32,18 +31,5 @@ namespace Levels
 
 	public:
 		void Stop();
-		Invader* GetLeft();
-		Invader* GetRight();
-		Invader* GetBottom();
-
-		void UpdateBottom();
-		void UpdateDead();
-		void InitAttacker();
-		void SetAttacker(int n);
-		bool IsAttacker(Invader* invader);
-
-		int GetLiveAttacker();
-		int GetLiveInvaders();
-		void PrintAttacker();
 	};
 }

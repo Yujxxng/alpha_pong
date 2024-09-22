@@ -1,15 +1,8 @@
 #include "Bullet.h"
 #include <iostream>
 #include <random>
-Bullet::~Bullet()
-{
-	DeleteComponent("Transform");
-	DeleteComponent("Rigidbody");
-	DeleteComponent("Sprite");
-	DeleteComponent("Collider");
-}
 
-void Bullet::InitBullet()
+Bullet::Bullet()
 {
 	AddComponent(new TransformComponent(this));
 	AddComponent(new RigidbodyComponent(this));
@@ -17,6 +10,30 @@ void Bullet::InitBullet()
 	AddComponent(new ColliderComponent(this));
 }
 
+Bullet::~Bullet()
+{
+	DeleteComponent("Transform");
+	DeleteComponent("Rigidbody");
+	DeleteComponent("Sprite");
+	DeleteComponent("Collider");
+}
+void Bullet::InitBullet(std::string id)
+{
+	SetID(id);
+
+	SetPos(0.f, 0.f);
+	SetSize(2.f, 12.f);
+	Dead();
+}
+/*
+void Bullet::InitBullet()
+{
+	AddComponent(new TransformComponent(this));
+	AddComponent(new RigidbodyComponent(this));
+	AddComponent(new SpriteComponent(this));
+	AddComponent(new ColliderComponent(this));
+}
+*/
 void Bullet::SetBullet(std::string id, MissileType type, float sizeX, float sizeY, float posX, float posY, float r, float g, float b)
 {
 	this->SetID(id);
@@ -63,6 +80,15 @@ void Bullet::SetColor(float r, float g, float b)
 		s->SetColor(color);
 }
 
+void Bullet::SetRandomSpeed()
+{
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_real_distribution<float> dist(100.f, 250.f);
+
+	SetSpeed(dist(rd));
+}
+
 void Bullet::SetMissileRandom()
 {
 	std::random_device rd;
@@ -87,7 +113,7 @@ void Bullet::SetMissileRandom()
 	default:
 		break;
 	}
-	SetSpeed(100.f);
+	SetSpeed(200.f);
 }
 
 void Bullet::Visible(bool v)
@@ -110,7 +136,8 @@ void Bullet::Fly(float dt)
 
 void Bullet::FromInvader(float dt)
 {
-	float y = pos.y - speed * dt * alive;
+	this->alive = true;
+	float y = pos.y - speed * dt;
 	SetPos(pos.x, y);
 }
 
@@ -118,8 +145,7 @@ void Bullet::Dead()
 {
 	this->alive = false;
 	Visible(false);
-
-	//std::cout << "\"BULLET\"" << " is DEAD" << std::endl;
+	//std::cout << this->GetID() << " is DEAD" << std::endl;
 }
 
 void Bullet::printInfo()

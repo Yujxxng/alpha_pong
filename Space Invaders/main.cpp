@@ -7,6 +7,7 @@
 #include "GSM/GameStateManager.h"
 #include "GSM/MainMenu.h"
 #include "GSM/Title.h"
+#include "GSM/Intro.h"
 #include "GSM/GoalLevel.h"
 
 #include "ComponentManager/GameObject.h"
@@ -33,10 +34,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// Initialization of your own variables go here
 
 	// Using custom window procedure
-	AESysInit(hInstance, nCmdShow, 450, 600, 1, 60, true, NULL);
+	AESysInit(hInstance, nCmdShow, 450, 600, 0, 60, true, NULL);
 	
 	// Changing the window title
-	AESysSetWindowTitle("Space Invader");
+	AESysSetWindowTitle("Digipen Invader");
 
 	GSM::GameStateManager* gsm = GSM::GameStateManager::GetGSMPtr();
 	// reset the system modules

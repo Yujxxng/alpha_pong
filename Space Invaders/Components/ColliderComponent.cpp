@@ -65,7 +65,7 @@ void ColliderComponent::Update()
 {
 	TransformComponent* t = (TransformComponent*)this->owner->FindComponent("Transform");
 	SetPos(t->GetPos().x, t->GetPos().y);
-
+	/*
 	AEGfxMeshStart();
 
 	AEGfxTriAdd(
@@ -112,6 +112,7 @@ void ColliderComponent::Update()
 	AEGfxMeshDraw(mesh, AE_GFX_MDM_TRIANGLES);
 
 	AEGfxMeshFree(mesh);
+	*/
 }
 
 void ColliderComponent::LoadFromJson(const json& data)

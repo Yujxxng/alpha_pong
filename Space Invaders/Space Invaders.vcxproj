@@ -16,6 +16,7 @@
     <ProjectGuid>{780772de-d6df-4245-869f-c0b0afcfb107}</ProjectGuid>
     <RootNamespace>Space_Invaders</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Digipen Invaders</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -117,11 +118,14 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="GSM\GameOver.cpp" />
     <ClCompile Include="GSM\GameStateManager.cpp" />
     <ClCompile Include="GSM\GoalLevel.cpp" />
+    <ClCompile Include="GSM\Intro.cpp" />
     <ClCompile Include="GSM\MainMenu.cpp" />
     <ClCompile Include="GSM\Title.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object\Bullet.cpp" />
+    <ClCompile Include="Object\BulletManager.cpp" />
     <ClCompile Include="Object\Invader.cpp" />
+    <ClCompile Include="Object\InvaderManager.cpp" />
     <ClCompile Include="Object\Life.cpp" />
     <ClCompile Include="Object\Player.cpp" />
     <ClCompile Include="Object\Score.cpp" />
@@ -155,10 +159,13 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="GSM\GameOver.h" />
     <ClInclude Include="GSM\GameStateManager.h" />
     <ClInclude Include="GSM\GoalLevel.h" />
+    <ClInclude Include="GSM\Intro.h" />
     <ClInclude Include="GSM\MainMenu.h" />
     <ClInclude Include="GSM\Title.h" />
     <ClInclude Include="Object\Bullet.h" />
+    <ClInclude Include="Object\BulletManager.h" />
     <ClInclude Include="Object\Invader.h" />
+    <ClInclude Include="Object\InvaderManager.h" />
     <ClInclude Include="Object\Life.h" />
     <ClInclude Include="Object\Player.h" />
     <ClInclude Include="Object\Score.h" />

@@ -19,7 +19,9 @@
 #define W_WIDTH 450
 #define W_HEIGHT 600
 
+// COL 11 & ROW 5
 #define COL 11
+#define ROW 5
 
 struct Color
 {
