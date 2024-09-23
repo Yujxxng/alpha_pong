@@ -129,6 +129,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="Object\Life.cpp" />
     <ClCompile Include="Object\Player.cpp" />
     <ClCompile Include="Object\Score.cpp" />
+    <ClCompile Include="Object\TextInputBox.cpp" />
     <ClCompile Include="Object\Wall.cpp" />
     <ClCompile Include="Resource\AudioResource.cpp" />
     <ClCompile Include="Resource\FontResource.cpp" />
@@ -169,6 +170,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="Object\Life.h" />
     <ClInclude Include="Object\Player.h" />
     <ClInclude Include="Object\Score.h" />
+    <ClInclude Include="Object\TextInputBox.h" />
     <ClInclude Include="Object\Wall.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Resource\AudioResource.h" />

@@ -5,6 +5,10 @@
 
 #include <iostream>
 
+#include "../ComponentManager/ResourceManager.h"
+#include "../Resource/FontResource.h"
+#include "../Resource/TextureResource.h"
+
 #include "../ComponentManager/GameObject.h"
 #include "../ComponentManager/EventManager.h"
 #include "../Components/TransformComponent.h"
@@ -33,7 +37,8 @@ void Levels::MainLevel::Init()
 	//std::cout << "Main level Init:" << std::endl;
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-	fontName = AEGfxCreateFont("Assets/space_invaders.ttf", 30);
+	//fontName = AEGfxCreateFont("Assets/space_invaders.ttf", 30);
+	fontName = ResourceManager::GetPtr()->Get<FontResource>("Assets/space_invaders.ttf")->GetData();
 	bgm_group = AEAudioCreateGroup();
 	bgm = AEAudioLoadMusic("Assets/space_invaders/Invader Homeworld.mp3");
 	
@@ -370,6 +375,5 @@ void Levels::MainLevel::Exit()
 
 	delete wLeft, wRight;
 	delete wTop, wBot;
-
-	AEGfxDestroyFont(fontName);
+	//AEGfxDestroyFont(fontName);
 }

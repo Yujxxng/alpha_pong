@@ -5,14 +5,18 @@
 
 void FontResource::Load(const std::string& s)
 {
-	s8* font = new s8(AEGfxCreateFont(s.c_str(), 30));
+	s8* font = new s8(AEGfxCreateFont(s.c_str(), 24));
 	data = static_cast<void*>(font);
 }
 
 void FontResource::Unload()
 {
 	if (data != nullptr)
+	{
 		AEGfxDestroyFont(GetData());
+		delete data;
+		data = nullptr;
+	}
 }
 
 s8 FontResource::GetData() const

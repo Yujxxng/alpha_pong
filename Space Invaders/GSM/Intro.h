@@ -5,11 +5,15 @@
 #include "../ComponentManager/ResourceManager.h"
 #include "../Resource/FontResource.h"
 #include "../Resource/TextureResource.h"
+#include "../Object/TextInputBox.h"
 
 namespace Levels
 {
 	class Intro : public GSM::BaseLevel
 	{
+
+		TextInputBox tb;
+
 		void Init() override;
 		void Update() override;
 		void Exit() override;

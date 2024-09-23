@@ -11,8 +11,11 @@ public:
 	std::vector<std::unique_ptr<Bullet>> pool;
 
 	void InitBulletManager();
+	void DeleteBullets();
+	
 	Bullet* GetBullet();
 
 	void UpdateBullet(float dt);
 	float SetAttackTime();
+
 };

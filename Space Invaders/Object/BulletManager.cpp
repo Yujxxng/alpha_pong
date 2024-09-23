@@ -14,6 +14,11 @@ void BulletManager::InitBulletManager()
 	}
 }
 
+void BulletManager::DeleteBullets()
+{
+
+}
+
 Bullet* BulletManager::GetBullet()
 {
 	for (auto& bullet : pool)

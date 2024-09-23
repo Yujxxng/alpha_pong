@@ -34,16 +34,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// Initialization of your own variables go here
 
 	// Using custom window procedure
-	AESysInit(hInstance, nCmdShow, 450, 600, 0, 60, true, NULL);
+	AESysInit(hInstance, nCmdShow, 450, 600, 1, 60, true, NULL);
 	
 	// Changing the window title
-	AESysSetWindowTitle("Digipen Invader");
+	AESysSetWindowTitle("Digipen Invaders");
 
 	GSM::GameStateManager* gsm = GSM::GameStateManager::GetGSMPtr();
 	// reset the system modules
 	AESysReset();
 
-	gsm->ChangeLevel(new Levels::Title);
+	gsm->ChangeLevel(new Levels::Intro);
 
 	// Game Loop
 	while (gGameRunning)

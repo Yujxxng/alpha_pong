@@ -5,6 +5,7 @@
 #include "GameStateManager.h"
 
 #include "../ComponentManager/GameObject.h"
+#include "../Object/TextInputBox.h"
 
 #include <iostream>
 #include <string>
@@ -43,6 +44,11 @@ void Levels::Intro::Update()
 	Levels::Intro::DrawTexture(key_img[0], -60.f, 150.f, 25.f, 25.f);
 	Levels::Intro::DrawTexture(key_img[1], -25.f, 150.f, 25.f, 25.f);
 	Levels::Intro::DrawTexture(key_img[2], -42.f, 120.f, 60.f, 25.f);
+
+	tb.Update(AEFrameRateControllerGetFrameTime());
+
+	//AEGfxGetPrintSize(IntroFont, "ABCDEFGHIJKLMN", 1.f, &width, &height);
+	//AEGfxPrint(IntroFont, "ABCDEFGHIJKLMN", -width / 2, -height / 2, 1.f, 0, 0, 1, 1);
 
 	AEGfxGetPrintSize(IntroFont, "*SCORE ADVANCE TABLE*", 0.55f, &width, &height);
 	AEGfxPrint(IntroFont, "*SCORE ADVANCE TABLE*", -width / 2, -height / 2, 0.55f, 1, 1, 1, a);
