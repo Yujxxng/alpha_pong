@@ -67,12 +67,6 @@ void Invader::SetInvader(std::string id, InvaderType type, float sizeX, float si
 	ColliderComponent* c = (ColliderComponent*)FindComponent("Collider");
 	c->SetCollision(pos.x, pos.y, size.x, size.y);
 
-	//bullet = new Bullet;
-	//bullet->InitBullet();
-	//bullet->SetSize(2.f, 12.f);
-	//bullet->SetMissileRandom();
-	//bullet->Dead();
-
 	if (type == UFO)
 	{
 		AudioComponent* a = (AudioComponent*)FindComponent("Audio");

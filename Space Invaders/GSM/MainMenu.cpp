@@ -32,16 +32,20 @@ s8 fontName;
 AEAudio bgm;
 AEAudioGroup bgm_group;
 
+Levels::MainLevel::~MainLevel()
+{
+	std::cout << __FUNCTION__ << std::endl;
+}
+
 void Levels::MainLevel::Init()
 {
+	std::cout << __FUNCTION__ << std::endl;
 	//std::cout << "Main level Init:" << std::endl;
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-	//fontName = AEGfxCreateFont("Assets/space_invaders.ttf", 30);
 	fontName = ResourceManager::GetPtr()->Get<FontResource>("Assets/space_invaders.ttf")->GetData();
 	bgm_group = AEAudioCreateGroup();
-	bgm = AEAudioLoadMusic("Assets/space_invaders/Invader Homeworld.mp3");
-	
+	bgm = *(ResourceManager::GetPtr()->Get<AudioResource>("Assets/space_invaders/Invader Homeworld.mp3")->GetData());
 	AEAudioPlay(bgm, bgm_group, 0.5f, 1.f, -1);
 
 	//Init Score
@@ -52,13 +56,13 @@ void Levels::MainLevel::Init()
 	bulletMgt.InitBulletManager();
 
 	//Init Player
-	player = new Player;
-	player->InitPlayer();
-	player->SetPlayer("player", 25.f, 20.f, 0.f, -200.f, 0.f, 255.f, 0.f);
+	//player = new Player;
+	//player->InitPlayer();
+	//player->SetPlayer("player", 25.f, 20.f, 0.f, -200.f, 0.f, 255.f, 0.f);
 
 	//Init Invaders
-	invaderMgt.InitInvaders();
-	invaderMgt.InitAttacker();
+	//invaderMgt.InitInvaders();
+	//invaderMgt.InitAttacker();
 
 	//Init Scene
 	wTop = new Wall;
@@ -90,6 +94,7 @@ void Levels::MainLevel::Update()
 	AEGfxPrint(fontName, "<SCORE>", -0.26f, 0.87f, 0.7f, 1.f, 1.f, 1.f, 1.f);
 	
 	AEGfxPrint(fontName, "LIFE : ", 0.5f, 0.915f, 0.5f, 1.f, 1.f, 1.f, 1.f);
+	/*
 	if (invaderMgt.GetLiveInvaders() > 0)
 	{
 		if(!stopMain)
@@ -349,31 +354,36 @@ void Levels::MainLevel::Update()
 		}
 
 		if (player->GetLife() < 1)
-			GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GameOver);
+			0;// GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GameOver);
 
 		else if(invaderMgt.GetLiveInvaders() > 0)
 		{
 			if (invaderMgt.GetBottom()->GetPos().y <= player->GetPos().y + player->GetSize().y)
-				GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GameOver);
+				0;// GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GameOver);
 		}
 	}
 	else
-		GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GoalLevel);
+		0;// GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GoalLevel);
+		*/
+	
 }
 
 void Levels::MainLevel::Exit()
 {
-	TotalScore = score->getPoint();
+	std::cout << __FUNCTION__ << std::endl;
+	//TotalScore = score->getPoint();
 
-	AEAudioUnloadAudio(bgm);
+	//AEAudioUnloadAudio(bgm);
 	AEAudioUnloadAudioGroup(bgm_group);
 
 	delete score;
 	delete player;
 
-	invaderMgt.deleteInvaders();
+	//invaderMgt.deleteInvaders();
 
-	delete wLeft, wRight;
-	delete wTop, wBot;
+	delete wLeft;
+	delete wRight;
+	delete wTop;
+	delete wBot;
 	//AEGfxDestroyFont(fontName);
 }

@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 
+#include <nlohmann/json.hpp>
+//using json = nlohmann::json;
+
 class TextInputBox
 {
 	std::vector<std::pair<u8, char>> allowedKeys;
@@ -41,4 +44,7 @@ public:
 	void DrawUserText();
 
 	void UpdateText();
+
+	void SaveToJson();
+	void LoadFromJson();
 };

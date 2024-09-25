@@ -32,7 +32,7 @@ class ResourceManager
 
 protected:
 	ResourceManager() = default;
-	~ResourceManager() = default;
+	~ResourceManager();
 
 public:
 	static ResourceManager* GetPtr();

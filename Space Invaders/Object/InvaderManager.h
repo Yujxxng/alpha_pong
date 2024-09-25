@@ -10,7 +10,7 @@ public:
 	std::pair<Invader*, bool> Attacker[COL];
 	
 	int move_dir = 1;
-	int InvaderNum = 66;
+	int InvaderNum = COL * ROW;
 	int botNum = COL;
 	int CurAttackNum = 0;
 
@@ -30,7 +30,6 @@ public:
 
 	void InitAttacker();
 	int SetAttacker();
-	void SetAttacker(int n);
 	bool IsAttacker(Invader* invader);
 
 	int GetLiveInvaders();

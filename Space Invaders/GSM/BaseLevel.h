@@ -1,10 +1,14 @@
 #pragma once
+#include <iostream>
 
 namespace GSM
 {
 	class BaseLevel
 	{
 	public:
+		virtual ~BaseLevel() {
+			std::cout << __FUNCTION__ << std::endl;
+		};
 		//Init
 		virtual void Init() = 0;
 		//Update

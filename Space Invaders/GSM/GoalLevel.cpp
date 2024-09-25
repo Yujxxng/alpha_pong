@@ -7,6 +7,8 @@
 #include "../Resource/FontResource.h"
 #include "../Resource/TextureResource.h"
 
+#include "../Object/TextInputBox.h"
+
 #include <iostream>
 
 s8 fontName2;

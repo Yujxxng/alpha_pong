@@ -125,9 +125,6 @@ void Player::LoseLife()
 
 	life[lifeNum-2]->Visible(false);
 	lifeNum--;
-
-	//alive = false;
-	//set sprite
 }
 
 void Player::printInfo()

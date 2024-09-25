@@ -4,6 +4,11 @@
 
 ResourceManager* ResourceManager::res_ptr = nullptr;
 
+ResourceManager::~ResourceManager()
+{
+
+	UnloadAll(true);
+}
 
 ResourceManager* ResourceManager::GetPtr()
 {

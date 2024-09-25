@@ -2,8 +2,7 @@
 
 #include "../ComponentManager/GameObject.h"
 #include "../ComponentManager/EngineComponent.h"
-#include "../ComponentManager/ResourceManager.h"
-#include "../Resource/TextureResource.h"
+
 #include "TransformComponent.h"
 
 SpriteComponent::SpriteComponent(GameObject* go) : GraphicComponent(go)
@@ -87,7 +86,7 @@ void SpriteComponent::SetTexture(std::string s)
 	if (FindTextureName(s))
 		return;
 
-	mTex.push_back(AEGfxTextureLoad(s.c_str()));
+	mTex.push_back(ResourceManager::GetPtr()->Get<TextureResource>(s)->GetData());
 }
 
 bool SpriteComponent::FindTextureName(std::string name)

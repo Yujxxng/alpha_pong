@@ -11,9 +11,9 @@ namespace Levels
 {
 	class Intro : public GSM::BaseLevel
 	{
-
-		TextInputBox tb;
-
+	public:
+		virtual ~Intro() override {};
+		
 		void Init() override;
 		void Update() override;
 		void Exit() override;

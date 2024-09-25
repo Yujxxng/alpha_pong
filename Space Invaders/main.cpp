@@ -15,6 +15,7 @@
 #include "ComponentManager/LogicComponentManager.h"
 #include "ComponentManager/EngineComponentManager.h"
 #include "ComponentManager/GraphicComponentManager.h"
+#include "ComponentManager/ResourceManager.h"
 // ---------------------------------------------------------------------------
 // main
 
@@ -42,12 +43,22 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	GSM::GameStateManager* gsm = GSM::GameStateManager::GetGSMPtr();
 	// reset the system modules
 	AESysReset();
-
-	gsm->ChangeLevel(new Levels::Intro);
+	
+	//gsm->ChangeLevel(new Levels::MainLevel);
+	auto lv = new Levels::MainLevel;
+	lv->Init();
+	lv->Exit();
+	delete lv;
 
 	// Game Loop
 	while (gGameRunning)
 	{
+		// gsm current state != next state => state changed
+			// then, current state exit
+			//       next state init
+		    //       delete current state
+		    //       current state = next state
+
 		// Informing the system about the loop's start
 		AESysFrameStart();
 
@@ -64,6 +75,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			gGameRunning = 0;
 	}
 
+	ResourceManager* rm = ResourceManager::GetPtr();
+	rm->DeletePtr();
+
+	gsm->Exit();
+	gsm->DeleteGSM();
+	
 	// free the system
 	AESysExit();
 }

@@ -2,6 +2,9 @@
 
 #include "..\ComponentManager\/GraphicComponent.h"
 #include "..\ComponentManager\/GraphicComponentManager.h"
+#include "../ComponentManager/ResourceManager.h"
+#include "../Resource/TextureResource.h"
+
 #include "../Utils/myUtils.h"
 
 #include "AEEngine.h"

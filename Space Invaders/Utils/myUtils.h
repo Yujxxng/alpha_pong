@@ -20,8 +20,8 @@
 #define W_HEIGHT 600
 
 // COL 11 & ROW 5
-#define COL 11
-#define ROW 5
+#define COL 1
+#define ROW 1
 
 struct Color
 {

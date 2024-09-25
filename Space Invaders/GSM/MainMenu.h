@@ -15,7 +15,6 @@ namespace Levels
 {
 	class MainLevel : public GSM::BaseLevel
 	{
-
 		BulletManager bulletMgt;
 		InvaderManager invaderMgt;
 		
@@ -25,11 +24,13 @@ namespace Levels
 		Wall* wLeft, * wRight;
 		Wall* wTop, * wBot;
 		
+
+	public:
+		~MainLevel() override;
 		void Init() override;
 		void Update() override;
 		void Exit() override;
-
-	public:
+		
 		void Stop();
 	};
 }

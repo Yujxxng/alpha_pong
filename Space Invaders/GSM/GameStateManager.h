@@ -34,9 +34,8 @@ namespace GSM
 		//
 	private: 
 		//Have a level
-		BaseLevel* previousLevel;
-		BaseLevel* currentLevel;
-
+		BaseLevel* currentLevel{ nullptr };
+		BaseLevel* nextLevel{ nullptr };
 	public:
 		//Functions to call Init, Update, Exit
 		void Init();

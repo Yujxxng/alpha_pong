@@ -3,7 +3,6 @@
 
 InvaderManager::InvaderManager()
 {
-	InitInvaders();
 }
 
 InvaderManager::~InvaderManager()
@@ -200,32 +199,6 @@ int InvaderManager::SetAttacker()
 	}
 
 	return idx;
-}
-
-void InvaderManager::SetAttacker(int n)
-{
-	if (n > InvaderNum) return;
-	for (int i = 0; i < COL; i++)
-	{
-		if (CurAttackNum < n)
-		{
-			if (Attacker[i].first)
-			{
-				Attacker[i].second = Attacker[i].first->SetAttack();
-				if (Attacker[i].second)
-				{
-					if (InvaderNum < 3)
-						Attacker[i].first->SetAttackTime(3);
-					else
-						Attacker[i].first->SetAttackTime(10);
-
-					//Attacker[i].first->GetBullet()->SetMissileRandom();
-					CurAttackNum++;
-				}
-			}
-		}
-		else break;
-	}
 }
 
 bool InvaderManager::IsAttacker(Invader* invader)

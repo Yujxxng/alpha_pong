@@ -55,7 +55,7 @@ void Levels::Title::Update()
 				draw = true;
 		}
 	}
-	Levels::Title::DrawTexture(dg, 0.f, 29.f, 200.f, 58.f, la);
+	Levels::Title::DrawTexture(dg, 0.f, 29.f, 200.f, 48.f, la);
 
 	if (t > 1.0f)
 	{

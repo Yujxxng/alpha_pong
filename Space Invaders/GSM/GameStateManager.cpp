@@ -4,25 +4,36 @@
 #include "..\ComponentManager\LogicComponent.h"
 #include "..\ComponentManager\EngineComponentManager.h"
 #include "..\ComponentManager\GraphicComponentManager.h"
+#include "..\ComponentManager\EventManager.h"
 #include "..\ComponentManager\ResourceManager.h"
+#include <iostream>
 
 GSM::GameStateManager* GSM::GameStateManager::ptr = nullptr;
 
-GSM::GameStateManager::GameStateManager() : previousLevel(nullptr), currentLevel(nullptr)
-{}
+GSM::GameStateManager::GameStateManager() : currentLevel(nullptr), nextLevel(nullptr)
+{
+    std::cout << __FUNCTION__ << std::endl;
+}
 
 GSM::GameStateManager::~GameStateManager()
 {
-    if (previousLevel)
-        delete previousLevel;
     if (currentLevel)
+    {
+        std::cout << __FUNCTION__ << std::endl;
+        if (currentLevel == nextLevel)
+            nextLevel = nullptr;
         delete currentLevel;
+    }
+
+    if (nextLevel)
+        delete nextLevel;
 }
 
 GSM::GameStateManager* GSM::GameStateManager::GetGSMPtr()
 {
     if (ptr == nullptr)
     {
+        std::cout << __FUNCTION__ << std::endl;
         ptr = new GameStateManager;
     }
 
@@ -33,6 +44,7 @@ void GSM::GameStateManager::DeleteGSM()
 {
     if (ptr)
     {
+        std::cout << __FUNCTION__ << std::endl;
         delete ptr;
         ptr = nullptr;
     }
@@ -40,14 +52,25 @@ void GSM::GameStateManager::DeleteGSM()
 
 void GSM::GameStateManager::Init()
 {
-    if (currentLevel)
+    if (nextLevel)
     {
-        currentLevel->Init();
+        std::cout << __FUNCTION__ << std::endl;
+        nextLevel->Init();
     }
 }
 
 void GSM::GameStateManager::Update()
 {
+    if (currentLevel != nextLevel)
+    {
+        Exit(); //currentLevel
+        Init(); //nextLevel
+
+        currentLevel = nextLevel;
+
+        std::cout << __FUNCTION__ << std::endl;
+    }
+
     if (currentLevel)
     {
         LogicComponentManager::getPtr()->Update();
@@ -62,17 +85,26 @@ void GSM::GameStateManager::Exit()
 {
     if (currentLevel)
     {
+        std::cout << __FUNCTION__ << std::endl;
+        if(currentLevel == nextLevel)
+            nextLevel = nullptr;
+
         LogicComponentManager::DeletePtr();
         EngineComponentManager::DeletePtr();
         GraphicComponentManager::DeletePtr();
+        //EventManager::DeletePtr();
         //ResourceManager::DeletePtr();
 
         currentLevel->Exit();
+
+        delete currentLevel;
+        currentLevel = nullptr;
     }
 }
 
 void GSM::GameStateManager::ChangeLevel(BaseLevel* newLvl)
 {
+#if 0
     if(previousLevel)
         delete previousLevel;
     
@@ -86,7 +118,9 @@ void GSM::GameStateManager::ChangeLevel(BaseLevel* newLvl)
 
     //initialize the level
     Init();
-
+#elif 1
+    nextLevel = newLvl;
+#endif
 }
 
 bool GSM::GameStateManager::ShouldExit()

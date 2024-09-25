@@ -4,11 +4,14 @@
 #include "../Resource/FontResource.h"
 #include "../Resource/TextureResource.h"
 
+#include <iostream>
+#include <fstream>
+
 TextInputBox::TextInputBox()
 {
 	font = ResourceManager::GetPtr()->Get<FontResource>("Assets/space_invaders.ttf")->GetData();
 
-	f32 width, height;
+	f32 width = 0, height = 0;
 	AEGfxGetPrintSize(font, "ABCDEFGHIJKLMN", 1.f, &width, &height);
 
 	boxSize.x = AEGfxGetWindowWidth() * width / 2.f;
@@ -161,5 +164,42 @@ void TextInputBox::UpdateText()
 	if (AEInputCheckTriggered(AEVK_RETURN))
 	{
 		inputEnabled = !inputEnabled;
+		SaveToJson();
 	}
+}
+
+void TextInputBox::SaveToJson()
+{
+	std::ofstream jf("data.json");
+
+	if (!jf.is_open())
+	{
+		std::cout << "FILE NOT FOUND" << std::endl;
+		return;
+	}
+	using json = nlohmann::json;
+	json data;
+	data["text"] = text;
+	
+	std::string tmp = data.dump(-1);
+	jf.write(tmp.c_str(), tmp.size());
+
+	jf.close();
+}
+
+void TextInputBox::LoadFromJson()
+{
+	std::ifstream jf("data.json");
+
+	if (!jf.is_open())
+	{
+		std::cout << "FILE NOT FOUND" << std::endl;
+		return;
+	}
+	using json = nlohmann::json;
+	json data;
+	jf >> data;
+	text = data.at("text").get<std::string>();
+
+	jf.close();
 }
