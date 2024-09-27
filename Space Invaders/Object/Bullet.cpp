@@ -17,6 +17,7 @@ Bullet::~Bullet()
 	DeleteComponent("Sprite");
 	DeleteComponent("Collider");
 }
+
 void Bullet::InitBullet(std::string id)
 {
 	SetID(id);
@@ -25,15 +26,7 @@ void Bullet::InitBullet(std::string id)
 	SetSize(2.f, 12.f);
 	Dead();
 }
-/*
-void Bullet::InitBullet()
-{
-	AddComponent(new TransformComponent(this));
-	AddComponent(new RigidbodyComponent(this));
-	AddComponent(new SpriteComponent(this));
-	AddComponent(new ColliderComponent(this));
-}
-*/
+
 void Bullet::SetBullet(std::string id, MissileType type, float sizeX, float sizeY, float posX, float posY, float r, float g, float b)
 {
 	this->SetID(id);
@@ -95,7 +88,6 @@ void Bullet::SetMissileRandom()
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> dist(1, 3);
 	
-
 	switch (dist(mt))
 	{
 	case 1:
@@ -145,7 +137,6 @@ void Bullet::Dead()
 {
 	this->alive = false;
 	Visible(false);
-	//std::cout << this->GetID() << " is DEAD" << std::endl;
 }
 
 void Bullet::printInfo()

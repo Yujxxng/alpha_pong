@@ -9,6 +9,9 @@
 #include "GSM/Title.h"
 #include "GSM/Intro.h"
 #include "GSM/GoalLevel.h"
+#include "GSM/GameOver.h"
+
+#include "GSM/Test.h"
 
 #include "ComponentManager/GameObject.h"
 #include "ComponentManager/LogicComponent.h"
@@ -29,9 +32,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-
-	int gGameRunning = 1;
-
 	// Initialization of your own variables go here
 
 	// Using custom window procedure
@@ -44,14 +44,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// reset the system modules
 	AESysReset();
 	
-	//gsm->ChangeLevel(new Levels::MainLevel);
-	auto lv = new Levels::MainLevel;
-	lv->Init();
-	lv->Exit();
-	delete lv;
+	gsm->ChangeLevel(new Levels::Test);
 
 	// Game Loop
-	while (gGameRunning)
+	while (gsm->gGameRunning)
 	{
 		// gsm current state != next state => state changed
 			// then, current state exit
@@ -72,7 +68,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		// check if forcing the application to quit
 		if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-			gGameRunning = 0;
+			gsm->gGameRunning = 0;
 	}
 
 	ResourceManager* rm = ResourceManager::GetPtr();

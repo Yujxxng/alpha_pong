@@ -41,7 +41,6 @@ TextInputBox::TextInputBox()
 		offset++;
 	}
 	allowedKeys.push_back(std::make_pair(AEVK_SPACE, ' '));
-	//allowedKeys.push_back(std::make_pair(AEVK_A, 'A'));
 }
 
 TextInputBox::~TextInputBox()
@@ -196,10 +195,16 @@ void TextInputBox::LoadFromJson()
 		std::cout << "FILE NOT FOUND" << std::endl;
 		return;
 	}
+
 	using json = nlohmann::json;
 	json data;
 	jf >> data;
-	text = data.at("text").get<std::string>();
+
+	auto ch = data.find("text");
+	if (ch != data.end())
+	{
+		text = data.at("text").get<std::string>();
+	}
 
 	jf.close();
 }

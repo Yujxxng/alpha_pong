@@ -12,14 +12,43 @@ GSM::GameStateManager* GSM::GameStateManager::ptr = nullptr;
 
 GSM::GameStateManager::GameStateManager() : currentLevel(nullptr), nextLevel(nullptr)
 {
-    std::cout << __FUNCTION__ << std::endl;
+
+    for (u8 curr = AEVK_LBUTTON; curr <= AEVK_MBUTTON; curr++)
+        anyKeys.push_back(curr);
+ 
+    for (u8 curr = AEVK_BACK; curr <= AEVK_CAPSLOCK; curr++)
+        anyKeys.push_back(curr);
+
+    for (u8 curr = AEVK_SPACE; curr <= AEVK_DELETE; curr++)
+        anyKeys.push_back(curr);
+
+    for (u8 curr = AEVK_0; curr <= AEVK_Z; curr++)
+    {
+        if (curr >= 0x3A && curr <= 0x40)
+            continue;
+        anyKeys.push_back(curr);
+    }
+    
+    for (u8 curr = AEVK_NUMPAD0; curr <= AEVK_NUMPAD9; curr++)
+        anyKeys.push_back(curr);
+
+    for (u8 curr = AEVK_NUM_MULTIPLY; curr <= AEVK_NUMLOCK; curr++)
+        anyKeys.push_back(curr);
+
+    for (u8 curr = AEVK_F1; curr <= AEVK_F12; curr++)
+        anyKeys.push_back(curr);
+
+    for (u8 curr = AEVK_SEMICOLON; curr <= AEVK_QUOTE; curr++)
+        anyKeys.push_back(curr);
+
+    for (u8 curr = AEVK_EQUAL; curr <= AEVK_COMMA; curr++)
+        anyKeys.push_back(curr);
 }
 
 GSM::GameStateManager::~GameStateManager()
 {
     if (currentLevel)
     {
-        std::cout << __FUNCTION__ << std::endl;
         if (currentLevel == nextLevel)
             nextLevel = nullptr;
         delete currentLevel;
@@ -33,7 +62,6 @@ GSM::GameStateManager* GSM::GameStateManager::GetGSMPtr()
 {
     if (ptr == nullptr)
     {
-        std::cout << __FUNCTION__ << std::endl;
         ptr = new GameStateManager;
     }
 
@@ -44,7 +72,6 @@ void GSM::GameStateManager::DeleteGSM()
 {
     if (ptr)
     {
-        std::cout << __FUNCTION__ << std::endl;
         delete ptr;
         ptr = nullptr;
     }
@@ -54,7 +81,6 @@ void GSM::GameStateManager::Init()
 {
     if (nextLevel)
     {
-        std::cout << __FUNCTION__ << std::endl;
         nextLevel->Init();
     }
 }
@@ -67,8 +93,6 @@ void GSM::GameStateManager::Update()
         Init(); //nextLevel
 
         currentLevel = nextLevel;
-
-        std::cout << __FUNCTION__ << std::endl;
     }
 
     if (currentLevel)
@@ -85,42 +109,23 @@ void GSM::GameStateManager::Exit()
 {
     if (currentLevel)
     {
-        std::cout << __FUNCTION__ << std::endl;
         if(currentLevel == nextLevel)
             nextLevel = nullptr;
-
-        LogicComponentManager::DeletePtr();
-        EngineComponentManager::DeletePtr();
-        GraphicComponentManager::DeletePtr();
-        //EventManager::DeletePtr();
-        //ResourceManager::DeletePtr();
 
         currentLevel->Exit();
 
         delete currentLevel;
         currentLevel = nullptr;
     }
+    LogicComponentManager::DeletePtr();
+    EngineComponentManager::DeletePtr();
+    GraphicComponentManager::DeletePtr();
+    //EventManager::DeletePtr();
 }
 
 void GSM::GameStateManager::ChangeLevel(BaseLevel* newLvl)
 {
-#if 0
-    if(previousLevel)
-        delete previousLevel;
-    
-    previousLevel = currentLevel;
-
-    //Exit the current level
-    Exit();
-
-    //Current level is now the "next" level
-    currentLevel = newLvl;
-
-    //initialize the level
-    Init();
-#elif 1
     nextLevel = newLvl;
-#endif
 }
 
 bool GSM::GameStateManager::ShouldExit()

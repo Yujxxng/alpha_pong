@@ -14,9 +14,13 @@ void BulletManager::InitBulletManager()
 	}
 }
 
-void BulletManager::DeleteBullets()
+void BulletManager::DeadBullets()
 {
-
+	for (auto& bullet : pool)
+	{
+		if (bullet->alive)
+			bullet->alive = false;
+	}	
 }
 
 Bullet* BulletManager::GetBullet()
@@ -27,6 +31,17 @@ Bullet* BulletManager::GetBullet()
 			return bullet.get();
 	}
 	return nullptr;
+}
+
+int BulletManager::GetAliveBullet()
+{
+	int num = 0;
+	for (auto& bullet : pool)
+	{
+		if (bullet->alive)
+			num++;
+	}
+	return num;
 }
 
 void BulletManager::UpdateBullet(float dt)

@@ -29,4 +29,7 @@ public:
 
 	void AddPoint(int v) { point += v; }
 	void Reset() { point = 0;}
+
+	void SaveToJson();
+	int LoadFromJson();
 };

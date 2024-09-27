@@ -18,51 +18,75 @@
 #include "../Components/AudioComponent.h"
 
 int TotalScore = 0;
+int HighScore = 0;
 
 bool stopMain = false;
 
+//~dt~
 float dt = 0.0f;
-float stopDt = 0.0f;
+float _stopDt = 2.0f;
 float _moveDt = 1.f;
+float _deadDt = 0.4f;
 
+float stop_dt = 0.0f;
 float UFO_dt = 0.0f;
 float idx_dt = 0.0f;
+float bgm_dt = 0.0f;
+float dead_dt = 0.0f;
 
 s8 fontName;
-AEAudio bgm;
+
+int bgmIdx = 0;
+AEAudio bgm[4];
+AEAudio deadSound;
+AEAudio killSound;
 AEAudioGroup bgm_group;
 
 Levels::MainLevel::~MainLevel()
 {
-	std::cout << __FUNCTION__ << std::endl;
 }
 
 void Levels::MainLevel::Init()
 {
-	std::cout << __FUNCTION__ << std::endl;
-	//std::cout << "Main level Init:" << std::endl;
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
 	fontName = ResourceManager::GetPtr()->Get<FontResource>("Assets/space_invaders.ttf")->GetData();
 	bgm_group = AEAudioCreateGroup();
-	bgm = *(ResourceManager::GetPtr()->Get<AudioResource>("Assets/space_invaders/Invader Homeworld.mp3")->GetData());
-	AEAudioPlay(bgm, bgm_group, 0.5f, 1.f, -1);
+	for (int i = 0; i < 4; i++)
+	{
+		std::string bgmName = "Assets/space_invaders/sounds/fastinvader";
+		bgmName = bgmName + to_string(i) + ".mp3";
+		bgm[i] = *(ResourceManager::GetPtr()->Get<AudioResource>(bgmName)->GetData());
+	}
+	deadSound = *(ResourceManager::GetPtr()->Get<AudioResource>("Assets/space_invaders/sounds/explosion.mp3")->GetData());
+	killSound = *(ResourceManager::GetPtr()->Get<AudioResource>("Assets/space_invaders/sounds/invaderkilled.mp3")->GetData());
+
+	dt = 0.0f;
+	_moveDt = 1.f;
+	_deadDt = 0.4f;
+
+	stop_dt = 0.0f;
+	UFO_dt = 0.0f;
+	idx_dt = 0.0f;
+	bgm_dt = 0.0f;
+	dead_dt = 0.0f;
 
 	//Init Score
 	score = new Score;
 	score->InitScore();
-	score->SetScore("score", 0.8f, 0.f, 0.80f, 255.f, 255.f, 255.f);
+	score->SetScore("score", 0.8f, 0.f, 0.83f, 255.f, 255.f, 255.f);
+	HighScore = score->LoadFromJson();
 
 	bulletMgt.InitBulletManager();
 
 	//Init Player
-	//player = new Player;
-	//player->InitPlayer();
-	//player->SetPlayer("player", 25.f, 20.f, 0.f, -200.f, 0.f, 255.f, 0.f);
+	player = new Player;
+	player->InitPlayer();
+	player->SetPlayer("player", 25.f, 20.f, 0.f, -200.f, 0.f, 255.f, 0.f);
 
 	//Init Invaders
-	//invaderMgt.InitInvaders();
-	//invaderMgt.InitAttacker();
+	invaderMgt.InitInvaders();
+	invaderMgt.InitAttacker();
 
 	//Init Scene
 	wTop = new Wall;
@@ -82,8 +106,37 @@ void Levels::MainLevel::Init()
 	wRight->SetWall("right", 100.f, W_HEIGHT, (W_WIDTH / 2) + 50.f, 0.f, 255.f, 0.f, 0.f);
 }
 
-void Levels::MainLevel::Stop()
+void Levels::MainLevel::ReLoad()
 {
+	invaderMgt.Stage = invaderMgt.Stage + 1;
+
+	//set bullet
+	dt = 0.0f;
+	_moveDt = 1.f;
+
+	stop_dt = 0.0f;
+	UFO_dt = 0.0f;
+	idx_dt = 0.0f;
+	bgm_dt = 0.0f;
+	dead_dt = 0.0f;
+
+	invaderMgt.ResetInvaders();
+	invaderMgt.InitAttacker();
+
+	if (bulletMgt.poolSize > invaderMgt.AttackerNum)
+	{
+		if(invaderMgt.Stage % 2 == 0)
+			invaderMgt.AttackerNum++;
+	}
+
+	if(player->GetLife() < 3)
+		player->AddLife();
+	player->SetPos(0.f, -200.f);
+}
+
+void Levels::MainLevel::Stop(float t)
+{
+	_stopDt = t;
 	stopMain = true;
 	player->stop = true;
 }
@@ -91,29 +144,43 @@ void Levels::MainLevel::Stop()
 
 void Levels::MainLevel::Update()
 {
-	AEGfxPrint(fontName, "<SCORE>", -0.26f, 0.87f, 0.7f, 1.f, 1.f, 1.f, 1.f);
+
+	if (AEInputCheckTriggered(AEVK_RBUTTON))
+		ReLoad();
+
+	f32 width, height;
+	AEGfxGetPrintSize(fontName, "<SCORE>", 0.8f, &width, &height);
+	AEGfxPrint(fontName, "<SCORE>", -width / 2, -height / 2 + 0.925f, 0.8f, 1.f, 1.f, 1.f, 1.f);
 	
 	AEGfxPrint(fontName, "LIFE : ", 0.5f, 0.915f, 0.5f, 1.f, 1.f, 1.f, 1.f);
-	/*
+	AEGfxPrint(fontName, "HIGHEST SCORE", -0.9f, 0.915f, 0.5f, 1.f, 1.f, 1.f, 1.f);
+
+	if (score->getPoint() > HighScore)
+		HighScore = score->getPoint();
+
+	AEGfxPrint(fontName, to_string(HighScore).c_str(), -0.7f, 0.85f, 0.5f, 1.f, 1.f, 1.f, 1.f);
+	
+	if(!stopMain)
+		dt = static_cast<float>(AEFrameRateControllerGetFrameTime());
+	else
+	{
+		dt = 0.0f;
+		stop_dt += static_cast<float>(AEFrameRateControllerGetFrameTime());
+		if (stop_dt > _stopDt)
+		{
+			stopMain = false;
+			player->stop = false;
+			stop_dt = 0.0f;
+		}
+	}
 	if (invaderMgt.GetLiveInvaders() > 0)
 	{
-		if(!stopMain)
-			dt = static_cast<float>(AEFrameRateControllerGetFrameTime());
-		else
-		{
-			dt = 0.0f;
-			stopDt += static_cast<float>(AEFrameRateControllerGetFrameTime());
-			if (stopDt > 2.f)
-			{
-				stopMain = false;
-				player->stop = false;
-				stopDt = 0.0f;
-			}
-		}
 
 		UFO_dt += dt;
 		idx_dt += dt;
-		
+		bgm_dt += dt;
+		dead_dt += dt;
+
 		//Update the player's position
 		TransformComponent* pt = (TransformComponent*)player->FindComponent("Transform");
 		player->SetPos(pt->GetPos().x, pt->GetPos().y);
@@ -126,7 +193,7 @@ void Levels::MainLevel::Update()
 		ColliderComponent* lc = (ColliderComponent*)wLeft->FindComponent("Collider");
 		ColliderComponent* rc = (ColliderComponent*)wRight->FindComponent("Collider");
 		ColliderComponent* tc = (ColliderComponent*)wTop->FindComponent("Collider");
-		ColliderComponent* wbc = (ColliderComponent*)wBot->FindComponent("Collider");
+		//ColliderComponent* wbc = (ColliderComponent*)wBot->FindComponent("Collider");
 
 		ColliderComponent* pc = (ColliderComponent*)player->FindComponent("Collider");
 
@@ -162,13 +229,12 @@ void Levels::MainLevel::Update()
 		//Move invaders
 		if (UFO_dt > invaderMgt.UFO->GetSpawnTime())
 		{
-			//std::cout << "!! UFO has spawned !! Spawn Time : " << UFO->GetSpawnTime() << ", POINTS : " << UFO->GetPoints() << std::endl;
 			if (invaderMgt.move_dir > 0)
 				invaderMgt.UFO->SetPos(W_WIDTH / 2 - 30.f, (W_HEIGHT / 2) - 100.f);
 			else
 				invaderMgt.UFO->SetPos(-(W_WIDTH / 2) + 30.f, (W_HEIGHT / 2) - 100.f);
 
-			invaderMgt.UFO->SetSpeed(15.f * invaderMgt.move_dir);
+			invaderMgt.UFO->SetSpeed(80.f * invaderMgt.move_dir);
 			invaderMgt.UFO->alive = true;
 			invaderMgt.UFO->Visible(true);
 			invaderMgt.UFO->move = true;
@@ -182,7 +248,6 @@ void Levels::MainLevel::Update()
 		ColliderComponent* uc = (ColliderComponent*)invaderMgt.UFO->FindComponent("Collider");
 		if (uc->IsCollision(lc) || uc->IsCollision(rc))
 		{
-			//std::cout << "UFO collision" << std::endl;
 			invaderMgt.UFO->SetPos(0, -W_HEIGHT);
 			invaderMgt.UFO->Visible(false);
 			invaderMgt.UFO->move = false;
@@ -190,6 +255,7 @@ void Levels::MainLevel::Update()
 			invaderMgt.UFO->Sound(false);
 		}
 
+		//Set Invaders direction
 		for (int i = 0; i < ROW; i++)
 		{
 			for (int j = 0; j < COL; j++)
@@ -200,7 +266,6 @@ void Levels::MainLevel::Update()
 		}
 
 		//Set the speed according to the alive invaders.
-
 		if (invaderMgt.GetLiveInvaders() < 2)
 			_moveDt = 0.01f;
 		else if (invaderMgt.GetLiveInvaders() < 4)
@@ -216,24 +281,48 @@ void Levels::MainLevel::Update()
 		else if (invaderMgt.GetLiveInvaders() < 50)
 			_moveDt = 0.9f;
 
-		if (idx_dt > _moveDt)
+		if (_moveDt > 0.1f)
+		{
+			if (bgm_dt > _moveDt)
+			{
+				AEAudioPlay(bgm[bgmIdx], bgm_group, 1.0f, 1.f, 0);
+				bgmIdx = (bgmIdx + 1) % 4;
+				bgm_dt = 0.f;
+			}
+		}
+		else
+		{
+			if (bgm_dt > _moveDt + 0.2f)
+			{
+				AEAudioPlay(bgm[bgmIdx], bgm_group, 1.0f, 1.f, 0);
+				bgmIdx = (bgmIdx + 1) % 4;
+				bgm_dt = 0.f;
+			}
+		}
+
+		//Update Deads unvisiable
+		if (dead_dt > _deadDt)
 		{
 			invaderMgt.UpdateDead();
+			dead_dt = 0.0f;
+		}
+
+		//Move invaders and Update animation
+		if (idx_dt > _moveDt)
+		{
 			for (int i = 0; i < ROW; i++)
 			{
 				for (int j = 0; j < COL; j++)
 				{
-					invaderMgt.invaders[i][j].idx = (invaderMgt.invaders[i][j].idx + 1) % 2;
-					invaderMgt.invaders[i][j].SetTexIndex(invaderMgt.invaders[i][j].idx);
-
+					if (invaderMgt.invaders[i][j].alive)
+						invaderMgt.invaders[i][j].SetTexIndex((invaderMgt.invaders[i][j].GetTexIndex() + 1) % 2);
+					
 					invaderMgt.invaders[i][j].Move(dt);
 				}
 			}
 			idx_dt = 0.f;
 		}
-
-		for (int i = 0; i < COL; i++)
-			invaderMgt.UFO->Move(dt);
+		invaderMgt.UFO->Move(dt);
 	
 		//Player Bullet
 		ColliderComponent* bc = (ColliderComponent*)player->GetBullet()->FindComponent("Collider");
@@ -254,14 +343,12 @@ void Levels::MainLevel::Update()
 						player->GetBullet()->SetPos(player->GetPos().x, player->GetPos().y + player->GetSize().y / 2.f);
 						player->GetBullet()->Dead();
 
+						AEAudioPlay(killSound, bgm_group, 0.1f, 1.f, 0);
 						invaderMgt.invaders[i][j].alive = false;
 						invaderMgt.invaders[i][j].SetTexIndex(2);
 
 						score->AddPoint(invaderMgt.invaders[i][j].GetPoints());
-						//std::cout << invaderMgt.invaders[i][j].GetID() << " : " << invaderMgt.invaders[i][j].GetPoints() << std::endl;
 						invaderMgt.InvaderNum--;
-						//if (invaderMgt.IsAttacker(&invaderMgt.invaders[i][j]))
-						//	invaderMgt.CurAttackNum--;
 					}
 				}
 			}
@@ -292,16 +379,13 @@ void Levels::MainLevel::Update()
 		}
 
 		//Invader Attack
-		//invaderMgt.UpdateBottom();
-		if (bulletMgt.GetBullet() != nullptr)
+		if (bulletMgt.GetBullet() != nullptr && bulletMgt.GetAliveBullet() < invaderMgt.AttackerNum)
 		{
 			Bullet* bullet = bulletMgt.GetBullet();
-			//std::cout << bullet->GetID() << std::endl;
 			int attacker = invaderMgt.SetAttacker();
 			if (invaderMgt.Attacker[attacker].first != nullptr)
 			{
 				invaderMgt.Attacker[attacker].second = true;
-				//invaderMgt.Attacker[attacker].first->attack = true;
 
 				AEVec2 pos = invaderMgt.Attacker[attacker].first->GetPos();
 				bullet->alive = true;
@@ -333,8 +417,10 @@ void Levels::MainLevel::Update()
 				{
 					b->collision = false;
 
+					AEAudioPlay(deadSound, bgm_group, 0.4f, 1.f, 0);
 					player->LoseLife();
-					Stop();
+					bulletMgt.DeadBullets();
+					Stop(2.0f);
 				}
 			}
 		}
@@ -354,36 +440,47 @@ void Levels::MainLevel::Update()
 		}
 
 		if (player->GetLife() < 1)
-			0;// GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GameOver);
+			GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GameOver);
+
+		else if(invaderMgt.Stage >= 5)
+			GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GoalLevel);
 
 		else if(invaderMgt.GetLiveInvaders() > 0)
 		{
 			if (invaderMgt.GetBottom()->GetPos().y <= player->GetPos().y + player->GetSize().y)
-				0;// GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GameOver);
+				GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GameOver);
 		}
 	}
 	else
-		0;// GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new GoalLevel);
-		*/
-	
+	{
+		//stop and print stage number
+		Stop(2.0f);
+		ReLoad();
+		bulletMgt.DeadBullets();
+		player->GetBullet()->Dead();
+	}
 }
 
 void Levels::MainLevel::Exit()
 {
-	std::cout << __FUNCTION__ << std::endl;
-	//TotalScore = score->getPoint();
-
-	//AEAudioUnloadAudio(bgm);
+	TotalScore = score->getPoint();
+	if (TotalScore >= HighScore)
+	{
+		HighScore = TotalScore;
+		score->SaveToJson();
+	}
+	if (invaderMgt.UFO->alive)
+		invaderMgt.UFO->Sound(false);
+	
 	AEAudioUnloadAudioGroup(bgm_group);
 
 	delete score;
 	delete player;
 
-	//invaderMgt.deleteInvaders();
+	invaderMgt.deleteInvaders();
 
 	delete wLeft;
 	delete wRight;
 	delete wTop;
 	delete wBot;
-	//AEGfxDestroyFont(fontName);
 }

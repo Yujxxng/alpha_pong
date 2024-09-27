@@ -13,7 +13,6 @@ void InvaderManager::InitInvaders()
 {
 	move_dir = 1;
 	InvaderNum = COL * ROW;
-	CurAttackNum = 0;
 
 	invaders = new Invader*[ROW];
 	for (int i = 0; i < ROW; i++)
@@ -55,6 +54,7 @@ void InvaderManager::InitInvaders()
 	UFO = new Invader;
 	UFO->InitInvader();
 	UFO->SetInvader("UFO", InvaderType::UFO, 30.f, 20.f, 0.f, (W_HEIGHT / 2) - 50.f, 255.f, 0.f, 0.f);
+	UFO->SetSpeed(80.f);
 	UFO->SetRandomSpawn();
 	UFO->SetRandomPoints();
 	UFO->alive = false;
@@ -73,6 +73,56 @@ void InvaderManager::deleteInvaders()
 	delete UFO;
 }
 
+void InvaderManager::ResetInvaders()
+{
+	move_dir = 1;
+	InvaderNum = COL * ROW;
+
+	for (int i = 0; i < ROW; i++)
+	{
+		for (int j = 0; j < COL; j++)
+		{
+			invaders[i][j].alive = true;
+			invaders[i][j].Visible(true);
+			invaders[i][j].move = true;
+			invaders[i][j].SetTexIndex(0);
+			invaders[i][j].SetSpeed(100.f);
+
+			switch (i)
+			{
+			case 0:
+			case 1:
+				//octopus
+				invaders[i][j].SetPos(-(320.f / 2) + 10.f + (30.f * j), 35.f * (i - Stage));
+				break;
+
+			case 2:
+			case 3:
+				//crab
+				invaders[i][j].SetPos(-(320.f / 2) + 10.f + (30.f * j), 35.f * (i - Stage));
+				break;
+
+			case 4:
+				//squid
+				invaders[i][j].SetPos(-(320.f / 2) + 10.f + (30.f * j), 35.f * (i - Stage));
+				break;
+
+			default:
+				break;
+			}
+		}
+	}
+}
+
+void InvaderManager::DeadAllInvaders()
+{
+	for (int j = 0; j < COL; j++)
+	{
+		for (int i = 0; i < ROW; i++)
+			invaders[i][j].Dead();
+	}
+}
+
 Invader* InvaderManager::GetLeft()
 {
 	int idx = COL;
@@ -84,7 +134,6 @@ Invader* InvaderManager::GetLeft()
 		{
 			if (invaders[i][j].alive && j < idx)
 			{
-				
 				idx = j;
 				tmp = &invaders[i][j];
 			}
@@ -135,7 +184,6 @@ Invader* InvaderManager::GetBottom()
 
 void InvaderManager::UpdateBottom()
 {
-	botNum = GetLiveAttacker();
 	for (int i = ROW - 1; i >= 0; i--)
 	{
 		for (int j = 0; j < COL; j++)
@@ -201,19 +249,6 @@ int InvaderManager::SetAttacker()
 	return idx;
 }
 
-bool InvaderManager::IsAttacker(Invader* invader)
-{
-	for (int i = 0; i < COL; i++)
-	{
-		if (invader == Attacker[i].first)
-		{
-			if (Attacker[i].second)
-				return true;
-		}
-	}
-	return false;
-}
-
 int InvaderManager::GetLiveInvaders()
 {
 	int cnt = 0;
@@ -227,24 +262,4 @@ int InvaderManager::GetLiveInvaders()
 	}
 
 	return cnt;
-}
-
-int InvaderManager::GetLiveAttacker()
-{
-	int cnt = 0;
-
-	for (int j = 0; j < COL; j++)
-	{
-		if (Attacker[j].first)
-			cnt++;
-	}
-
-	return cnt;
-}
-
-void InvaderManager::PrintAttacker()
-{
-	for (int i = 0; i < COL; i++)
-		std::cout << Attacker[i].first->GetID() << " | ";
-	std::cout << "\n";
 }

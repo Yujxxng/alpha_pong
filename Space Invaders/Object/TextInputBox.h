@@ -11,7 +11,6 @@ class TextInputBox
 {
 	std::vector<std::pair<u8, char>> allowedKeys;
 
-
 	AEGfxVertexList* mesh;
 	s8 font;
 	
@@ -39,6 +38,7 @@ public:
 	~TextInputBox();
 
 	void Update(float dt);
+
 	void DrawTextInputBox();
 	void DrawBar(float dt);
 	void DrawUserText();

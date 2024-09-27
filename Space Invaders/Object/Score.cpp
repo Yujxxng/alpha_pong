@@ -1,5 +1,8 @@
 #include "Score.h"
 
+#include <iostream>
+#include <fstream>
+
 Score::~Score()
 {
 	DeleteComponent("Font");
@@ -16,10 +19,10 @@ void Score::InitScore()
 	}
 }
 
-void Score::SetScore(std::string id, float size, float posX, float posY, float r, float g, float b)
+void Score::SetScore(std::string id, float sz, float posX, float posY, float r, float g, float b)
 {
 	this->SetID(id);
-	SetSize(size);
+	SetSize(sz);
 	SetPos(posX, posY);
 	SetColor(r, g, b);
 	SetStr();
@@ -63,5 +66,49 @@ void Score::SetStr()
 	{
 		f->SetStr(tmp.c_str());
 	}
+}
+
+void Score::SaveToJson()
+{
+	std::ofstream jf("data.json");
+
+	if (!jf.is_open())
+	{
+		std::cout << "FILE NOT FOUND" << std::endl;
+		return;
+	}
+	using json = nlohmann::json;
+	json data;
+	data["High Score"] = point;
+
+	std::string tmp = data.dump(-1);
+	jf.write(tmp.c_str(), tmp.size());
+
+	jf.close();
+}
+
+int Score::LoadFromJson()
+{
+	std::ifstream jf("data.json");
+
+	if (!jf.is_open())
+	{
+		std::cout << "FILE NOT FOUND" << std::endl;
+		return -1;
+	}
+	using json = nlohmann::json;
+	json data;
+	jf >> data;
+
+	int score = 0;
+	auto ch = data.find("High Score");
+	if (ch != data.end())
+	{
+		score = data.at("High Score").get<int>();
+	}
+
+	jf.close();
+
+	return score;
 }
 

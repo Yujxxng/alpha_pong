@@ -10,6 +10,7 @@
 #include "../Object/BulletManager.h"
 
 extern int TotalScore;
+extern int HighScore;
 
 namespace Levels
 {
@@ -23,14 +24,14 @@ namespace Levels
 
 		Wall* wLeft, * wRight;
 		Wall* wTop, * wBot;
-		
 
 	public:
 		~MainLevel() override;
 		void Init() override;
 		void Update() override;
 		void Exit() override;
-		
-		void Stop();
+
+		void ReLoad();
+		void Stop(float t);
 	};
 }

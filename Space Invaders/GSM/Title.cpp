@@ -14,8 +14,12 @@ float t = 0.0f;
 int idx = 0;
 
 bool draw = false;
+bool clickable = false;
 static AEGfxTexture* Logo[2];
 AEGfxTexture* dg;
+
+AEAudio titleBgm;
+AEAudioGroup titleGroup;
 
 void Levels::Title::Init()
 {
@@ -26,6 +30,9 @@ void Levels::Title::Init()
 	Logo[1] = AEGfxTextureLoad("Assets/space_invaders/logo1.png");
 	dg = AEGfxTextureLoad("Assets/DigiPen.png");
 	dgDt = 0.0f;
+
+	titleGroup = AEAudioCreateGroup();
+	titleBgm = *(ResourceManager::GetPtr()->Get<AudioResource>("Assets/space_invaders/Invader Homeworld.mp3")->GetData());
 }
 
 void Levels::Title::Update()
@@ -52,11 +59,15 @@ void Levels::Title::Update()
 			la = 2.f - (dgDt - 2.f) / 2.f;
 			dgDt += static_cast<float>(AEFrameRateControllerGetFrameTime());
 			if (dgDt >= 7.3f)
+			{
 				draw = true;
+				clickable = true;
+				AEAudioPlay(titleBgm, titleGroup, 0.5f, 1.f, -1);
+			}
 		}
 	}
-	Levels::Title::DrawTexture(dg, 0.f, 29.f, 200.f, 48.f, la);
 
+	Levels::Title::DrawTexture(dg, 0.f, 29.f, 200.f, 48.f, la);
 	if (t > 1.0f)
 	{
 		idx = (idx + 1) % 2;
@@ -68,13 +79,22 @@ void Levels::Title::Update()
 	float a = sinf(PI * titleDt) * draw;
 
 	f32 width, height;
-	AEGfxGetPrintSize(fontName1, "CLICK TO START", 0.5f, &width, &height);
-	AEGfxPrint(fontName1, "CLICK TO START", -width / 2, -height / 2 - 0.3f, 0.5f, 1, 1, 1, fabsf(a));
+	AEGfxGetPrintSize(fontName1, "PRESS ANY KEY. . .", 0.5f, &width, &height);
+	AEGfxPrint(fontName1, "PRESS ANY KEY. . .", -width / 2, -height / 2 - 0.2f, 0.5f, 1, 1, 1, fabsf(a));
 
 	AEGfxPrint(fontName1, "¨Ï 2024. Yujung All rights reserved.", -0.44f, - 0.95f, 0.3f, 1, 1, 1, 1.f * draw);
 	
-	if(AEInputCheckTriggered(AEVK_LBUTTON))
-		GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new Levels::Intro);
+	if (clickable)
+	{
+		for (const auto& key : GSM::GameStateManager::GetGSMPtr()->anyKeys)
+		{
+			if (AEInputCheckTriggered(key))
+			{
+				AEAudioStopGroup(titleGroup);
+				GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new Levels::Intro);
+			}
+		}
+	}
 }
 
 void Levels::Title::Exit()
@@ -83,6 +103,7 @@ void Levels::Title::Exit()
 	for(int i = 0; i < 2; i++)
 		AEGfxTextureUnload(Logo[i]);
 	AEGfxTextureUnload(dg);
+	AEAudioUnloadAudioGroup(titleGroup);
 }
 
 void Levels::Title::DrawTexture(AEGfxTexture* tex, float px, float py, float sx, float sy, float a)

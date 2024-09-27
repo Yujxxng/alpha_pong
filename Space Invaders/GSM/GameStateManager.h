@@ -1,4 +1,6 @@
 #pragma once
+#include "../Utils/myUtils.h"
+#include <vector>
 
 namespace GSM
 {
@@ -38,6 +40,10 @@ namespace GSM
 		BaseLevel* nextLevel{ nullptr };
 	public:
 		//Functions to call Init, Update, Exit
+		int gGameRunning = 1;
+		
+		std::vector<u8> anyKeys;
+		
 		void Init();
 		void Update();
 		void Exit();

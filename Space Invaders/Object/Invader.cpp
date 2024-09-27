@@ -19,16 +19,24 @@ void Invader::InitInvader()
 	AddComponent(new SpriteComponent(this));
 	AddComponent(new ColliderComponent(this));
 	AddComponent(new AudioComponent(this));
+
+	speed = 100.f;
+	spawnTime = 0.0f;
+	bullet = nullptr;
+	point = 0;
+
+	alive = true;
+	move = true;
 }
 
-void Invader::SetInvader(std::string id, InvaderType type, float sizeX, float sizeY, float posX, float posY, float r, float g, float b)
+void Invader::SetInvader(std::string id, InvaderType typeName, float sizeX, float sizeY, float posX, float posY, float r, float g, float b)
 {
 	this->SetID(id);
-	this->type = type;
+	this->type = typeName;
 
 	std::string texName = "Assets/space_invaders/";
 
-	switch (type)
+	switch (typeName)
 	{
 	case OCTOPUS:
 		texName += "octopus0.png";
@@ -80,12 +88,12 @@ void Invader::SetInvader(std::string id, InvaderType type, float sizeX, float si
 	
 }
 
-void Invader::SetMore(std::string texName, int point)
+void Invader::SetMore(std::string texName, int points)
 {
 	SpriteComponent* s = (SpriteComponent*)FindComponent("Sprite");
 	s->SetTexture(texName);
 
-	this->point = point;
+	this->point = points;
 }
 
 void Invader::SetSize(float x, float y)
@@ -134,10 +142,10 @@ void Invader::SetTexture(std::string texName)
 	s->SetTexture(texName);
 }
 
-void Invader::SetTexIndex(int idx)
+void Invader::SetTexIndex(int i)
 {
 	SpriteComponent* s = (SpriteComponent*)FindComponent("Sprite");
-	s->index = idx;
+	s->index = i;
 }
 
 void Invader::Visible(bool v)
@@ -163,6 +171,7 @@ void Invader::Dead()
 {
 	this->alive = false;
 	Visible(false);
+	SetTexIndex(0);
 	//SetSize(0.f, 0.f);
 	
 	//std::cout << "\"" << this->GetID() << "\"" << " is DEAD" << std::endl;
@@ -174,6 +183,12 @@ void Invader::Attack()
 	bullet->SetPos(this->pos.x, this->pos.y - (size.y / 2.f));
 	bullet->Visible(true);
 	bullet->SetSpeed(attackSpeed);
+}
+
+int Invader::GetTexIndex() const
+{
+	SpriteComponent* s = (SpriteComponent*)FindComponent("Sprite");
+	return s->index;
 }
 
 void Invader::Sound(bool play)
@@ -188,12 +203,9 @@ void Invader::Sound(bool play)
 
 void Invader::Move(float dt)
 {
-	//float x = this->pos.x - speed * dt * move;
-	//float y = this->pos.y;
 	float x = this->pos.x - speed * dt;
-	float y = this->pos.y;
 
-	SetPos(x, y);
+	SetPos(x, pos.y);
 }
 
 void Invader::SetRandomSpawn()

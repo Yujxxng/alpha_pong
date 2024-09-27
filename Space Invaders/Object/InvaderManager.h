@@ -11,29 +11,27 @@ public:
 	
 	int move_dir = 1;
 	int InvaderNum = COL * ROW;
-	int botNum = COL;
-	int CurAttackNum = 0;
+	int AttackerNum = 2;
 
+	int Stage = 0;
 public:
 	InvaderManager();
 	~InvaderManager();
 
 	void InitInvaders();
 	void deleteInvaders();
+	void ResetInvaders();
+	void DeadAllInvaders();
 
 	Invader* GetLeft();
 	Invader* GetRight();
 	Invader* GetBottom();
 
+	int GetLiveInvaders();
+	
 	void UpdateBottom();
 	void UpdateDead();
 
 	void InitAttacker();
 	int SetAttacker();
-	bool IsAttacker(Invader* invader);
-
-	int GetLiveInvaders();
-	int GetLiveAttacker();
-
-	void PrintAttacker();
 };

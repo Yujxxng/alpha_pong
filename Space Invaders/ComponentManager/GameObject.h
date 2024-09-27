@@ -21,5 +21,6 @@ public:
 
 	void AddComponent(BaseComponent* component);
 	BaseComponent* FindComponent(string cmpID);
+	BaseComponent* FindComponent(string cmpID) const;
 	void DeleteComponent(string cmpID);
 };

@@ -52,9 +52,9 @@ void PlayerComponent::Update()
 		t->SetPos({ -W_WIDTH / 2 + t->GetScale().x / 2, t->GetPos().y });
 }
 
-void PlayerComponent::SetSpeed(float speed)
+void PlayerComponent::SetSpeed(float v)
 {
-	this->speed = speed;
+	this->speed = v;
 }
 
 void PlayerComponent::LoadFromJson(const json& data)

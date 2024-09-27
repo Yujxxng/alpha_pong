@@ -22,7 +22,7 @@ class Player : public GameObject
 	int lifeNum = 3;
 	std::vector<Life*> life;
 
-	Bullet* bullet{};
+	Bullet* bullet = nullptr;
 	
 	bool alive = true;
 public:
@@ -47,6 +47,7 @@ public:
 
 	void Shoot();
 	void LoseLife();
+	void AddLife();
 	
 	void printInfo();
 };

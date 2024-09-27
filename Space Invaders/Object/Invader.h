@@ -39,13 +39,10 @@ class Invader : public GameObject
 public:
 	bool alive = true;
 	bool move = true;
-	bool attack = false;
 
 	float attackTime = 0.0f;
 	float attackDt = 0.0f;
 	float attackSpeed = 400.f;
-
-	int idx = 0;
 public:
 	~Invader();
 
@@ -71,12 +68,12 @@ public:
 	AEVec2 GetSize() const { return size; }
 	AEVec2 GetPos() const { return pos; }
 	float GetSpeed() const { return speed; }
+	int GetTexIndex() const;
 	Bullet* GetBullet() const { return bullet; }
 	float GetSpawnTime() const { return spawnTime; }
 	int GetPoints() const { return point; }
 
 	void Move(float dt);
-	void Stop() { move = false; }
 	void SetRandomSpawn();
 	void SetAttackTime(float range);
 	void SetRandomPoints();

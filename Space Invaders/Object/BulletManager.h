@@ -7,13 +7,14 @@
 class BulletManager
 {
 public:
-	int poolSize = 2;
+	int poolSize = 5;
 	std::vector<std::unique_ptr<Bullet>> pool;
 
 	void InitBulletManager();
-	void DeleteBullets();
+	void DeadBullets();
 	
 	Bullet* GetBullet();
+	int GetAliveBullet();
 
 	void UpdateBullet(float dt);
 	float SetAttackTime();

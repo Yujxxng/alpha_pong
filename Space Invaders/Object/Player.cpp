@@ -33,6 +33,9 @@ void Player::InitPlayer()
 		life[i]->SetPos((W_WIDTH / 2) - 50.f + (30.f * i), (W_HEIGHT / 2) - 20.f);
 	}
 
+	lifeNum = 3;
+	alive = true;
+	stop = false;
 }
 
 void Player::SetPlayer(std::string id, float sizeX, float sizeY, float posX, float posY, float r, float g, float b)
@@ -48,11 +51,14 @@ void Player::SetPlayer(std::string id, float sizeX, float sizeY, float posX, flo
 	SpriteComponent* s = (SpriteComponent*)FindComponent("Sprite");
 	s->SetTexture("Assets/space_invaders/player.png");
 
-	bullet = new Bullet;
-	bullet->SetType(MissileType::PLAYER);
-	bullet->SetSize(2.f, 6.f);
-	bullet->SetColor(0.f, 255.f, 0.f);
-	bullet->Visible(false);
+	if (bullet == nullptr)
+	{
+		bullet = new Bullet;
+		bullet->SetType(MissileType::PLAYER);
+		bullet->SetSize(2.f, 6.f);
+		bullet->SetColor(0.f, 255.f, 0.f);
+		bullet->Visible(false);
+	}
 
 	AudioComponent* a = (AudioComponent*)FindComponent("Audio");
 	a->SetAudio("Assets/space_invaders/shoot.mp3");
@@ -125,6 +131,17 @@ void Player::LoseLife()
 
 	life[lifeNum-2]->Visible(false);
 	lifeNum--;
+}
+
+void Player::AddLife()
+{
+	if (lifeNum > 3)
+		return;
+
+	lifeNum = lifeNum + 1;
+
+	for (int i = 0; i < lifeNum - 1; i++)
+		life[i]->Visible(true);
 }
 
 void Player::printInfo()

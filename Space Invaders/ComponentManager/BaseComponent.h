@@ -16,11 +16,11 @@ protected:
 	GameObject* owner = nullptr;
 
 public:
-	BaseComponent(GameObject* owner) : owner(owner) { std::cout << __FUNCTION__ << std::endl; }
+	BaseComponent(GameObject* owner) : owner(owner) {}
 	BaseComponent(const BaseComponent&) = delete;
 	BaseComponent& operator=(const BaseComponent&) = delete;
 
-	virtual ~BaseComponent() override { std::cout << __FUNCTION__ << std::endl; }
+	virtual ~BaseComponent() override {}
 
 	string GetID() { return this->ID; }
 

@@ -7,7 +7,6 @@ namespace GSM
 	{
 	public:
 		virtual ~BaseLevel() {
-			std::cout << __FUNCTION__ << std::endl;
 		};
 		//Init
 		virtual void Init() = 0;
