@@ -13,8 +13,11 @@ class RankBoard
 
 	AEVec2 boardPos{ 0.f, 0.f };
 	AEVec2 boardSize{ 0.f, 0.f };
+	float rankAreaH = 40.f;
+	float categoryH{};
 
-	AEVec2 margin{ 10.f, 5.f };
+	AEVec2 margin{ 10.f, 10.f };
+
 
 	float col_lines[2];
 	float row_lines[5];

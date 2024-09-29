@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <string>
 
 RankBoard::RankBoard()
 {
@@ -13,18 +14,28 @@ RankBoard::RankBoard()
 
 	f32 width = 0, height = 0;
 	AEGfxGetPrintSize(font, "RANK", textSize0, &width, &height);
-	boardSize.x += AEGfxGetWindowWidth() * width / 2.f + margin.x;
-	boardSize.y = max(boardSize.y, AEGfxGetWindowHeight() * height / 2.f + margin.y);
-	col_lines[0] = boardSize.x;
+	col_lines[0] = (AEGfxGetWindowWidth() * width / 2.f) + margin.x;
+	boardSize.x += col_lines[0];
+	boardSize.y = max(boardSize.y, (AEGfxGetWindowHeight() * height / 2.f) + margin.y);
 
 	AEGfxGetPrintSize(font, "ABCDEFGHIJKLMN", textSize0, &width, &height); // -> name
-	boardSize.x += AEGfxGetWindowWidth() * width / 2.f + margin.x;
-	boardSize.y = max(boardSize.y, AEGfxGetWindowHeight() * height / 2.f + margin.y);
-	col_lines[1] = boardSize.x;
+	col_lines[1] = (AEGfxGetWindowWidth() * width / 2.f) + margin.x;
+	boardSize.x += col_lines[1];
+	boardSize.y = max(boardSize.y, (AEGfxGetWindowHeight() * height / 2.f) + margin.y);
 
 	AEGfxGetPrintSize(font, "SCORE", textSize0, &width, &height);
-	boardSize.x += AEGfxGetWindowWidth() * width / 2.f + margin.x;
-	boardSize.y = max(boardSize.y, AEGfxGetWindowHeight() * height / 2.f + margin.y);
+	boardSize.x += (AEGfxGetWindowWidth() * width / 2.f) + margin.x;
+	boardSize.y = max(boardSize.y, (AEGfxGetWindowHeight() * height / 2.f) + margin.y);
+
+	categoryH = boardSize.y;
+	boardSize.y = boardSize.y + (rankAreaH * (RANK_ROW - 1));
+	
+	col_lines[0] = boardPos.x - (boardSize.x / 2.f) + col_lines[0];
+	col_lines[1] = col_lines[0] + col_lines[1];
+
+	row_lines[0] = boardPos.y + (boardSize.y / 2.f) - categoryH;
+	for (int i = 1; i < 5; i++)
+		row_lines[i] = row_lines[i - 1] - rankAreaH;
 
 	AEGfxMeshStart();
 
@@ -37,6 +48,21 @@ RankBoard::RankBoard()
 	AEGfxVertexAdd(0.5f, 0.5f, 0xFFFFFFFF, 0.f, 0.f);
 	AEGfxVertexAdd(0.5f, -0.5f, 0xFFFFFFFF, 0.f, 0.f);
 	AEGfxVertexAdd(0.5f, 0.5f, 0xFFFFFFFF, 0.f, 0.f);
+
+	float p;
+	for (int i = 0; i < 2; i++)
+	{
+		p = col_lines[i] / boardSize.x;
+		AEGfxVertexAdd(p, 0.5f, 0xFFFFFFFF, 0.f, 0.f);
+		AEGfxVertexAdd(p, -0.5f, 0xFFFFFFFF, 0.f, 0.f);
+	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		p = row_lines[i] / boardSize.y;
+		AEGfxVertexAdd(-0.5f, p, 0xFFFFFFFF, 0.f, 0.f);
+		AEGfxVertexAdd(0.5f, p, 0xFFFFFFFF, 0.f, 0.f);
+	}
 
 	mesh = AEGfxMeshEnd();
 }
@@ -80,22 +106,31 @@ void RankBoard::DrawRankBoard()
 
 void RankBoard::DrawCategories()
 {
-	float left = boardPos.x - (boardSize.x / 2.f);
+	float startX = boardPos.x - (boardSize.x / 2.f);
+	float startY = boardPos.y + (boardSize.y / 2.f);
 
 	f32 width, height;
 	AEGfxGetPrintSize(font, "RANK", textSize0, &width, &height);
-	float x = left * 2.f / AEGfxGetWindowWidth();
-	float y = boardPos.y * 2.f / AEGfxGetWindowHeight();
-	AEGfxPrint(font, "RANK", x + 0.02f, y - (height / 2), textSize0, 0, 0, 1, 1);
+	float x = startX * 2.f / AEGfxGetWindowWidth();
+	float y = startY * 2.f / AEGfxGetWindowHeight();
+	AEGfxPrint(font, "RANK", x + 0.01f, y - (height / 2) - 0.025f, textSize0, 0, 1, 0, 1);
 
+	float ry = (startY - categoryH) * 2.f / AEGfxGetWindowHeight();
+	for (int i = 0; i < 5; i++)
+	{
+		if (i == 0)
+			AEGfxPrint(font, std::to_string(i + 1).c_str(), x + 0.11f, ry - (height / 2) - 0.05f - (0.14f * i), textSize0, 1, 0, 1, 1);
+		else
+			AEGfxPrint(font, std::to_string(i+1).c_str(), x + 0.1f, ry - (height / 2) - 0.05f - (0.14f * i), textSize0, 1, 1, 1, 1);
+	}
 	AEGfxGetPrintSize(font, "ABCDEFGHIJKLMN", textSize0, &width, &height);
-	left = col_lines[0] - (boardSize.x / 2.f);
-	x = left * 2.f / AEGfxGetWindowWidth();
-	AEGfxPrint(font, "NAME", x + (width / 2) - 0.04f, y - (height / 2), textSize0, 0, 0, 1, 1);
-	//std::cout << x;
+	x = col_lines[0] * 2.f / AEGfxGetWindowWidth();
+	AEGfxPrint(font, "NAME", x + (width / 2) - 0.06f, y - (height / 2) - 0.025f, textSize0, 0, 1, 0, 1);
+
 
 	AEGfxGetPrintSize(font, "SCORE", textSize0, &width, &height);
-	left = col_lines[1] - (boardSize.x / 2.f);
-	x = left * 2.f / AEGfxGetWindowWidth();
-	AEGfxPrint(font, "SCORE", x + 0.02f, y - (height / 2), textSize0, 0, 0, 1, 1);
+	x = col_lines[1] * 2.f / AEGfxGetWindowWidth();
+	AEGfxPrint(font, "SCORE", x + 0.04f, y - (height / 2) - 0.025f, textSize0, 0, 1, 0, 1);
+
+
 }
