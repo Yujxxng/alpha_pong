@@ -96,7 +96,7 @@ void Levels::GameOver::Update()
 	{
 		btn1.SetTextColor(255, 0, 255);
 		if (AEInputCheckTriggered(AEVK_RETURN))
-			GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new Levels::Intro);
+			GSM::GameStateManager::GetGSMPtr()->gGameRunning = 0;
 	}
 
 	btn0.Update();

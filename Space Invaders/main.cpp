@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------
 // includes
-
+#include <cwchar>
 #include <crtdbg.h> // To check for memory leaks
 #include "AEEngine.h"
 
@@ -33,9 +33,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
 	// Initialization of your own variables go here
+	s32 show_console = 0;
+	wchar_t str[] = L"console";
+	if (wcscmp(lpCmdLine, str)==0)
+	{
+		show_console = 1;
+	}
 
 	// Using custom window procedure
-	AESysInit(hInstance, nCmdShow, 450, 600, 1, 60, true, NULL);
+	AESysInit(hInstance, nCmdShow, 450, 600, show_console, 60, true, NULL);
 	
 	// Changing the window title
 	AESysSetWindowTitle("Digipen Invaders");
@@ -44,7 +50,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// reset the system modules
 	AESysReset();
 	
-	gsm->ChangeLevel(new Levels::Test);
+	gsm->ChangeLevel(new Levels::Title);
 
 	// Game Loop
 	while (gsm->gGameRunning)

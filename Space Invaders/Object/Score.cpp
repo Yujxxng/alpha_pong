@@ -1,5 +1,8 @@
 #include "Score.h"
 
+#include <cstdlib>
+#include <windows.h>
+#include <string>
 #include <iostream>
 #include <fstream>
 
@@ -68,15 +71,72 @@ void Score::SetStr()
 	}
 }
 
+std::string GetUserDir()
+{
+	char* uservar;
+	size_t requiredSize;
+
+	getenv_s(&requiredSize, NULL, 0, "USERPROFILE");
+	if (requiredSize == 0)
+	{
+		std::cout << "USERPROFILE doesn't exist" << std::endl;
+		return "";
+	}
+
+	uservar = (char*)malloc(requiredSize * sizeof(char));
+	if (!uservar)
+	{
+		std::cout << "Failed to allocate memory" << std::endl;
+		return "";
+	}
+	getenv_s(&requiredSize, uservar, requiredSize, "USERPROFILE");
+
+	std::string dir = uservar;
+	free(uservar);
+
+	dir = dir + "\\Documents\\Digipen Invaders\\";
+
+	return dir;
+}
+
+void CreateDir(const char* Path)
+{
+	char DirName[256];
+	const char* p = Path;
+	char* q = DirName;
+
+	while (*p)
+	{
+		if (('\\' == *p) || ('/' == *p))
+		{
+			if (':' != *(p - 1))
+			{
+				CreateDirectory(DirName, NULL);
+			}
+		}
+
+		*q++ = *p++;
+		*q = '\0';
+	}
+
+	CreateDirectory(DirName, NULL);
+}
+
 void Score::SaveToJson()
 {
-	std::ofstream jf("data.json");
+	std::string dir = GetUserDir();
+	CreateDirectory(dir.c_str(), NULL);
+
+	dir = dir + "data.json";
+
+	std::ofstream jf(dir);
 
 	if (!jf.is_open())
 	{
 		std::cout << "FILE NOT FOUND" << std::endl;
 		return;
 	}
+
 	using json = nlohmann::json;
 	json data;
 	data["High Score"] = point;
@@ -89,7 +149,13 @@ void Score::SaveToJson()
 
 int Score::LoadFromJson()
 {
-	std::ifstream jf("data.json");
+	std::string dir = GetUserDir();
+	dir = dir + "data.json";
+
+	if (dir.empty())
+		return -1;
+
+	std::ifstream jf(dir);
 
 	if (!jf.is_open())
 	{
