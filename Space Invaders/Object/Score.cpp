@@ -6,69 +6,43 @@
 #include <iostream>
 #include <fstream>
 
+Score* Score::score_ptr = nullptr;
+/*
 Score::~Score()
 {
 	DeleteComponent("Font");
 }
-
-void Score::InitScore()
+*/
+Score* Score::getPtr()
 {
-	AddComponent(new Font(this));
-
-	Font* f = (Font*)FindComponent("Font");
-	if (f != nullptr)
+	if (score_ptr == nullptr)
 	{
-		f->SetFont("Assets/space_invaders.ttf");
+		score_ptr = new Score;
+		return score_ptr;
+	}
+	else
+		return score_ptr;
+}
+
+void Score::DeletePtr()
+{
+	if (score_ptr != nullptr)
+	{
+		delete score_ptr;
+		score_ptr = nullptr;
 	}
 }
 
-void Score::SetScore(std::string id, float sz, float posX, float posY, float r, float g, float b)
+void Score::SetScore(int v)
 {
-	this->SetID(id);
-	SetSize(sz);
-	SetPos(posX, posY);
-	SetColor(r, g, b);
-	SetStr();
+	point = v;
 }
 
-void Score::SetSize(float s)
+void Score::Update()
 {
-	size = s;
-	Font* f = (Font*)FindComponent("Font");
-	if (f != nullptr)
-		f->SetSize(s);
-}
-
-void Score::SetPos(float x, float y)
-{
-	pos.x = x;
-	pos.y = y;
-
-	Font* f = (Font*)FindComponent("Font");
-	if (f != nullptr)
-		f->SetPos(x, y);
-}
-
-void Score::SetColor(float r, float g, float b)
-{
-	color.r = (unsigned char)r;
-	color.g = (unsigned char)g;
-	color.b = (unsigned char)b;
-
-	Font* f = (Font*)FindComponent("Font");
-	if (f != nullptr)
-		f->SetColor(color);
-}
-
-void Score::SetStr()
-{
-	std::string tmp = to_string(point);
-
-	Font* f = (Font*)FindComponent("Font");
-	if (f != nullptr)
-	{
-		f->SetStr(tmp.c_str());
-	}
+	f32 width, height;
+	AEGfxGetPrintSize(font, std::to_string(point).c_str(), 1.f, &width, &height);
+	AEGfxPrint(font, std::to_string(point).c_str(), -width / 2 + pos.x, -height / 2 + pos.y, size, 1, 1, 1, 1);
 }
 
 std::string GetUserDir()
@@ -122,59 +96,127 @@ void CreateDir(const char* Path)
 	CreateDirectory(DirName, NULL);
 }
 
-void Score::SaveToJson()
+void Score::SaveRankToJson()
 {
 	std::string dir = GetUserDir();
 	CreateDirectory(dir.c_str(), NULL);
 
 	dir = dir + "data.json";
 
-	std::ofstream jf(dir);
+	std::ifstream ijf(dir);
 
-	if (!jf.is_open())
+	if (!ijf.is_open())
 	{
 		std::cout << "FILE NOT FOUND" << std::endl;
 		return;
 	}
-
 	using json = nlohmann::json;
 	json data;
-	data["High Score"] = point;
+	ijf.seekg(0, std::ios::end);
+	if (ijf.tellg() != 0) {
+		ijf.seekg(0);
+		ijf >> data;
+	}
+	ijf.close();
+	
+	SortRank();
+	json rank_data;
+	for (auto& r : rank)
+		rank_data[r.first] = r.second;
 
-	std::string tmp = data.dump(-1);
-	jf.write(tmp.c_str(), tmp.size());
+	data["RANK"] = rank_data;
+
+	std::ofstream jf(dir);
+	jf << data.dump(4);
 
 	jf.close();
 }
 
-int Score::LoadFromJson()
+void Score::LoadRankFromJson()
 {
 	std::string dir = GetUserDir();
 	dir = dir + "data.json";
 
 	if (dir.empty())
-		return -1;
+	{
+		std::cout << "FILE NOT FOUND::DIRECTORY IS EMPTY" << std::endl;
+	}
 
 	std::ifstream jf(dir);
 
 	if (!jf.is_open())
 	{
-		std::cout << "FILE NOT FOUND" << std::endl;
-		return -1;
+		std::cout << "FILE NOT FOUND::FILE CANT OPEN" << std::endl;
 	}
+
 	using json = nlohmann::json;
 	json data;
+	jf.seekg(0, std::ios::end);
+	if (jf.tellg() == 0) {
+		jf.close();
+		return;
+	}
+	jf.seekg(0);
 	jf >> data;
 
-	int score = 0;
-	auto ch = data.find("High Score");
+	auto ch = data.find("RANK");
 	if (ch != data.end())
 	{
-		score = data.at("High Score").get<int>();
+		auto rank_data = data.at("RANK");
+		for (auto& r : rank_data.items())
+			rank.push_back(std::make_pair(r.key(), r.value().get<int>()));
 	}
-
+	SortRank();
 	jf.close();
+}
 
-	return score;
+void Score::PrintRank()
+{
+	if (rank.empty())
+	{
+		std::cout << "LIST IS EMPTY" << std::endl;
+		return;
+	}
+	for (auto& a : rank)
+		std::cout << a.first << " | " << a.second << std::endl;
+}
+
+void Score::SortRank()
+{
+	rank.sort([](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {
+			return a.second > b.second;
+	});
+}
+
+void Score::UpdateRank(std::string userName, int score)
+{
+	SortRank();
+	if (rank.size() >= maxRank)
+		rank.pop_back();
+	
+	if(userName.empty())
+		rank.push_back(std::make_pair("UNKNOWN", score));
+	else
+		rank.push_back(std::make_pair(userName, score));
+}
+
+int Score::GetLowerScore()
+{
+	if (rank.empty())
+		return 0;
+
+	int res = 99900;
+	for(auto & r : rank)
+		res = min(res, r.second);
+	
+	return res;
+}
+
+int Score::GetTopScore()
+{
+	if (rank.empty())
+		return 0;
+
+	return rank.begin()->second;
 }
 

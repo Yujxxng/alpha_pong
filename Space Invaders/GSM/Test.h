@@ -8,12 +8,21 @@
 #include "../Object/TextInputBox.h"
 
 #include "../Object/RankBoard.h"
+#include "../Object/button.h"
+
+#include "../Object/Score.h"
 
 namespace Levels
 {
 	class Test : public GSM::BaseLevel
 	{
 		RankBoard rankBoard;
+		Button btn0;
+		Button btn1;
+		Button btn2;
+		TextInputBox tb;
+
+		Score* testScore;
 	public:
 		virtual ~Test() override {};
 

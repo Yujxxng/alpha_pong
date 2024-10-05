@@ -50,7 +50,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// reset the system modules
 	AESysReset();
 	
-	gsm->ChangeLevel(new Levels::Title);
+	gsm->ChangeLevel(new Levels::Test);
 
 	// Game Loop
 	while (gsm->gGameRunning)
@@ -77,11 +77,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			gsm->gGameRunning = 0;
 	}
 
-	ResourceManager* rm = ResourceManager::GetPtr();
-	rm->DeletePtr();
-
 	gsm->Exit();
 	gsm->DeleteGSM();
+
+	ResourceManager* rm = ResourceManager::GetPtr();
+	rm->DeletePtr();
+	Score* s = Score::getPtr();
+	s->DeletePtr();
 	
 	// free the system
 	AESysExit();

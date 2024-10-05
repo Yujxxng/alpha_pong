@@ -6,6 +6,7 @@
 #include "..\ComponentManager\GraphicComponentManager.h"
 #include "..\ComponentManager\EventManager.h"
 #include "..\ComponentManager\ResourceManager.h"
+#include "../Object/Score.h"
 #include <iostream>
 
 GSM::GameStateManager* GSM::GameStateManager::ptr = nullptr;
@@ -120,6 +121,7 @@ void GSM::GameStateManager::Exit()
     LogicComponentManager::DeletePtr();
     EngineComponentManager::DeletePtr();
     GraphicComponentManager::DeletePtr();
+    
     //EventManager::DeletePtr();
 }
 

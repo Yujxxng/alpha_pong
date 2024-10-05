@@ -11,7 +11,7 @@ class RankBoard
 	AEGfxVertexList* mesh;
 	s8 font;
 
-	AEVec2 boardPos{ 0.f, 0.f };
+	AEVec2 boardPos{ 0.f, 50.f };
 	AEVec2 boardSize{ 0.f, 0.f };
 	float rankAreaH = 40.f;
 	float categoryH{};
@@ -33,4 +33,5 @@ public:
 
 	void DrawRankBoard();
 	void DrawCategories();
+	void DrawRankers();
 };

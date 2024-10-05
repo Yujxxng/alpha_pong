@@ -19,6 +19,7 @@
 
 int TotalScore = 0;
 int HighScore = 0;
+bool RankedIn = false;
 
 bool stopMain = false;
 
@@ -72,10 +73,10 @@ void Levels::MainLevel::Init()
 	dead_dt = 0.0f;
 
 	//Init Score
-	score = new Score;
-	score->InitScore();
-	score->SetScore("score", 0.8f, 0.f, 0.83f, 255.f, 255.f, 255.f);
-	HighScore = score->LoadFromJson();
+	score = Score::getPtr();
+	score->SetScore(0);
+	score->LoadRankFromJson();
+	HighScore = score->GetTopScore();
 
 	bulletMgt.InitBulletManager();
 
@@ -144,21 +145,21 @@ void Levels::MainLevel::Stop(float t)
 
 void Levels::MainLevel::Update()
 {
-
 	if (AEInputCheckTriggered(AEVK_RBUTTON))
 		ReLoad();
 
 	f32 width, height;
 	AEGfxGetPrintSize(fontName, "<SCORE>", 0.8f, &width, &height);
 	AEGfxPrint(fontName, "<SCORE>", -width / 2, -height / 2 + 0.925f, 0.8f, 1.f, 1.f, 1.f, 1.f);
-	
+	score->Update();
+
 	AEGfxPrint(fontName, "LIFE : ", 0.5f, 0.915f, 0.5f, 1.f, 1.f, 1.f, 1.f);
-	AEGfxPrint(fontName, "HIGHEST SCORE", -0.9f, 0.915f, 0.5f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxPrint(fontName, "HI-SCORE", -0.9f, 0.915f, 0.5f, 1.f, 1.f, 1.f, 1.f);
 
 	if (score->getPoint() > HighScore)
 		HighScore = score->getPoint();
 
-	AEGfxPrint(fontName, to_string(HighScore).c_str(), -0.7f, 0.85f, 0.5f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxPrint(fontName, to_string(HighScore).c_str(), -0.8f, 0.85f, 0.5f, 1.f, 1.f, 1.f, 1.f);
 	
 	if(!stopMain)
 		dt = static_cast<float>(AEFrameRateControllerGetFrameTime());
@@ -368,8 +369,6 @@ void Levels::MainLevel::Update()
 					score->AddPoint(invaderMgt.UFO->GetPoints());
 				}
 			}
-			score->SetStr();
-
 			//Check Bullet Wall Collision : If Bullet hits the wall, the bullet is destroyed.
 			if (bc->IsCollision(tc))
 			{
@@ -464,17 +463,23 @@ void Levels::MainLevel::Update()
 void Levels::MainLevel::Exit()
 {
 	TotalScore = score->getPoint();
+
 	if (TotalScore >= HighScore)
-	{
 		HighScore = TotalScore;
-		score->SaveToJson();
+
+	if (score->getRankNum() < 5)
+		RankedIn = true;
+	else
+	{
+		if (score->GetLowerScore() < TotalScore)
+			RankedIn = true;
 	}
+
 	if (invaderMgt.UFO->alive)
 		invaderMgt.UFO->Sound(false);
 	
 	AEAudioUnloadAudioGroup(bgm_group);
 
-	delete score;
 	delete player;
 
 	invaderMgt.deleteInvaders();

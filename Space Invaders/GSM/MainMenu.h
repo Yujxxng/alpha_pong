@@ -11,6 +11,7 @@
 
 extern int TotalScore;
 extern int HighScore;
+extern bool RankedIn;
 
 namespace Levels
 {

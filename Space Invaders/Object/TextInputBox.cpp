@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 
+bool RankIn = false;
 TextInputBox::TextInputBox()
 {
 	font = ResourceManager::GetPtr()->Get<FontResource>("Assets/space_invaders.ttf")->GetData();
@@ -53,8 +54,8 @@ void TextInputBox::Update(float dt)
 	UpdateText();
 
 	DrawTextInputBox();
-	
-	if(text.empty())
+
+	if (text.empty())
 		DrawBar(dt);
 
 	DrawUserText();
@@ -137,7 +138,7 @@ void TextInputBox::DrawUserText()
 	float x = boxPos.x * 2.f / AEGfxGetWindowWidth();
 	float y = boxPos.y * 2.f / AEGfxGetWindowHeight();
 
-	AEGfxPrint(font, text.c_str(), x - (width / 2), y - (height / 2), 1.f, 0, 0, 1, 1);
+	AEGfxPrint(font, text.c_str(), x - (width / 2), y - (height / 2), 1.f, 0, 0, 0, 1);
 }
 
 void TextInputBox::UpdateText()
@@ -163,8 +164,13 @@ void TextInputBox::UpdateText()
 	if (AEInputCheckTriggered(AEVK_RETURN))
 	{
 		inputEnabled = !inputEnabled;
-		SaveToJson();
+		//SaveToJson();
 	}
+}
+
+std::string const TextInputBox::GetText() const
+{
+	return text;
 }
 
 void TextInputBox::SaveToJson()

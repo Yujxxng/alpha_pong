@@ -3,10 +3,12 @@
 #include "../ComponentManager/ResourceManager.h"
 #include "../Resource/FontResource.h"
 #include "../Resource/TextureResource.h"
+#include "../Object/Score.h"
 
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <list>
 
 RankBoard::RankBoard()
 {
@@ -59,9 +61,9 @@ RankBoard::RankBoard()
 
 	for (int i = 0; i < 5; i++)
 	{
-		p = row_lines[i] / boardSize.y;
-		AEGfxVertexAdd(-0.5f, p, 0xFFFFFFFF, 0.f, 0.f);
-		AEGfxVertexAdd(0.5f, p, 0xFFFFFFFF, 0.f, 0.f);
+		p = row_lines[i] / boardSize.y ;
+		AEGfxVertexAdd(-0.5f, p - 0.22f, 0xFFFFFFFF, 0.f, 0.f);
+		AEGfxVertexAdd(0.5f, p - 0.22f, 0xFFFFFFFF, 0.f, 0.f);
 	}
 
 	mesh = AEGfxMeshEnd();
@@ -76,6 +78,7 @@ void RankBoard::Update()
 {
 	DrawRankBoard();
 	DrawCategories();
+	DrawRankers();
 }
 
 void RankBoard::DrawRankBoard()
@@ -132,5 +135,15 @@ void RankBoard::DrawCategories()
 	x = col_lines[1] * 2.f / AEGfxGetWindowWidth();
 	AEGfxPrint(font, "SCORE", x + 0.04f, y - (height / 2) - 0.025f, textSize0, 0, 1, 0, 1);
 
+
+}
+
+void RankBoard::DrawRankers()
+{
+	std::list<pair<std::string, int>> tmp = Score::getPtr()->getList();
+	std::string name = tmp.begin()->first;
+	std::string score = std::to_string(tmp.begin()->second);
+	AEGfxPrint(font, name.c_str(), -0.1f, 0.f, textSize0, 1, 1, 1, 1);
+	AEGfxPrint(font, score.c_str(), 0.1f, 0.f, textSize0, 1, 1, 1, 1);
 
 }

@@ -2,6 +2,7 @@
 
 #include "BaseLevel.h"
 #include "../Object/Button.h"
+#include "../Object/TextInputBox.h"
 
 namespace Levels
 {
@@ -9,6 +10,9 @@ namespace Levels
 	{
 		Button btn0;
 		Button btn1;
+		Button btn2;
+
+		TextInputBox textBox;
 	public:
 		void Init() override;
 		void Update() override;

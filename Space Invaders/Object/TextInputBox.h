@@ -16,12 +16,12 @@ class TextInputBox
 	
 	const int MaxTextLen{ 14 };
 
-	AEVec2 boxPos{ 0, 80 };
+	AEVec2 boxPos{ 0, 0 };
 	AEVec2 boxSize;
 	AEVec2 boxMargin{ 15, 15 };
 	Color boxColor{ 255, 255, 255 };
 
-	AEVec2 barPos{ 0, 80 };
+	AEVec2 barPos{ 0, 0 };
 	AEVec2 barSize;
 	Color barColor{ 0, 0, 0 };
 
@@ -30,7 +30,6 @@ class TextInputBox
 	bool barVisible{ true };
 
 	bool inputEnabled{ true };
-
 	std::string text{};
 
 public:
@@ -44,6 +43,7 @@ public:
 	void DrawUserText();
 
 	void UpdateText();
+	std::string const GetText() const;
 
 	void SaveToJson();
 	void LoadFromJson();

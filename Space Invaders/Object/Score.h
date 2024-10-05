@@ -2,34 +2,55 @@
 
 #include "../ComponentManager/GameObject.h"
 
-#include "../Components/Font.h"
+#include "../Utils/myUtils.h"
+#include "../ComponentManager/ResourceManager.h"
+#include "../Resource/FontResource.h"
 #include "../ComponentManager/EventManager.h"
 
+#include <list>
+#include <string>
 class Score : public GameObject
 {
-	float size{};
-	AEVec2 pos{};
-	Color color{};
+	Score() = default;
+	~Score() = default;
+	Score(const Score&) = delete;
+	const Score& operator=(const Score& other) = delete;
+
+	s8 font = ResourceManager::GetPtr()->Get<FontResource>("Assets/space_invaders.ttf")->GetData();
+	
+	float size{ 0.8f };
+	AEVec2 pos{ 0.f, 0.83f };
+	Color color{ 255, 255, 255 };
 
 	int point = 0;
+	
+	std::list<pair<std::string, int>> rank;
+	int maxRank = 5;
 
+	static Score* score_ptr;
 public:
-	~Score();
+	static Score* getPtr();
+	static void DeletePtr();
 
-	void InitScore();
-	void SetScore(std::string id, float size, float posX, float posY, float r, float g, float b);
-	void SetSize(float s);
-	void SetPos(float x, float y);
-	void SetColor(float r, float g, float b);
+	void SetScore(int v);
 	void SetStr();
+
+	void AddPoint(int v) { point += v; }
+	void Update();
 
 	float GetSize() const { return size; }
 	AEVec2 GetPos() const { return pos; }
 	int getPoint() const { return point; }
+	int getRankNum() const { return rank.size(); }
+	std::list<pair<std::string, int>> getList() const { return rank; }
 
-	void AddPoint(int v) { point += v; }
-	void Reset() { point = 0;}
+	void SaveRankToJson();
+	void LoadRankFromJson();
 
-	void SaveToJson();
-	int LoadFromJson();
+	void PrintRank();
+	void SortRank();
+	void UpdateRank(std::string userName, int point);
+	
+	int GetLowerScore();
+	int GetTopScore();
 };
