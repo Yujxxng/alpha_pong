@@ -75,6 +75,7 @@ void Levels::Title::Update()
 	}
 
 	Levels::Title::DrawTexture(Logo[idx], 0.f, 100.f, 258.f, 165.f, 1.f * draw);
+	AEGfxPrint(fontName1, "¨Ï 2024. Yujung All rights reserved.", -0.44f, - 0.95f, 0.3f, 1, 1, 1, 1.f * draw);
 
 	float a = sinf(PI * titleDt) * draw;
 
@@ -82,7 +83,6 @@ void Levels::Title::Update()
 	AEGfxGetPrintSize(fontName1, "PRESS ANY KEY. . .", 0.5f, &width, &height);
 	AEGfxPrint(fontName1, "PRESS ANY KEY. . .", -width / 2, -height / 2 - 0.2f, 0.5f, 1, 1, 1, fabsf(a));
 
-	AEGfxPrint(fontName1, "¨Ï 2024. Yujung All rights reserved.", -0.44f, - 0.95f, 0.3f, 1, 1, 1, 1.f * draw);
 	
 	if (clickable)
 	{

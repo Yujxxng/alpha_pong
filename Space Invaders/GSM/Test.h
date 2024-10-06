@@ -19,8 +19,6 @@ namespace Levels
 		RankBoard rankBoard;
 		Button btn0;
 		Button btn1;
-		Button btn2;
-		TextInputBox tb;
 
 		Score* testScore;
 	public:

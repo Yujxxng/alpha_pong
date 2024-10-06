@@ -134,16 +134,31 @@ void RankBoard::DrawCategories()
 	AEGfxGetPrintSize(font, "SCORE", textSize0, &width, &height);
 	x = col_lines[1] * 2.f / AEGfxGetWindowWidth();
 	AEGfxPrint(font, "SCORE", x + 0.04f, y - (height / 2) - 0.025f, textSize0, 0, 1, 0, 1);
-
-
 }
 
 void RankBoard::DrawRankers()
 {
+	Score::getPtr()->SortRank();
 	std::list<pair<std::string, int>> tmp = Score::getPtr()->getList();
-	std::string name = tmp.begin()->first;
-	std::string score = std::to_string(tmp.begin()->second);
-	AEGfxPrint(font, name.c_str(), -0.1f, 0.f, textSize0, 1, 1, 1, 1);
-	AEGfxPrint(font, score.c_str(), 0.1f, 0.f, textSize0, 1, 1, 1, 1);
+	float startY = boardPos.y + (boardSize.y / 2.f);
+	float y = (startY - categoryH) * 2.f / AEGfxGetWindowHeight();
+
+	int cnt = 0;
+	for(auto& i : tmp)
+	{
+		if (cnt >= 5) break;
+		std::string name = i.first;
+		std::string score = std::to_string(i.second);
+		
+		f32 width, height;
+		AEGfxGetPrintSize(font, "RANK", textSize0, &width, &height);
+
+		float nameX = 2.f * col_lines[0] / AEGfxGetWindowWidth();
+		float scoreX = 2.f * col_lines[1] / AEGfxGetWindowWidth();
+		AEGfxPrint(font, name.c_str(), nameX + 0.01f, y - (height / 2) - 0.05f - (0.14f * cnt), textSize0, 1, 1, 1, 1);
+		AEGfxPrint(font, score.c_str(), scoreX + 0.025f, y - (height / 2) - 0.05f - (0.14f * cnt), textSize0, 1, 1, 1, 1);
+		
+		cnt++;
+	}
 
 }

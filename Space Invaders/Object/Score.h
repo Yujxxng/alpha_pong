@@ -25,6 +25,7 @@ class Score : public GameObject
 	int point = 0;
 	
 	std::list<pair<std::string, int>> rank;
+	int unknownNum = 0;
 	int maxRank = 5;
 
 	static Score* score_ptr;
@@ -41,7 +42,7 @@ public:
 	float GetSize() const { return size; }
 	AEVec2 GetPos() const { return pos; }
 	int getPoint() const { return point; }
-	int getRankNum() const { return rank.size(); }
+	int getRankSize() const { return (int)rank.size(); }
 	std::list<pair<std::string, int>> getList() const { return rank; }
 
 	void SaveRankToJson();
@@ -50,7 +51,8 @@ public:
 	void PrintRank();
 	void SortRank();
 	void UpdateRank(std::string userName, int point);
-	
+
 	int GetLowerScore();
 	int GetTopScore();
+	int GetRank(int userScore);
 };

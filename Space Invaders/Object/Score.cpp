@@ -7,12 +7,7 @@
 #include <fstream>
 
 Score* Score::score_ptr = nullptr;
-/*
-Score::~Score()
-{
-	DeleteComponent("Font");
-}
-*/
+
 Score* Score::getPtr()
 {
 	if (score_ptr == nullptr)
@@ -194,8 +189,13 @@ void Score::UpdateRank(std::string userName, int score)
 	if (rank.size() >= maxRank)
 		rank.pop_back();
 	
-	if(userName.empty())
-		rank.push_back(std::make_pair("UNKNOWN", score));
+	if (userName.empty())
+	{
+		std::string noName = "UNKNOWN" + std::to_string(unknownNum);
+		rank.push_back(std::make_pair(noName.c_str(), score));
+		unknownNum++;
+		if (unknownNum >= 50) unknownNum = 0;
+	}
 	else
 		rank.push_back(std::make_pair(userName, score));
 }
@@ -218,5 +218,18 @@ int Score::GetTopScore()
 		return 0;
 
 	return rank.begin()->second;
+}
+
+int Score::GetRank(int userScore)
+{
+	int i = 0;
+	for (auto& r : rank)
+	{
+		if (userScore > r.second)
+			return i;
+
+		i++;
+	}
+	return i;
 }
 

@@ -49,6 +49,7 @@ Levels::MainLevel::~MainLevel()
 
 void Levels::MainLevel::Init()
 {
+	RankedIn = false;
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
 	fontName = ResourceManager::GetPtr()->Get<FontResource>("Assets/space_invaders.ttf")->GetData();
@@ -75,7 +76,8 @@ void Levels::MainLevel::Init()
 	//Init Score
 	score = Score::getPtr();
 	score->SetScore(0);
-	score->LoadRankFromJson();
+	if (score->getList().empty())
+		score->LoadRankFromJson();
 	HighScore = score->GetTopScore();
 
 	bulletMgt.InitBulletManager();
@@ -466,13 +468,16 @@ void Levels::MainLevel::Exit()
 
 	if (TotalScore >= HighScore)
 		HighScore = TotalScore;
-
-	if (score->getRankNum() < 5)
-		RankedIn = true;
-	else
+	
+	if(GSM::GameStateManager::GetGSMPtr()->gGameRunning != 0)
 	{
-		if (score->GetLowerScore() < TotalScore)
+		if (score->getRankSize() < 5)
 			RankedIn = true;
+		else
+		{
+			if (score->GetLowerScore() < TotalScore)
+				RankedIn = true;
+		}
 	}
 
 	if (invaderMgt.UFO->alive)
