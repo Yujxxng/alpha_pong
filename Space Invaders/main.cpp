@@ -62,6 +62,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		    //       current state = next state
 
 		// Informing the system about the loop's start
+		AEFrameRateControllerReset();
 		AESysFrameStart();
 
 		// Your own update logic goes here
