@@ -33,13 +33,13 @@ void Levels::Intro::Init()
 void Levels::Intro::Update()
 {
 	float a = 1.f;
-	float fontSize = 0.7f;
+	float fontSize = 0.15f;
 
 	f32 width, height;
-	AEGfxGetPrintSize(IntroFont, "PRESS ANY KEY", 0.5f, &width, &height);
-	AEGfxPrint(IntroFont, "PRESS ANY KEY", -width / 2 + 0.73f, -height / 2 + 0.95f, 0.5f, 1, 1, 1, a);
+	AEGfxGetPrintSize(IntroFont, "PRESS ANY KEY", 0.1f, &width, &height);
+	AEGfxPrint(IntroFont, "PRESS ANY KEY", -width / 2 + 0.73f, -height / 2 + 0.95f, 0.1f, 1, 1, 1, a);
 
-	AEGfxGetPrintSize(IntroFont, "*CONTROLS*", 0.6f, &width, &height);
+	AEGfxGetPrintSize(IntroFont, "*CONTROLS*", fontSize, &width, &height);
 	AEGfxPrint(IntroFont, "*CONTROLS*", -width / 2, -height / 2 + 0.63f, fontSize, 1, 1, 1, a);
 	AEGfxPrint(IntroFont, "  = MOVE", -0.04f, 0.48f, fontSize, 0, 1, 0, a);
 	AEGfxPrint(IntroFont, "= ATTACK", 0.0f, 0.38f, fontSize, 0, 1, 0, a);

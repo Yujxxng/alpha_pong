@@ -3,6 +3,8 @@
 #include "MainMenu.h"
 #include "GameStateManager.h"
 #include "../ComponentManager/GameObject.h"
+#include "../ComponentManager/ResourceManager.h"
+#include "../Resource/FontResource.h"
 
 #include <iostream>
 
@@ -13,6 +15,7 @@ float stop = 0.0f;
 float t = 0.0f;
 int idx = 0;
 
+bool logoSkip = false;
 bool draw = false;
 bool clickable = false;
 static AEGfxTexture* Logo[2];
@@ -25,7 +28,7 @@ void Levels::Title::Init()
 {
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-	fontName1 = AEGfxCreateFont("Assets/space_invaders.ttf", 30);
+	fontName1 = ResourceManager::GetPtr()->Get<FontResource>("Assets/space_invaders.ttf")->GetData();//AEGfxCreateFont("Assets/space_invaders.ttf", 100);
 	Logo[0] = AEGfxTextureLoad("Assets/space_invaders/logo.png");
 	Logo[1] = AEGfxTextureLoad("Assets/space_invaders/logo1.png");
 	dg = AEGfxTextureLoad("Assets/DigiPen.png");
@@ -43,6 +46,12 @@ void Levels::Title::Update()
 	float la = 0.f;
 	if (!draw)
 	{
+		if (AEInputCheckReleased(AEVK_SPACE))
+		{
+			la = 0;
+			draw = true;
+			AEAudioPlay(titleBgm, titleGroup, 0.5f, 1.f, -1);
+		}
 		if (dgDt < 2.f)
 		{
 			la = dgDt / 2.f;
@@ -67,6 +76,9 @@ void Levels::Title::Update()
 		}
 	}
 
+	if (draw)
+		clickable = true;
+
 	Levels::Title::DrawTexture(dg, 0.f, 29.f, 200.f, 48.f, la);
 	if (t > 1.0f)
 	{
@@ -74,14 +86,15 @@ void Levels::Title::Update()
 		t = 0.0f;
 	}
 
+	f32 width, height;
 	Levels::Title::DrawTexture(Logo[idx], 0.f, 100.f, 258.f, 165.f, 1.f * draw);
-	AEGfxPrint(fontName1, "¨Ï 2024. Yujung All rights reserved.", -0.44f, - 0.95f, 0.3f, 1, 1, 1, 1.f * draw);
+	AEGfxGetPrintSize(fontName1, "¨Ï 2024. Yujung All rights reserved.", 0.08f, &width, &height);
+	AEGfxPrint(fontName1, "¨Ï 2024. Yujung All rights reserved.", -width / 2, - 0.95f, 0.08f, 1, 1, 1, 1.f * draw);
 
 	float a = sinf(PI * titleDt) * draw;
 
-	f32 width, height;
-	AEGfxGetPrintSize(fontName1, "PRESS ANY KEY. . .", 0.5f, &width, &height);
-	AEGfxPrint(fontName1, "PRESS ANY KEY. . .", -width / 2, -height / 2 - 0.2f, 0.5f, 1, 1, 1, fabsf(a));
+	AEGfxGetPrintSize(fontName1, "PRESS ANY KEY. . .", 0.15f, &width, &height);
+	AEGfxPrint(fontName1, "PRESS ANY KEY. . .", -width / 2, -height / 2 - 0.2f, 0.15f, 1, 1, 1, fabsf(a));
 
 	
 	if (clickable)
@@ -99,7 +112,7 @@ void Levels::Title::Update()
 
 void Levels::Title::Exit()
 {
-	AEGfxDestroyFont(fontName1);
+	//AEGfxDestroyFont(fontName1);
 	for(int i = 0; i < 2; i++)
 		AEGfxTextureUnload(Logo[i]);
 	AEGfxTextureUnload(dg);

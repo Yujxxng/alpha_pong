@@ -30,7 +30,7 @@ class TextInputBox
 	bool barVisible{ true };
 
 	bool inputEnabled{ true };
-	std::string text{};
+	std::string text = "";
 
 public:
 	TextInputBox();

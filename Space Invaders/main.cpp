@@ -77,12 +77,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			gsm->gGameRunning = 0;
 	}
 
+	gsm->Exit();
+
 	Score* s = Score::getPtr();
 	s->DeletePtr();
 	ResourceManager* rm = ResourceManager::GetPtr();
 	rm->DeletePtr();
 
-	gsm->Exit();
 	gsm->DeleteGSM();
 
 	// free the system

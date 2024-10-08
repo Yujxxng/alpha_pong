@@ -31,8 +31,8 @@ void Levels::Test::Init()
 void Levels::Test::Update()
 {
 	f32 width, height;
-	AEGfxGetPrintSize(Testfont, "Ranking", 1.f, &width, &height);
-	AEGfxPrint(Testfont, "Ranking", -width / 2, -height / 2 + 0.75f, 1.f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxGetPrintSize(Testfont, "Ranking", 0.3f, &width, &height);
+	AEGfxPrint(Testfont, "Ranking", -width / 2, -height / 2 + 0.75f, 0.3f, 1.f, 1.f, 1.f, 1.f);
 
 	s32 pX, pY;
 	AEInputGetCursorPosition(&pX, &pY);
@@ -58,7 +58,7 @@ void Levels::Test::Update()
 		btn1.SetTextColor(255, 0, 255);
 		if (AEInputCheckTriggered(AEVK_LBUTTON))
 		{
-			testScore->SaveRankToJson();
+			//testScore->SaveRankToJson();
 			GSM::GameStateManager::GetGSMPtr()->gGameRunning = 0;
 		}
 	}

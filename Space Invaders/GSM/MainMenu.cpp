@@ -22,7 +22,8 @@ int HighScore = 0;
 bool RankedIn = false;
 
 bool stopMain = false;
-
+bool firstStart = true;
+bool firstSecond = false;
 //~dt~
 float dt = 0.0f;
 float _stopDt = 2.0f;
@@ -50,6 +51,8 @@ Levels::MainLevel::~MainLevel()
 void Levels::MainLevel::Init()
 {
 	RankedIn = false;
+	firstSecond = false;
+
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
 	fontName = ResourceManager::GetPtr()->Get<FontResource>("Assets/space_invaders.ttf")->GetData();
@@ -144,36 +147,61 @@ void Levels::MainLevel::Stop(float t)
 	player->stop = true;
 }
 
+void DrawStopSecond()
+{
+	f32 width, height;
+	std::string str = std::to_string((int)_stopDt - (int)stop_dt - 1);
+	if (stop_dt <= (_stopDt - 1.f))
+	{
+		AEGfxGetPrintSize(fontName, str.c_str(), 0.8f, &width, &height);
+		AEGfxPrint(fontName, str.c_str(), -width / 2, -height / 2, 0.8f, 0.f, 1.f, 0.f, 1.f);
+	}
+	else
+	{
+		AEGfxGetPrintSize(fontName, "START!", 0.8f, &width, &height);
+		AEGfxPrint(fontName, "START!", -width / 2, -height / 2, 0.8f, 0.f, 1.f, 0.f, 1.f);
+	}
+}
 
 void Levels::MainLevel::Update()
 {
-	if (AEInputCheckTriggered(AEVK_RBUTTON))
-		ReLoad();
-
 	f32 width, height;
-	AEGfxGetPrintSize(fontName, "<SCORE>", 0.8f, &width, &height);
-	AEGfxPrint(fontName, "<SCORE>", -width / 2, -height / 2 + 0.925f, 0.8f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxGetPrintSize(fontName, "<SCORE>", 0.15f, &width, &height);
+	AEGfxPrint(fontName, "<SCORE>", -width / 2, -height / 2 + 0.925f, 0.15f, 1.f, 1.f, 1.f, 1.f);
 	score->Update();
 
-	AEGfxPrint(fontName, "LIFE : ", 0.5f, 0.915f, 0.5f, 1.f, 1.f, 1.f, 1.f);
-	AEGfxPrint(fontName, "HI-SCORE", -0.9f, 0.915f, 0.5f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxGetPrintSize(fontName, "LIFE : ", 0.15f, &width, &height);
+	AEGfxPrint(fontName, "LIFE : ", -width / 2 + 0.6f, -height / 2 + 0.925f, 0.15f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxGetPrintSize(fontName, "HI-SCORE", 0.15f, &width, &height);
+	AEGfxPrint(fontName, "HI-SCORE", -width / 2 - 0.7f, -height / 2 + 0.925f, 0.15f, 1.f, 1.f, 1.f, 1.f);
 
 	if (score->getPoint() > HighScore)
 		HighScore = score->getPoint();
 
-	AEGfxPrint(fontName, to_string(HighScore).c_str(), -0.8f, 0.85f, 0.5f, 1.f, 1.f, 1.f, 1.f);
-	
+	AEGfxPrint(fontName, to_string(HighScore).c_str(), -0.75f, 0.815f, 0.15f, 1.f, 1.f, 1.f, 1.f);
+
+	if (firstStart)
+	{
+		Stop(3.f);
+		firstStart = false;
+	}
+
 	if(!stopMain)
 		dt = static_cast<float>(AEFrameRateControllerGetFrameTime());
 	else
 	{
 		dt = 0.0f;
 		stop_dt += static_cast<float>(AEFrameRateControllerGetFrameTime());
+
+		if (!firstStart && !firstSecond)
+			DrawStopSecond();
+		
 		if (stop_dt > _stopDt)
 		{
 			stopMain = false;
 			player->stop = false;
 			stop_dt = 0.0f;
+			firstSecond = true;
 		}
 	}
 	if (invaderMgt.GetLiveInvaders() > 0)

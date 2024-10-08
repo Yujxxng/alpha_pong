@@ -13,7 +13,7 @@ class Button
 	Color color{ 255, 255, 255 };
 
 	std::string text{};
-	float textSize = 1.f;
+	float textSize = 0.2f;
 	Color textColor{ 255, 255, 255 };
 
 public:

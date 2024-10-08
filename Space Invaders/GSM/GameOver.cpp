@@ -19,6 +19,8 @@ int activeKey = -1;
 
 void Levels::GameOver::Init()
 {
+	save = false;
+	activeKey = -1;
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 	fontName0 = ResourceManager::GetPtr()->Get<FontResource>("Assets/space_invaders.ttf")->GetData();
 
@@ -38,14 +40,14 @@ void Levels::GameOver::Init()
 void Levels::GameOver::Update()
 {
 	f32 width, height;
-	AEGfxGetPrintSize(fontName0, "GAME OVER!", 1.f, &width, &height);
-	AEGfxPrint(fontName0, "GAME OVER!", -width / 2, -height / 2 + 0.7f, 1.f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxGetPrintSize(fontName0, "GAME OVER!", 0.3f, &width, &height);
+	AEGfxPrint(fontName0, "GAME OVER!", -width / 2, -height / 2 + 0.7f, 0.3f, 1.f, 1.f, 1.f, 1.f);
+	
+	AEGfxGetPrintSize(fontName0, "*YOUR SCORE*", 0.2f, &width, &height);
+	AEGfxPrint(fontName0, "*YOUR SCORE*", -width / 2, -height / 2 + 0.5f, 0.2f, 1.f, 1.f, 1.f, 1.f);
 
-	AEGfxGetPrintSize(fontName0, "*YOUR SCORE*", 0.8f, &width, &height);
-	AEGfxPrint(fontName0, "*YOUR SCORE*", -width / 2, -height / 2 + 0.5f, 0.8f, 1.f, 1.f, 1.f, 1.f);
-
-	AEGfxGetPrintSize(fontName0, to_string(TotalScore).c_str(), 1.f, &width, &height);
-	AEGfxPrint(fontName0, to_string(TotalScore).c_str(), -width / 2, -height / 2 + 0.35f, 1.f, 0.f, 1.f, 0.f, 1.f);
+	AEGfxGetPrintSize(fontName0, to_string(TotalScore).c_str(), 0.25f, &width, &height);
+	AEGfxPrint(fontName0, to_string(TotalScore).c_str(), -width / 2, -height / 2 + 0.35f, 0.25f, 0.f, 1.f, 0.f, 1.f);
 
 	std::string rankStr, hiStr;
 	int r = Score::getPtr()->GetRank(TotalScore);
@@ -55,15 +57,15 @@ void Levels::GameOver::Update()
 	else
 		rankStr = "RANK-OUT";
 
-	AEGfxGetPrintSize(fontName0, rankStr.c_str(), 0.5f, &width, &height);
-	AEGfxPrint(fontName0, rankStr.c_str(), -width / 2 - 0.05f, -height / 2 + 0.22f, 0.6f, 1.f, 1.f, 0.f, 1.f);
+	AEGfxGetPrintSize(fontName0, rankStr.c_str(), 0.1f, &width, &height);
+	AEGfxPrint(fontName0, rankStr.c_str(), -width / 2, -height / 2 + 0.22f, 0.1f, 1.f, 1.f, 0.f, 1.f);
 
 	hiStr = "HI-SCORE : " + to_string(HighScore);
-	AEGfxGetPrintSize(fontName0, hiStr.c_str(), 0.5f, &width, &height);
-	AEGfxPrint(fontName0, "HI-SCORE : ", -width / 2 - 0.05f, -height / 2 + 0.15f, 0.6f, 1.f, 1.f, 0.f, 1.f);
+	AEGfxGetPrintSize(fontName0, hiStr.c_str(), 0.1f, &width, &height);
+	AEGfxPrint(fontName0, hiStr.c_str(), -width / 2, -height / 2 + 0.15f, 0.1f, 1.f, 1.f, 0.f, 1.f);
 
-	AEGfxGetPrintSize(fontName0, to_string(HighScore).c_str(), 0.6f, &width, &height);
-	AEGfxPrint(fontName0, to_string(HighScore).c_str(), -width / 2 + 0.2f, -height / 2 + 0.15f, 0.6f, 1.f, 1.f, 0.f, 1.f);
+	//AEGfxGetPrintSize(fontName0, to_string(HighScore).c_str(), 0.1f, &width, &height);
+	//AEGfxPrint(fontName0, to_string(HighScore).c_str(), -width / 2 + 0.2f, -height / 2 + 0.15f, 0.1f, 1.f, 1.f, 0.f, 1.f);
 
 	s32 pX, pY;
 	AEInputGetCursorPosition(&pX, &pY);
@@ -76,6 +78,7 @@ void Levels::GameOver::Update()
 			if (RankedIn)
 			{
 				Score::getPtr()->UpdateRank(textBox.GetText(), TotalScore);
+				Score::getPtr()->SaveRankToJson();
 				save = true;
 				GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new Levels::Test);
 			}
@@ -176,7 +179,8 @@ void Levels::GameOver::Update()
 		{
 			if (RankedIn)
 			{
-				Score::getPtr()->UpdateRank(textBox.GetText(), TotalScore);
+				//Score::getPtr()->UpdateRank(textBox.GetText(), TotalScore);
+				//Score::getPtr()->SaveRankToJson();
 				save = true;
 				GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new Levels::Test);
 			}
@@ -194,9 +198,10 @@ void Levels::GameOver::Update()
 
 void Levels::GameOver::Exit()
 {
+
 	if (save == false && RankedIn == true)
 	{
-		Score::getPtr()->UpdateRank("UNKNOWN", TotalScore);
+		Score::getPtr()->UpdateRank("", TotalScore);
 		Score::getPtr()->SaveRankToJson();
 	}
 }

@@ -122,9 +122,9 @@ void RankBoard::DrawCategories()
 	for (int i = 0; i < 5; i++)
 	{
 		if (i == 0)
-			AEGfxPrint(font, std::to_string(i + 1).c_str(), x + 0.11f, ry - (height / 2) - 0.05f - (0.14f * i), textSize0, 1, 0, 1, 1);
+			AEGfxPrint(font, std::to_string(i + 1).c_str(), x + 0.095f, ry - (height / 2) - 0.05f - (0.14f * i), textSize0, 1, 0, 1, 1);
 		else
-			AEGfxPrint(font, std::to_string(i+1).c_str(), x + 0.1f, ry - (height / 2) - 0.05f - (0.14f * i), textSize0, 1, 1, 1, 1);
+			AEGfxPrint(font, std::to_string(i+1).c_str(), x + 0.085f, ry - (height / 2) - 0.05f - (0.14f * i), textSize0, 1, 1, 1, 1);
 	}
 	AEGfxGetPrintSize(font, "ABCDEFGHIJKLMN", textSize0, &width, &height);
 	x = col_lines[0] * 2.f / AEGfxGetWindowWidth();
@@ -143,6 +143,7 @@ void RankBoard::DrawRankers()
 	float startY = boardPos.y + (boardSize.y / 2.f);
 	float y = (startY - categoryH) * 2.f / AEGfxGetWindowHeight();
 
+	Color textColor = { 1, 0, 1 };
 	int cnt = 0;
 	for(auto& i : tmp)
 	{
@@ -150,13 +151,15 @@ void RankBoard::DrawRankers()
 		std::string name = i.first;
 		std::string score = std::to_string(i.second);
 		
+		if (cnt > 0)
+			textColor = { 1, 1, 1 };
 		f32 width, height;
 		AEGfxGetPrintSize(font, "RANK", textSize0, &width, &height);
 
 		float nameX = 2.f * col_lines[0] / AEGfxGetWindowWidth();
 		float scoreX = 2.f * col_lines[1] / AEGfxGetWindowWidth();
-		AEGfxPrint(font, name.c_str(), nameX + 0.01f, y - (height / 2) - 0.05f - (0.14f * cnt), textSize0, 1, 1, 1, 1);
-		AEGfxPrint(font, score.c_str(), scoreX + 0.025f, y - (height / 2) - 0.05f - (0.14f * cnt), textSize0, 1, 1, 1, 1);
+		AEGfxPrint(font, name.c_str(), nameX + 0.01f, y - (height / 2) - 0.05f - (0.14f * cnt), textSize0, textColor.r, textColor.g, textColor.b, 1);
+		AEGfxPrint(font, score.c_str(), scoreX + 0.025f, y - (height / 2) - 0.05f - (0.14f * cnt), textSize0, textColor.r, textColor.g, textColor.b, 1);
 		
 		cnt++;
 	}

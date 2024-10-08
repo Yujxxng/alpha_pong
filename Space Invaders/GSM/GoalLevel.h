@@ -2,12 +2,14 @@
 
 #include "BaseLevel.h"
 #include "../Object/Button.h"
+#include "../Object/TextInputBox.h"
+
 namespace Levels
 {
 	class GoalLevel : public GSM::BaseLevel
 	{
-		Button btn0;
-		Button btn1;
+		Button goal_btn[3];
+		TextInputBox goal_textBox;
 
 	public:
 		void Init() override;

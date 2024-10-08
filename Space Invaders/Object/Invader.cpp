@@ -235,9 +235,9 @@ void Invader::SetRandomPoints()
 {
 	std::random_device rd;
 	std::mt19937 mt(rd());
-	std::uniform_int_distribution<int> dist(50, 300);
+	std::uniform_int_distribution<int> dist(10, 60);
 
-	this->point = dist(mt);
+	this->point = dist(mt) * 5;
 }
 
 bool Invader::SetAttack()

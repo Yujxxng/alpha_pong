@@ -30,7 +30,7 @@ void Player::InitPlayer()
 		life.push_back(new Life);
 		life[i]->InitLife();
 		life[i]->SetColor(0.f, 255.f, 0.f);
-		life[i]->SetPos((W_WIDTH / 2) - 50.f + (30.f * i), (W_HEIGHT / 2) - 20.f);
+		life[i]->SetPos((W_WIDTH / 2) - 50.f + (30.f * i), (W_HEIGHT / 2) - 22.f);
 	}
 
 	lifeNum = 3;

@@ -4,14 +4,12 @@
 #include "../Object/Button.h"
 #include "../Object/TextInputBox.h"
 
+extern bool save;
+extern int activeKey;
 namespace Levels
 {
 	class GameOver : public GSM::BaseLevel
 	{
-		//Button btn0;
-		//Button btn1;
-		//Button btn2;
-
 		Button btn[3];
 		TextInputBox textBox;
 	public:

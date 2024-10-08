@@ -22,7 +22,7 @@ class RankBoard
 	float col_lines[2];
 	float row_lines[5];
 
-	float textSize0 = 0.8f;
+	float textSize0 = 0.15f;
 	float textSize1 = 0.5f;
 public:
 

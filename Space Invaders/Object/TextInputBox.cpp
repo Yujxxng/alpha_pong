@@ -4,6 +4,12 @@
 #include "../Resource/FontResource.h"
 #include "../Resource/TextureResource.h"
 
+#include "../GSM/GameStateManager.h"
+#include "../GSM/Test.h"
+#include "../GSM/MainMenu.h"
+#include "../GSM/GameOver.h"
+#include "../Object/Score.h"
+
 #include <iostream>
 #include <fstream>
 
@@ -13,7 +19,7 @@ TextInputBox::TextInputBox()
 	font = ResourceManager::GetPtr()->Get<FontResource>("Assets/space_invaders.ttf")->GetData();
 
 	f32 width = 0, height = 0;
-	AEGfxGetPrintSize(font, "ABCDEFGHIJKLMN", 1.f, &width, &height);
+	AEGfxGetPrintSize(font, "ABCDEFGHIJKLMN", 0.2f, &width, &height);
 
 	boxSize.x = AEGfxGetWindowWidth() * width / 2.f;
 	boxSize.y = AEGfxGetWindowHeight() * height / 2.f;
@@ -133,12 +139,12 @@ void TextInputBox::DrawBar(float dt)
 void TextInputBox::DrawUserText()
 {
 	f32 width, height;
-	AEGfxGetPrintSize(font, text.c_str(), 1.f, &width, &height);
+	AEGfxGetPrintSize(font, text.c_str(), 0.2f, &width, &height);
 
 	float x = boxPos.x * 2.f / AEGfxGetWindowWidth();
 	float y = boxPos.y * 2.f / AEGfxGetWindowHeight();
 
-	AEGfxPrint(font, text.c_str(), x - (width / 2), y - (height / 2), 1.f, 0, 0, 0, 1);
+	AEGfxPrint(font, text.c_str(), x - (width / 2), y - (height / 2), 0.2f, 0, 0, 0, 1);
 }
 
 void TextInputBox::UpdateText()
@@ -164,7 +170,16 @@ void TextInputBox::UpdateText()
 	if (AEInputCheckTriggered(AEVK_RETURN))
 	{
 		inputEnabled = !inputEnabled;
-		//SaveToJson();
+		save = true;
+		Score::getPtr()->UpdateRank(text, TotalScore);
+		Score::getPtr()->SaveRankToJson();
+
+		if (activeKey == 0)
+			GSM::GameStateManager::GetGSMPtr()->gGameRunning = 0;
+		else if (activeKey == 1)
+			GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new Levels::MainLevel);
+		else
+			GSM::GameStateManager::GetGSMPtr()->ChangeLevel(new Levels::Test);
 	}
 }
 

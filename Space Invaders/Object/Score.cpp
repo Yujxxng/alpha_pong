@@ -6,6 +6,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <random>
+
 Score* Score::score_ptr = nullptr;
 
 Score* Score::getPtr()
@@ -36,7 +38,7 @@ void Score::SetScore(int v)
 void Score::Update()
 {
 	f32 width, height;
-	AEGfxGetPrintSize(font, std::to_string(point).c_str(), 1.f, &width, &height);
+	AEGfxGetPrintSize(font, std::to_string(point).c_str(), size, &width, &height);
 	AEGfxPrint(font, std::to_string(point).c_str(), -width / 2 + pos.x, -height / 2 + pos.y, size, 1, 1, 1, 1);
 }
 
@@ -103,6 +105,8 @@ void Score::SaveRankToJson()
 	if (!ijf.is_open())
 	{
 		std::cout << "FILE NOT FOUND" << std::endl;
+		std::ofstream jf(dir);
+		jf.close();
 		return;
 	}
 	using json = nlohmann::json;
@@ -130,11 +134,14 @@ void Score::SaveRankToJson()
 void Score::LoadRankFromJson()
 {
 	std::string dir = GetUserDir();
+	CreateDirectory(dir.c_str(), NULL);
+
 	dir = dir + "data.json";
 
 	if (dir.empty())
 	{
 		std::cout << "FILE NOT FOUND::DIRECTORY IS EMPTY" << std::endl;
+		return;
 	}
 
 	std::ifstream jf(dir);
@@ -142,6 +149,7 @@ void Score::LoadRankFromJson()
 	if (!jf.is_open())
 	{
 		std::cout << "FILE NOT FOUND::FILE CANT OPEN" << std::endl;
+		return;
 	}
 
 	using json = nlohmann::json;
@@ -191,10 +199,11 @@ void Score::UpdateRank(std::string userName, int score)
 	
 	if (userName.empty())
 	{
-		std::string noName = "UNKNOWN" + std::to_string(unknownNum);
+		std::random_device rd;
+		std::mt19937 mt(rd());
+		std::uniform_int_distribution<int> dist(1000, 9999);
+		std::string noName = "UNKNOWN" + std::to_string(dist(mt));
 		rank.push_back(std::make_pair(noName.c_str(), score));
-		unknownNum++;
-		if (unknownNum >= 50) unknownNum = 0;
 	}
 	else
 		rank.push_back(std::make_pair(userName, score));

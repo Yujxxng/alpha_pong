@@ -18,14 +18,13 @@ class Score : public GameObject
 
 	s8 font = ResourceManager::GetPtr()->Get<FontResource>("Assets/space_invaders.ttf")->GetData();
 	
-	float size{ 0.8f };
-	AEVec2 pos{ 0.f, 0.83f };
+	float size{ 0.15f };
+	AEVec2 pos{ 0.f, 0.835f };
 	Color color{ 255, 255, 255 };
 
 	int point = 0;
 	
 	std::list<pair<std::string, int>> rank;
-	int unknownNum = 0;
 	int maxRank = 5;
 
 	static Score* score_ptr;
